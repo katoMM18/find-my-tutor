@@ -1,10 +1,7 @@
 export default function Loading() {
   return (
-    <div className="flex items-center justify-center min-h-96">
-      <div className="flex flex-col items-center gap-4">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-        <p className="text-muted-foreground text-sm">Loading...</p>
-      </div>
+    <div className="flex items-center justify-center min-h-96" aria-busy="true">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
     </div>
   );
 }

@@ -1,16 +1,24 @@
-import { Geist_Mono, Inter, Space_Grotesk } from 'next/font/google';
+import { Geist_Mono, Inter, Noto_Sans_Georgian, Space_Grotesk } from 'next/font/google';
 import { type ReactNode } from 'react';
 
-import { APP_DESCRIPTION, APP_NAME } from '@/shared/const/app.const';
+import { APP_NAME } from '@/shared/const/app.const';
+import { I18nProvider } from '@/shared/providers/i18n-provider';
 import { ThemeProvider } from '@/shared/providers/theme-provider';
+import { getServerI18n } from '@/shared/utils/server-i18n';
 
 import type { Metadata } from 'next';
 
 import './globals.css';
 
 const inter = Inter({
-  variable: '--font-sans',
+  variable: '--font-inter',
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+});
+
+const notoSansGeorgian = Noto_Sans_Georgian({
+  variable: '--font-georgian',
+  subsets: ['georgian'],
   weight: ['400', '500', '600', '700'],
 });
 
@@ -25,20 +33,24 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
-  title: APP_NAME,
-  description: APP_DESCRIPTION,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getServerI18n();
+  return { title: APP_NAME, description: t.meta.description };
+}
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const { locale } = await getServerI18n();
+
   return (
     <html
-      lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} ${geistMono.variable} h-full antialiased`}
+      lang={locale}
+      className={`${inter.variable} ${notoSansGeorgian.variable} ${spaceGrotesk.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProvider>{children}</ThemeProvider>
+        <I18nProvider locale={locale}>
+          <ThemeProvider>{children}</ThemeProvider>
+        </I18nProvider>
       </body>
     </html>
   );

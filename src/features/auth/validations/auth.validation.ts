@@ -11,6 +11,7 @@ export const SignUpSchema = z.object({
   fullName: z.string().min(2).max(100),
   email: z.string().email(),
   password: z.string().min(8).max(100),
+  role: z.enum(['teacher', 'student']),
 });
 
 export type SignUpType = z.infer<typeof SignUpSchema>;

@@ -29,14 +29,14 @@ describe('POST /api/auth/register', () => {
   beforeEach(() => vi.clearAllMocks());
 
   it('returns 201 on success', async () => {
-    mockValidate.mockResolvedValueOnce({ data: { fullName: 'Bob', email: 'b@b.com', password: 'pass1234' } } as never);
+    mockValidate.mockResolvedValueOnce({ data: { fullName: 'Bob', email: 'b@b.com', password: 'pass1234', role: 'student' } } as never);
     mockRegister.mockResolvedValueOnce({ data: { message: 'Account created' }, status: 201 });
     const res = await POST(makeRequest({}));
     expect(res.status).toBe(201);
   });
 
   it('returns 409 when email is taken', async () => {
-    mockValidate.mockResolvedValueOnce({ data: { fullName: 'Bob', email: 'b@b.com', password: 'pass1234' } } as never);
+    mockValidate.mockResolvedValueOnce({ data: { fullName: 'Bob', email: 'b@b.com', password: 'pass1234', role: 'student' } } as never);
     mockRegister.mockResolvedValueOnce({ data: { error: 'EMAIL_TAKEN' }, status: 409 });
     const res = await POST(makeRequest({}));
     expect(res.status).toBe(409);

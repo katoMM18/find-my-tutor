@@ -31,7 +31,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: user._id.toString(),
           name: user.name,
           email: user.email,
-          role: user.role as 'user' | 'admin',
+          role: user.role as 'teacher' | 'student',
           avatar: user.avatar,
         };
       },
@@ -54,7 +54,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
 
     async jwt({ token, user }) {
-      const authUser = user as ({ role?: 'admin' | 'user'; avatar?: string | null } & typeof user) | undefined;
+      const authUser = user as ({ role?: 'teacher' | 'student'; avatar?: string | null } & typeof user) | undefined;
 
       if (user) {
         token.id = authUser?.id ?? token.sub ?? '';
@@ -69,9 +69,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           token.id = dbUser._id.toString();
           token.name = dbUser.name;
           token.avatar = dbUser.avatar ?? (token.avatar as string | null | undefined);
-          token.role = (dbUser.role as 'admin' | 'user') ?? 'user';
+          token.role = (dbUser.role as 'teacher' | 'student') ?? 'student';
         } else {
-          token.role = 'user';
+          token.role = 'student';
         }
       }
 
@@ -82,14 +82,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token) {
         const user = session.user as typeof session.user & {
           id: string;
-          role: 'admin' | 'user';
+          role: 'teacher' | 'student';
           avatar?: string | null;
         };
         user.id = token.id as string;
         user.email = token.email as string;
         user.name = token.name as string;
         user.avatar = (token.avatar as string | null | undefined) ?? null;
-        user.role = (token.role as 'admin' | 'user' | undefined) ?? 'user';
+        user.role = (token.role as 'teacher' | 'student' | undefined) ?? 'student';
       }
       return session;
     },

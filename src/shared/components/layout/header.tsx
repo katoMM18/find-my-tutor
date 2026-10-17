@@ -1,88 +1,92 @@
 'use client';
-import { Triangle } from 'lucide-react';
-import Image from 'next/image';
+import { GraduationCap, LogOut } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 import { useLogout } from '@/features/auth/hooks/use-logout';
+import { LanguageSwitcher } from '@/shared/components/layout/language-switcher';
 import { ThemeToggle } from '@/shared/components/layout/theme-toggle';
 import { Button } from '@/shared/components/ui/button';
+import { UserAvatar } from '@/shared/components/ui/user-avatar';
 import { APP_NAME } from '@/shared/const/app.const';
+import { useT } from '@/shared/hooks/use-t';
+import { cn } from '@/shared/lib/utils';
 
 type SessionUser = {
   name?: string | null;
   avatar?: string | null;
-  role?: 'admin' | 'user';
+  role?: 'teacher' | 'student';
 };
 
+const navLinkClassName = 'rounded-md px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-foreground';
+
 export const Header = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { logout } = useLogout();
+  const pathname = usePathname();
+  const { t } = useT();
   const sessionUser = session?.user as SessionUser | undefined;
   const userName = sessionUser?.name ?? '';
-  const initials = userName
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? '')
-    .join('');
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header className="flex items-center justify-between px-6 py-5 sm:px-10 border-b border-border">
-      <Link href="/" className="flex items-center gap-2.5">
-        <span
-          aria-hidden="true"
-          className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-foreground text-background"
-        >
-          <Triangle className="size-3 fill-current" />
+    <header
+      className="sticky top-0 z-40 flex shrink-0 items-center justify-between gap-4 border-b border-border
+        bg-background/90 px-4 py-3 backdrop-blur sm:px-8"
+    >
+      <Link
+        href={sessionUser ? '/dashboard' : '/'}
+        className="flex items-center gap-2.5 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      >
+        <span aria-hidden="true" className="inline-flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+          <GraduationCap className="size-4" />
         </span>
-        <span className="text-sm font-semibold tracking-tight text-foreground">
-          {APP_NAME}
-        </span>
+        <span className="font-heading text-base font-semibold tracking-tight text-foreground">{APP_NAME}</span>
       </Link>
 
-      <div className="flex items-center gap-2">
-        <ThemeToggle />
+      <nav aria-label={t.nav.main} className="hidden items-center gap-1 text-muted-foreground md:flex">
+        {sessionUser?.role !== 'teacher' && (
+          <Link href="/teachers" className={cn(navLinkClassName, isActive('/teachers') && 'text-foreground')}>
+            {t.nav.findTutors}
+          </Link>
+        )}
+        {sessionUser && (
+          <Link href="/messages" className={cn(navLinkClassName, isActive('/messages') && 'text-foreground')}>
+            {t.nav.messages}
+          </Link>
+        )}
+        {!sessionUser && status !== 'loading' && (
+          <Link href="/sign-up?role=teacher" className={navLinkClassName}>
+            {t.nav.becomeTutor}
+          </Link>
+        )}
+      </nav>
 
+      <div className="flex items-center gap-1.5">
+        <LanguageSwitcher />
+        <ThemeToggle />
         {sessionUser ? (
           <>
-            {sessionUser.role === 'admin' && (
-              <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground hover:bg-accent">
-                <Link href="/dashboard">Dashboard</Link>
-              </Button>
-            )}
-            <div className="flex items-center gap-3">
-              {sessionUser.avatar ? (
-                <Image
-                  src={sessionUser.avatar}
-                  alt={userName}
-                  width={32}
-                  height={32}
-                  className="size-8 rounded-full border border-border object-cover"
-                />
-              ) : (
-                <div className="size-8 rounded-full border border-border bg-muted flex items-center justify-center text-xs font-semibold text-foreground">
-                  {initials || 'U'}
-                </div>
-              )}
-              <span className="text-sm text-muted-foreground hidden sm:block">{userName}</span>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={logout}
-              className="text-muted-foreground hover:text-foreground hover:bg-accent"
+            <Link
+              href="/profile"
+              className="flex items-center gap-2 rounded-full p-1 outline-none hover:bg-accent
+                focus-visible:ring-2 focus-visible:ring-ring/50 sm:pr-3"
             >
-              Sign out
+              <UserAvatar name={userName} src={sessionUser.avatar} size="sm" />
+              <span className="hidden max-w-32 truncate text-sm font-medium sm:block">{userName}</span>
+            </Link>
+            <Button variant="ghost" size="icon-sm" onClick={logout} aria-label={t.common.signOut} className="text-muted-foreground">
+              <LogOut className="size-4" />
             </Button>
           </>
-        ) : (
+        ) : status !== 'loading' && (
           <>
-            <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground hover:bg-accent">
-              <Link href="/sign-in">Sign in</Link>
+            <Button variant="ghost" size="sm" asChild className="text-muted-foreground">
+              <Link href="/sign-in">{t.common.signIn}</Link>
             </Button>
-            <Button size="sm" asChild className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
-              <Link href="/sign-up">Sign up</Link>
+            <Button size="sm" asChild className="font-semibold">
+              <Link href="/sign-up">{t.common.signUp}</Link>
             </Button>
           </>
         )}

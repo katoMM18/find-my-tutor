@@ -1,9 +1,10 @@
-import { DashboardOverview } from '@/features/dashboard/components/dashboard-overview';
+import { DashboardHome } from '@/features/dashboard/components/dashboard-home';
 import { auth } from '@/shared/lib/auth';
 
 export default async function DashboardPage() {
   const session = await auth();
-  const userName = session?.user?.name ?? 'User';
+  const sessionUser = session?.user as { name?: string | null; role?: 'teacher' | 'student' } | undefined;
+  const role = sessionUser?.role === 'teacher' ? 'teacher' : 'student';
 
-  return <DashboardOverview userName={userName} />;
+  return <DashboardHome role={role} userName={sessionUser?.name ?? 'there'} />;
 }

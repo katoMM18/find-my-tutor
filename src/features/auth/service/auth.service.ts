@@ -14,7 +14,7 @@ export async function registerService(
     name: input.fullName,
     email: input.email,
     passwordHash: hashPassword(input.password),
-    role: 'user',
+    role: input.role,
   });
 
   return { data: { message: 'Account created' }, status: 201 };
@@ -34,7 +34,7 @@ export async function loginService(input: LoginType): Promise<ServiceResult<User
       id: user._id.toString(),
       name: user.name,
       email: user.email,
-      role: user.role as 'user' | 'admin',
+      role: user.role as 'teacher' | 'student',
       avatar: user.avatar ?? undefined,
     },
     status: 200,
@@ -50,7 +50,7 @@ export async function getUserByIdService(id: string): Promise<ServiceResult<User
       id: user._id.toString(),
       name: user.name,
       email: user.email,
-      role: user.role as 'user' | 'admin',
+      role: user.role as 'teacher' | 'student',
       avatar: user.avatar ?? undefined,
     },
     status: 200,
@@ -74,7 +74,7 @@ export async function upsertOAuthUserService(data: {
     name: data.name,
     email: data.email,
     passwordHash: '',
-    role: 'user',
+    role: 'student',
     avatar: data.avatar ?? undefined,
   });
   return { isNew: true };

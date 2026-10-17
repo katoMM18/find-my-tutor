@@ -19,7 +19,7 @@ const fakeUser = {
   name: 'Alice',
   email: 'alice@example.com',
   passwordHash: '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
-  role: 'admin' as const,
+  role: 'teacher' as const,
   avatar: undefined,
 };
 
@@ -28,7 +28,7 @@ describe('registerService', () => {
 
   it('returns 409 when email already taken', async () => {
     mockRepo.findByEmail.mockResolvedValueOnce(fakeUser as never);
-    const result = await registerService({ fullName: 'Alice', email: 'alice@example.com', password: 'password123' });
+    const result = await registerService({ fullName: 'Alice', email: 'alice@example.com', password: 'password123', role: 'student' });
     expect(result.status).toBe(409);
     expect(result.data).toEqual({ error: 'EMAIL_TAKEN' });
   });
@@ -36,16 +36,16 @@ describe('registerService', () => {
   it('returns 201 on successful registration', async () => {
     mockRepo.findByEmail.mockResolvedValueOnce(null);
     mockRepo.create.mockResolvedValueOnce('507f1f77bcf86cd799439011');
-    const result = await registerService({ fullName: 'Bob', email: 'bob@example.com', password: 'password123' });
+    const result = await registerService({ fullName: 'Bob', email: 'bob@example.com', password: 'password123', role: 'teacher' });
     expect(result.status).toBe(201);
     expect(result.data).toEqual({ message: 'Account created' });
   });
 
-  it('creates user with default role "user"', async () => {
+  it('creates user with the selected role', async () => {
     mockRepo.findByEmail.mockResolvedValueOnce(null);
     mockRepo.create.mockResolvedValueOnce('507f1f77bcf86cd799439011');
-    await registerService({ fullName: 'Bob', email: 'bob@example.com', password: 'password123' });
-    expect(mockRepo.create).toHaveBeenCalledWith(expect.objectContaining({ role: 'user', name: 'Bob' }));
+    await registerService({ fullName: 'Bob', email: 'bob@example.com', password: 'password123', role: 'teacher' });
+    expect(mockRepo.create).toHaveBeenCalledWith(expect.objectContaining({ role: 'teacher', name: 'Bob' }));
   });
 });
 
@@ -69,7 +69,7 @@ describe('loginService', () => {
     mockRepo.findByEmail.mockResolvedValueOnce(fakeUser as never);
     const result = await loginService({ email: 'alice@example.com', password: '123456' });
     expect(result.status).toBe(200);
-    expect(result.data).toMatchObject({ email: 'alice@example.com', role: 'admin' });
+    expect(result.data).toMatchObject({ email: 'alice@example.com', role: 'teacher' });
   });
 });
 
@@ -84,6 +84,6 @@ describe('getUserByIdService', () => {
     mockRepo.findById.mockResolvedValueOnce(fakeUser as never);
     const result = await getUserByIdService('507f1f77bcf86cd799439011');
     expect(result.status).toBe(200);
-    expect(result.data).toMatchObject({ name: 'Alice', role: 'admin' });
+    expect(result.data).toMatchObject({ name: 'Alice', role: 'teacher' });
   });
 });

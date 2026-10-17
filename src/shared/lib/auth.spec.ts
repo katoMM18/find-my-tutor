@@ -47,7 +47,7 @@ const fakeUser = {
   email: 'alice@example.com',
   // sha256('123456') — matches value used in auth.service.spec.ts
   passwordHash: '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
-  role: 'admin' as const,
+  role: 'teacher' as const,
   avatar: 'https://example.com/avatar.png',
 };
 
@@ -98,24 +98,24 @@ describe('auth callbacks — jwt', () => {
       user: undefined,
     });
     expect(token.id).toBe('507f1f77bcf86cd799439011');
-    expect(token.role).toBe('admin');
+    expect(token.role).toBe('teacher');
     expect(token.avatar).toBe('https://example.com/avatar.png');
   });
 
-  it('defaults role to "user" when DB user not found', async () => {
+  it('defaults role to "student" when DB user not found', async () => {
     mockRepo.findByEmail.mockResolvedValueOnce(null);
     const token = await capturedConfig.callbacks.jwt({
       token: { email: 'nobody@example.com' },
       user: undefined,
     });
-    expect(token.role).toBe('user');
+    expect(token.role).toBe('student');
   });
 
   it('sets token fields from user on initial sign-in', async () => {
     mockRepo.findByEmail.mockResolvedValueOnce(fakeUser as never);
     const token = await capturedConfig.callbacks.jwt({
       token: { email: 'alice@example.com' },
-      user: { id: 'initial-id', email: 'alice@example.com', name: 'Alice', role: 'admin', avatar: null },
+      user: { id: 'initial-id', email: 'alice@example.com', name: 'Alice', role: 'teacher', avatar: null },
     });
     expect(token.name).toBe('Alice');
     expect(token.email).toBe('alice@example.com');
@@ -133,19 +133,19 @@ describe('auth callbacks — session', () => {
       email: 'alice@example.com',
       name: 'Alice',
       avatar: 'https://example.com/avatar.png',
-      role: 'admin',
+      role: 'teacher',
     };
     const result = await capturedConfig.callbacks.session({ session, token });
     expect(result.user.id).toBe('507f1f77bcf86cd799439011');
-    expect(result.user.role).toBe('admin');
+    expect(result.user.role).toBe('teacher');
     expect(result.user.avatar).toBe('https://example.com/avatar.png');
   });
 
-  it('defaults role to "user" when token has no role', async () => {
+  it('defaults role to "student" when token has no role', async () => {
     const session = { user: {}, expires: '2099-01-01' };
     const token = { id: 'x', email: 'a@b.com', name: 'A', avatar: null };
     const result = await capturedConfig.callbacks.session({ session, token });
-    expect(result.user.role).toBe('user');
+    expect(result.user.role).toBe('student');
   });
 
   it('sets avatar to null when token avatar is undefined', async () => {
@@ -196,7 +196,7 @@ describe('auth credentials — authorize', () => {
       id: '507f1f77bcf86cd799439011',
       name: 'Alice',
       email: 'alice@example.com',
-      role: 'admin',
+      role: 'teacher',
     });
   });
 });

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { formatDate, truncate, capitalize } from './format';
+import { capitalize, formatDate, formatRelativeTime, formatWeekdays, truncate } from './format';
 
 describe('formatDate', () => {
   it('formats a date object', () => {
@@ -39,5 +39,24 @@ describe('capitalize', () => {
 
   it('handles empty string', () => {
     expect(capitalize('')).toBe('');
+  });
+});
+
+describe('formatRelativeTime', () => {
+  const now = new Date('2026-01-10T12:00:00Z');
+
+  it('uses the requested locale', () => {
+    expect(formatRelativeTime(new Date('2026-01-10T11:55:00Z'), 'en-US', now)).toContain('5');
+    expect(formatRelativeTime(new Date('2026-01-10T11:55:00Z'), 'ka-GE', now)).not.toContain('ago');
+  });
+});
+
+describe('formatWeekdays', () => {
+  const labels = { short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], everyDay: 'every day', weekdays: 'Mon–Fri' };
+
+  it('collapses common patterns', () => {
+    expect(formatWeekdays([0, 1, 2, 3, 4, 5, 6], labels)).toBe('every day');
+    expect(formatWeekdays([5, 1, 2, 3, 4], labels)).toBe('Mon–Fri');
+    expect(formatWeekdays([1, 3], labels)).toBe('Mon, Wed');
   });
 });

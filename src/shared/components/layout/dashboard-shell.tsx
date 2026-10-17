@@ -4,6 +4,7 @@ import { useState, type ReactNode } from 'react';
 
 import { Sidebar } from '@/shared/components/layout/sidebar';
 import { Button } from '@/shared/components/ui/button';
+import { useT } from '@/shared/hooks/use-t';
 import { cn } from '@/shared/lib/utils';
 
 type DashboardShellProps = {
@@ -12,21 +13,22 @@ type DashboardShellProps = {
 
 export const DashboardShell = ({ children }: DashboardShellProps) => {
   const [open, setOpen] = useState(false);
+  const { t } = useT();
 
   return (
-    <div className="flex flex-1 flex-col lg:flex-row">
+    <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
       {/* Mobile toolbar — visible below lg */}
       <div className="flex items-center gap-3 border-b border-border px-4 py-3 lg:hidden">
         <Button
           variant="outline"
           size="icon"
           onClick={() => setOpen(true)}
-          aria-label="Open navigation"
+          aria-label={t.common.openNavigation}
           aria-expanded={open}
         >
           <Menu className="size-5" />
         </Button>
-        <span className="text-sm font-medium text-muted-foreground">Menu</span>
+        <span className="text-sm font-medium text-muted-foreground">{t.common.menu}</span>
       </div>
 
       {/* Desktop static sidebar */}
@@ -43,7 +45,7 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
         <button
           type="button"
           tabIndex={open ? 0 : -1}
-          aria-label="Close navigation"
+          aria-label={t.common.closeNavigation}
           onClick={() => setOpen(false)}
           className={cn(
             'absolute inset-0 bg-foreground/40 backdrop-blur-sm transition-opacity duration-300 motion-reduce:transition-none',
@@ -57,12 +59,12 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
           )}
         >
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
-            <span className="text-sm font-semibold">Navigation</span>
+            <span className="text-sm font-semibold">{t.common.navigation}</span>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setOpen(false)}
-              aria-label="Close navigation"
+              aria-label={t.common.closeNavigation}
             >
               <X className="size-5" />
             </Button>
@@ -74,7 +76,7 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
         </div>
       </div>
 
-      <main className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">{children}</main>
+      <main className="flex min-h-0 flex-1 flex-col overflow-y-auto p-4 sm:p-6 lg:p-8">{children}</main>
     </div>
   );
 };
