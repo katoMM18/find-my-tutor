@@ -8,3 +8,9 @@ export const VipSubscriptionSchema = z.object({
 });
 
 export type VipSubscriptionInput = z.infer<typeof VipSubscriptionSchema>;
+
+export const VipPlanSchema = z.object({
+  status: z.enum(['vip', 'vip_plus', 'super_vip']),
+});
+
+export type VipPlanInput = z.infer<typeof VipPlanSchema>;

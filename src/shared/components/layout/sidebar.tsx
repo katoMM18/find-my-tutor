@@ -1,6 +1,7 @@
 'use client';
 import {
   CalendarClock,
+  CreditCard,
   House,
   MessagesSquare,
   Search,
@@ -29,6 +30,7 @@ const SIDEBAR_ICON_MAP: Record<SidebarNavIcon, LucideIcon> = {
   reviews: Star,
   availability: CalendarClock,
   profile: UserRound,
+  billing: CreditCard,
 };
 
 type SidebarProps = {

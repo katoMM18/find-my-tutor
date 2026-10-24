@@ -12,6 +12,7 @@ export type PublicStudent = {
   avatar: string | null;
   bio: string;
   subjects: string[];
+  vipStatus: VipStatus;
 };
 
 export type StudentDiscoveryResult = {
@@ -20,3 +21,4 @@ export type StudentDiscoveryResult = {
   page: number;
   limit: number;
 };
+import { type VipStatus } from '@/shared/const/vip.const';

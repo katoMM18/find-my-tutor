@@ -1,6 +1,6 @@
 import { type Dictionary } from '@/shared/types/i18n';
 
-export type SidebarNavIcon = 'home' | 'search' | 'messages' | 'students' | 'reviews' | 'availability' | 'profile';
+export type SidebarNavIcon = 'home' | 'search' | 'messages' | 'students' | 'reviews' | 'availability' | 'profile' | 'billing';
 
 export type SidebarNavItem = {
   href: string;
@@ -14,6 +14,7 @@ export const STUDENT_NAV_ITEMS: SidebarNavItem[] = [
   { href: '/messages', labelKey: 'messages', icon: 'messages' },
   { href: '/reviews', labelKey: 'reviews', icon: 'reviews' },
   { href: '/profile', labelKey: 'profile', icon: 'profile' },
+  { href: '/subscription', labelKey: 'billing', icon: 'billing' },
 ];
 
 export const TEACHER_NAV_ITEMS: SidebarNavItem[] = [
@@ -23,4 +24,5 @@ export const TEACHER_NAV_ITEMS: SidebarNavItem[] = [
   { href: '/reviews', labelKey: 'reviews', icon: 'reviews' },
   { href: '/availability', labelKey: 'availability', icon: 'availability' },
   { href: '/profile', labelKey: 'profile', icon: 'profile' },
+  { href: '/subscription', labelKey: 'billing', icon: 'billing' },
 ];

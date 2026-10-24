@@ -45,6 +45,7 @@ export const EN_DICTIONARY = {
     reviews: 'Reviews',
     availability: 'Availability',
     profile: 'My profile',
+    billing: 'Subscription',
     becomeTutor: 'Become a tutor',
     main: 'Main',
     workspace: 'Workspace',

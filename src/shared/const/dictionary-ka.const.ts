@@ -47,6 +47,7 @@ export const KA_DICTIONARY: Dictionary = {
     reviews: 'შეფასებები',
     availability: 'განრიგი',
     profile: 'ჩემი პროფილი',
+    billing: 'გამოწერა',
     becomeTutor: 'გახდი რეპეტიტორი',
     main: 'მთავარი მენიუ',
     workspace: 'სამუშაო სივრცე',

@@ -7,6 +7,7 @@ import { PublicStudent } from '@/features/discovery/types/student-discovery.type
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import { UserAvatar } from '@/shared/components/ui/user-avatar';
+import { VIP_STATUS_LABELS } from '@/shared/const/vip.const';
 import { useT } from '@/shared/hooks/use-t';
 
 export const StudentCard = ({ student }: { student: PublicStudent }) => {
@@ -17,6 +18,7 @@ export const StudentCard = ({ student }: { student: PublicStudent }) => {
       <div className="flex items-center gap-3">
         <UserAvatar name={student.name} src={student.avatar} size="lg" />
         <h2 className="truncate text-base font-semibold">{student.name}</h2>
+        {student.vipStatus !== 'none' && <Badge variant="default">{VIP_STATUS_LABELS[student.vipStatus]}</Badge>}
       </div>
       <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-muted-foreground">
         {student.bio || t.students.noBio}
