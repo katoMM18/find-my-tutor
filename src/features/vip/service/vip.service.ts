@@ -1,3 +1,4 @@
+import { userRepository } from '@/features/auth/repository/user.repository';
 import { vipRepository } from '@/features/vip/repository/vip.repository';
 import { VipSubscriptionDocument } from '@/features/vip/schema/vip-subscription.schema';
 import { VipSubscriptionInput } from '@/features/vip/validations/vip.validation';
@@ -121,6 +122,7 @@ type SubscriptionWebhookData = {
   next_billing_date?: string;
   cancel_at_next_billing_date?: boolean;
   metadata?: Record<string, string | number | boolean>;
+  customer?: { email?: string | null };
 };
 
 const isSubscriptionWebhookData = (data: object): data is SubscriptionWebhookData =>
@@ -136,10 +138,17 @@ export async function syncVipWebhookService(event: {
 
   const existing = await vipRepository.findByDodoSubscriptionId(subscriptionId);
   const metadataStatus = event.data.metadata?.vipStatus;
+  const productPlan = event.data.product_id
+    ? await vipRepository.findPlanByProductId(event.data.product_id)
+    : null;
   const status = typeof metadataStatus === 'string' && metadataStatus in VIP_PLAN_BY_STATUS
     ? metadataStatus as Exclude<VipStatus, 'none'>
-    : existing?.plan;
-  const userId = event.data.metadata?.userId;
+    : productPlan?.status ?? existing?.plan;
+  const metadataUserId = event.data.metadata?.userId;
+  const customer = event.data.customer?.email
+    ? await userRepository.findByEmail(event.data.customer.email)
+    : null;
+  const userId = typeof metadataUserId === 'string' ? metadataUserId : customer?._id.toString();
 
   if (!existing && typeof userId === 'string' && status) {
     await vipRepository.upsert(userId, {

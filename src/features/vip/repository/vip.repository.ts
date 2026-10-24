@@ -25,6 +25,11 @@ export const vipRepository = {
     return VipPlanModel.findOne({ status }).lean<VipPlanDocument>().exec();
   },
 
+  async findPlanByProductId(productId: string): Promise<VipPlanDocument | null> {
+    await mongo.connect();
+    return VipPlanModel.findOne({ productId }).lean<VipPlanDocument>().exec();
+  },
+
   async savePlan(status: VipPlanDocument['status'], productId: string): Promise<VipPlanDocument> {
     await mongo.connect();
     return VipPlanModel.findOneAndUpdate(
