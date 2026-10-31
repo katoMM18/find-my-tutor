@@ -5,12 +5,13 @@ vi.mock('@/features/auth/repository/user.repository', () => ({
     findByEmail: vi.fn(),
     findById: vi.fn(),
     create: vi.fn(),
+    updateById: vi.fn(),
   },
 }));
 
 import { userRepository } from '@/features/auth/repository/user.repository';
 
-import { loginService, registerService, getUserByIdService } from './auth.service';
+import { changeRoleService, loginService, registerService, getUserByIdService } from './auth.service';
 
 const mockRepo = vi.mocked(userRepository);
 
@@ -85,5 +86,38 @@ describe('getUserByIdService', () => {
     const result = await getUserByIdService('507f1f77bcf86cd799439011');
     expect(result.status).toBe(200);
     expect(result.data).toMatchObject({ name: 'Alice', role: 'teacher' });
+  });
+});
+
+describe('changeRoleService', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('returns 404 when user not found', async () => {
+    mockRepo.findById.mockResolvedValueOnce(null);
+    const result = await changeRoleService('507f1f77bcf86cd799439011', { role: 'teacher' });
+    expect(result.status).toBe(404);
+    expect(mockRepo.updateById).not.toHaveBeenCalled();
+  });
+
+  it('does not write when the role is already set', async () => {
+    mockRepo.findById.mockResolvedValueOnce(fakeUser as never);
+    const result = await changeRoleService('507f1f77bcf86cd799439011', { role: 'teacher' });
+    expect(result).toEqual({ data: { role: 'teacher' }, status: 200 });
+    expect(mockRepo.updateById).not.toHaveBeenCalled();
+  });
+
+  it('switches a student to teacher', async () => {
+    mockRepo.findById.mockResolvedValueOnce({ ...fakeUser, role: 'student' } as never);
+    mockRepo.updateById.mockResolvedValueOnce(true);
+    const result = await changeRoleService('507f1f77bcf86cd799439011', { role: 'teacher' });
+    expect(mockRepo.updateById).toHaveBeenCalledWith('507f1f77bcf86cd799439011', { role: 'teacher' });
+    expect(result).toEqual({ data: { role: 'teacher' }, status: 200 });
+  });
+
+  it('returns 500 when the update does not apply', async () => {
+    mockRepo.findById.mockResolvedValueOnce({ ...fakeUser, role: 'student' } as never);
+    mockRepo.updateById.mockResolvedValueOnce(false);
+    const result = await changeRoleService('507f1f77bcf86cd799439011', { role: 'teacher' });
+    expect(result.status).toBe(500);
   });
 });

@@ -304,12 +304,21 @@ Ask these exact axes; each meaningfully changes the design:
 
 ```
 STATUS: locked
-Product:    SaaS dashboard / B2B
-Palette:    Monochrome + electric indigo accent
-            base #FAFAFA (light) / #0A0A0A (dark); accent #5B5BFF
-            tokens: --primary oklch(0.555 0.243 271) light / oklch(0.62 0.21 271) dark
-Type:       Geometric sans — Space Grotesk (display, 500/600/700) + Inter (body) + Geist Mono (data)
-Feel:       Balanced — CSS load-rise stagger + hover micro-interactions; reduced-motion respected
-Signature:  Left-aligned typographic hero with one accent word + honest stat strip;
-            dashboard app-shell with mobile drawer sidebar and segmented indigo channel meters
+Product:    Consumer marketplace — students/parents choosing tutors (Georgia, ka + en)
+World:      Tear-off Notice (user-picked 2026-10-31; seed dae15939): tutor flyers taped to a Tbilisi stairwell wall.
+            Replaced "Daylight sky" glass (rejected: generic, glass broken in light mode) and "Class Register".
+Palette:    Pale-blue painted stairwell wall #E4EDF3 with plaster grain (background) and a deep turquoise
+            paint band #1E6B70 (.dado; also --primary buttons/links/focus). Flyers on coloured copy paper by
+            subject group (paper.const.ts): Languages pink, Science lemon, Programming mint, Humanities sky,
+            other white. Red marker #CF3B2B (--mark) only for circled ratings and the VIP stamp. Beige masking tape.
+            Dark mode = night stairwell. NO glass, NO blur, NO gradient skies, NO black buttons.
+Surfaces:   .paper (+ bg-paper-*), .tape (masking strip, -left/-right), .perforation + <TearTab>, .dado,
+            .pin-drop (flyers pinned in sequence); crooked rotation only on home flyers.
+Shape:      --radius 0.5rem: cards rounded-xl (~11px), flyers rounded-lg, controls rounded-lg. No pills.
+Type:       Bricolage Grotesque (opsz) for display + body, sentence case, extrabold tight headings;
+            Noto Sans Georgian fallback. No condensed uppercase, no handwriting font.
+Motion:     flyers pin up in sequence; tabs tear off; eraser fails to rub out the hero words; notices glide
+            on reorder (useFlip); a marker circle draws around each rating; weekday chips fill; taped photos
+            straighten and go from photocopy grey to colour on hover.
+            Reduced-motion respected.
 ```

@@ -23,7 +23,7 @@ export const TeacherReviewAction = ({ teacherProfileId, teacherName, onReviewPos
   if (loading) return null;
 
   return (
-    <div id="review" className="scroll-mt-24 rounded-lg border border-border bg-muted/40 p-4">
+    <div id="review" className="paper scroll-mt-24 rounded-xl p-5">
       {request?.status === 'approved' ? (
         <>
           <p className="mb-3 text-sm font-semibold">{fmt(t.reviews.enabledByTeacher, { name })}</p>
@@ -37,8 +37,8 @@ export const TeacherReviewAction = ({ teacherProfileId, teacherName, onReviewPos
           />
         </>
       ) : request?.status === 'submitted' ? (
-        <p className="flex items-center gap-2 text-sm">
-          <CheckCircle2 className="size-4 text-primary" aria-hidden="true" />
+        <p className="flex items-center gap-2 text-sm font-medium">
+          <CheckCircle2 className="animate-stamp size-5 text-primary" aria-hidden="true" />
           {t.reviews.published}
         </p>
       ) : request?.status === 'pending' ? (

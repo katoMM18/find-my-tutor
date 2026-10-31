@@ -149,6 +149,7 @@ export const teacherDiscoveryRepository = {
         }]
         : []),
       ...(filters.minRating ? [{ $match: { rating: { $gte: filters.minRating } } }] : []),
+      ...(filters.day !== undefined ? [{ $match: { availableDays: filters.day } }] : []),
       {
         $facet: {
           items: [

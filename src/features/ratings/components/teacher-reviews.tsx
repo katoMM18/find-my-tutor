@@ -27,7 +27,7 @@ export const TeacherReviews = () => {
 
   return (
     <div className="space-y-8">
-      <section aria-labelledby="requests-heading" className="rounded-xl border border-border bg-card p-5">
+      <section aria-labelledby="requests-heading" className="rounded-lg border border-border bg-card p-5">
         <h2 id="requests-heading" className="mb-4 text-base font-semibold">{fmt(t.reviews.requestsTitle, { count: pending.length })}</h2>
         {pending.length ? (
           <PendingReviewRequests requests={pending} onApprove={approve} />
@@ -46,7 +46,7 @@ export const TeacherReviews = () => {
           <h2 id="received-heading" className="text-lg font-semibold">{t.reviews.receivedTitle}</h2>
           <RatingSummary rating={reviews?.average ?? null} count={reviews?.count ?? 0} />
         </div>
-        <div className="rounded-xl border border-border bg-card p-5">
+        <div className="rounded-lg border border-border bg-card p-5">
           <ReviewList reviews={reviews?.reviews ?? []} emptyText={t.reviews.receivedEmpty} />
         </div>
       </section>

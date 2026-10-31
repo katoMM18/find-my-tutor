@@ -6,6 +6,11 @@ import { TEACHER_SORTS, type TeacherSort } from '@/shared/const/subjects.const';
 
 const MAX_LIMIT = 24;
 
+const toWeekday = (value: string | null) => {
+  const parsed = Number(value);
+  return value !== null && value !== '' && Number.isInteger(parsed) && parsed >= 0 && parsed <= 6 ? parsed : undefined;
+};
+
 const toPositiveNumber = (value: string | null) => {
   const parsed = Number(value);
   return value && Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
@@ -22,6 +27,7 @@ export async function GET(req: NextRequest) {
       subject: params.get('subject') || undefined,
       minExperience: toPositiveNumber(params.get('minExperience')),
       minRating: toPositiveNumber(params.get('minRating')),
+      day: toWeekday(params.get('day')),
       sort: TEACHER_SORTS.includes(sort as TeacherSort) ? (sort as TeacherSort) : 'recommended',
       page,
       limit,

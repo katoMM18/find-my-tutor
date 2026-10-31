@@ -6,6 +6,7 @@ export type TeacherDiscoveryFilters = {
   subject?: string;
   minExperience?: number;
   minRating?: number;
+  day?: number;
   sort?: TeacherSort;
   page: number;
   limit: number;

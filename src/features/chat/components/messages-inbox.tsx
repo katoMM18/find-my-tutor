@@ -52,7 +52,7 @@ export const MessagesInbox = () => {
   const selected = conversations.find((conversation) => conversation.id === selectedId) ?? null;
 
   return (
-    <div className="flex min-h-0 flex-1 overflow-hidden rounded-xl border border-border bg-card">
+    <div className="flex min-h-0 flex-1 overflow-hidden rounded-lg border border-border bg-card">
       <aside
         aria-label={t.chat.conversations}
         className={cn('flex w-full flex-col border-border md:w-80 md:shrink-0 md:border-r', selectedId && 'hidden md:flex')}

@@ -1,5 +1,6 @@
 'use client';
 
+import { RoleSwitchCard } from '@/features/auth/components/role-switch-card';
 import { StudentProfileForm } from '@/features/profiles/components/student-profile-form';
 import { TeacherProfileForm } from '@/features/profiles/components/teacher-profile-form';
 import { PageHeading } from '@/shared/components/layout/page-heading';
@@ -20,6 +21,7 @@ export const ProfileEditor = ({ role, welcome }: ProfileEditorProps) => {
         description={role === 'teacher' ? t.profileEditor.teacherLead : t.profileEditor.studentLead}
       />
       {role === 'teacher' ? <TeacherProfileForm /> : <StudentProfileForm />}
+      <RoleSwitchCard role={role} />
     </div>
   );
 };

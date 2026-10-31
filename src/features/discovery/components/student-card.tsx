@@ -14,7 +14,7 @@ export const StudentCard = ({ student }: { student: PublicStudent }) => {
   const { t, subject } = useT();
 
   return (
-    <article className="flex flex-col gap-4 rounded-xl border border-border bg-card p-5">
+    <article className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5">
       <div className="flex items-center gap-3">
         <UserAvatar name={student.name} src={student.avatar} size="lg" />
         <h2 className="truncate text-base font-semibold">{student.name}</h2>

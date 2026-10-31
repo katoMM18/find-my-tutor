@@ -8,12 +8,13 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { AvailabilityPreview } from '@/features/availability/components/availability-preview';
 import { TeacherContactCard } from '@/features/discovery/components/teacher-contact-card';
 import { PublicTeacher } from '@/features/discovery/types/teacher-discovery.types';
+import { InkMark } from '@/features/ratings/components/ink-mark';
 import { ReviewList } from '@/features/ratings/components/review-list';
-import { RatingSummary } from '@/features/ratings/components/star-rating';
 import { TeacherReviewAction } from '@/features/ratings/components/teacher-review-action';
 import { TeacherReviews } from '@/features/ratings/types/rating.types';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
+import { Skeleton } from '@/shared/components/ui/skeleton';
 import { UserAvatar } from '@/shared/components/ui/user-avatar';
 import { VIP_STATUS_LABELS } from '@/shared/const/vip.const';
 import { useT } from '@/shared/hooks/use-t';
@@ -21,8 +22,8 @@ import { http } from '@/shared/lib/http';
 import { firstName } from '@/shared/utils/format';
 
 const ProfileSection = ({ title, children }: { title: string; children: ReactNode }) => (
-  <section className="border-t border-border py-8">
-    <h2 className="mb-4 text-xl font-semibold">{title}</h2>
+  <section className="border-t border-rule py-8">
+    <h2 className="mb-4 text-2xl font-bold">{title}</h2>
     {children}
   </section>
 );
@@ -53,31 +54,59 @@ export const TeacherProfilePage = ({ id }: { id: string }) => {
       </main>
     );
   }
-  if (!teacher) return <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-8"><div className="h-64 animate-pulse rounded-xl bg-muted" /></main>;
+  if (!teacher) {
+    return (
+      <main aria-busy="true" className="min-h-screen">
+        <div className="px-4 pt-8 sm:px-8">
+          <div className="paper mx-auto flex w-full max-w-6xl gap-6 rounded-xl p-6 sm:p-8">
+            <Skeleton className="size-24 shrink-0 sm:size-32" />
+            <span className="flex-1 space-y-3 pt-4">
+              <Skeleton className="h-8 w-64 max-w-full" />
+              <Skeleton className="h-5 w-48" />
+            </span>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   const name = firstName(teacher.name);
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 pb-28 pt-6 sm:px-8 lg:pb-16">
-      <Link href="/teachers" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
-        <ArrowLeft className="size-4" aria-hidden="true" /> {t.profile.allTutors}
-      </Link>
-      <div className="mt-6 grid gap-10 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <div className="flex flex-col gap-5 pb-8 sm:flex-row sm:items-center">
-            <UserAvatar name={teacher.name} src={teacher.avatar} size="xl" className="size-28 text-4xl" />
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-3">
-                <h1 className="text-3xl font-bold sm:text-4xl">{teacher.name}</h1>
-                {teacher.vipStatus !== 'none' && <Badge variant="default">{VIP_STATUS_LABELS[teacher.vipStatus]}</Badge>}
-              </div>
-              <RatingSummary rating={reviews?.average ?? teacher.rating} count={reviews?.count ?? teacher.reviewCount} className="mt-2" />
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {teacher.subjects.map((item) => <Badge key={item} variant="soft">{subject(item)}</Badge>)}
+    <main className="pb-28 lg:pb-16">
+      <div className="px-4 pt-6 sm:px-8">
+        <div className="paper mx-auto w-full max-w-6xl rounded-xl p-6 sm:p-8">
+          <Link href="/teachers" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground hover:underline">
+            <ArrowLeft className="size-4" aria-hidden="true" /> {t.profile.allTutors}
+          </Link>
+          <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-end">
+              <UserAvatar
+                name={teacher.name}
+                src={teacher.avatar}
+                size="xl"
+                className="size-28 rounded-xl text-4xl shadow-lg ring-4 ring-white/80 sm:size-36"
+              />
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-3">
+                  <h1 className="font-heading text-4xl font-extrabold leading-none sm:text-6xl">{teacher.name}</h1>
+                  {teacher.vipStatus !== 'none' && <Badge variant="outline" className="text-foreground">{VIP_STATUS_LABELS[teacher.vipStatus]}</Badge>}
+                </div>
+                <p className="mt-2 text-muted-foreground">
+                  {teacher.experienceYears > 0 ? fmt(t.discovery.yearsTeaching, { count: teacher.experienceYears }) : t.discovery.newToTeaching}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {teacher.subjects.map((item) => <Badge key={item} variant="outline" className="text-foreground">{subject(item)}</Badge>)}
+                </div>
               </div>
             </div>
+            <InkMark rating={reviews?.average ?? teacher.rating} count={reviews?.count ?? teacher.reviewCount} size="lg" />
           </div>
+        </div>
+      </div>
 
+      <div className="mx-auto mt-2 grid w-full max-w-6xl gap-10 px-4 sm:px-8 lg:grid-cols-3">
+        <div className="lg:col-span-2">
           <ProfileSection title={fmt(t.profile.about, { name })}>
             <p className="max-w-prose whitespace-pre-line leading-relaxed text-muted-foreground">
               {teacher.bio || fmt(t.profile.noBio, { name })}
@@ -117,15 +146,15 @@ export const TeacherProfilePage = ({ id }: { id: string }) => {
           </ProfileSection>
         </div>
 
-        <aside className="lg:sticky lg:top-24 lg:self-start">
+        <aside className="lg:sticky lg:top-24 lg:mt-8 lg:self-start">
           <TeacherContactCard teacher={teacher} />
         </aside>
       </div>
 
       {role !== 'teacher' && (
-        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 p-3 backdrop-blur lg:hidden">
-          <Button asChild className="w-full">
-            <a href="#contact"><MessageCircle className="size-4" aria-hidden="true" /> {fmt(t.profile.messageName, { name })}</a>
+        <div className="paper fixed inset-x-3 bottom-3 z-30 rounded-lg p-2 lg:hidden">
+          <Button asChild size="lg" className="w-full">
+            <a href="#message"><MessageCircle className="size-4" aria-hidden="true" /> {fmt(t.profile.messageName, { name })}</a>
           </Button>
         </div>
       )}

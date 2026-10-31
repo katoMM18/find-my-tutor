@@ -3,6 +3,9 @@
 import { FileUp } from 'lucide-react';
 import { useId, useState } from 'react';
 
+import { buttonVariants } from '@/shared/components/ui/button';
+import { Input } from '@/shared/components/ui/input';
+import { Label } from '@/shared/components/ui/label';
 import { UserAvatar } from '@/shared/components/ui/user-avatar';
 import { useT } from '@/shared/hooks/use-t';
 import { cn } from '@/shared/lib/utils';
@@ -46,17 +49,17 @@ export const MediaUpload = ({ kind, label, hint, accept, currentUrl, name = '' }
     <div className="flex items-center gap-4">
       {kind === 'profile_image' && <UserAvatar name={name} src={previewUrl ?? currentUrl} size="xl" className="size-20 text-2xl" />}
       <div>
-        <label
+        <Label
           htmlFor={inputId}
           className={cn(
-            'inline-flex h-9 cursor-pointer items-center gap-2 rounded-md border border-border bg-background px-4 text-sm font-medium shadow-xs',
-            'transition-colors hover:bg-accent has-focus-visible:ring-2 has-focus-visible:ring-ring/50',
+            buttonVariants({ variant: 'outline' }),
+            'cursor-pointer has-focus-visible:ring-2 has-focus-visible:ring-ring/50',
             uploading && 'pointer-events-none opacity-60'
           )}
         >
           <FileUp className="size-4" aria-hidden="true" />
           {uploading ? t.profileEditor.uploading : label}
-          <input
+          <Input
             id={inputId}
             type="file"
             accept={accept}
@@ -67,7 +70,7 @@ export const MediaUpload = ({ kind, label, hint, accept, currentUrl, name = '' }
               event.target.value = '';
             }}
           />
-        </label>
+        </Label>
         <p className="mt-1.5 text-xs text-muted-foreground">{hint}</p>
         {message && (
           <p className={cn('mt-1 text-xs', message.kind === 'error' ? 'text-destructive' : 'text-primary')}>{message.text}</p>

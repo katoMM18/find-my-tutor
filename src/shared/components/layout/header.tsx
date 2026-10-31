@@ -1,15 +1,17 @@
 'use client';
-import { GraduationCap, LogOut } from 'lucide-react';
+import { LogOut, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 
 import { useLogout } from '@/features/auth/hooks/use-logout';
+import { BrandMark } from '@/shared/components/layout/brand-mark';
 import { LanguageSwitcher } from '@/shared/components/layout/language-switcher';
 import { ThemeToggle } from '@/shared/components/layout/theme-toggle';
 import { Button } from '@/shared/components/ui/button';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/shared/components/ui/sheet';
 import { UserAvatar } from '@/shared/components/ui/user-avatar';
-import { APP_NAME } from '@/shared/const/app.const';
 import { useT } from '@/shared/hooks/use-t';
 import { cn } from '@/shared/lib/utils';
 
@@ -19,78 +21,140 @@ type SessionUser = {
   role?: 'teacher' | 'student';
 };
 
-const navLinkClassName = 'rounded-md px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-foreground';
+type HeaderProps = {
+  // Provided by the signed-in shell: opens the workspace drawer on small screens.
+  onOpenMenu?: () => void;
+  menuOpen?: boolean;
+};
 
-export const Header = () => {
+const navLinkClassName = cn(
+  'rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors outline-none',
+  'hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/60'
+);
+
+export const Header = ({ onOpenMenu, menuOpen = false }: HeaderProps) => {
   const { data: session, status } = useSession();
   const { logout } = useLogout();
   const pathname = usePathname();
   const { t } = useT();
+  const [publicMenuOpen, setPublicMenuOpen] = useState(false);
   const sessionUser = session?.user as SessionUser | undefined;
   const userName = sessionUser?.name ?? '';
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
+  const links = [
+    sessionUser?.role !== 'teacher' && { href: '/teachers', label: t.nav.findTutors },
+    sessionUser && { href: '/messages', label: t.nav.messages },
+    sessionUser && { href: '/dashboard', label: t.nav.home },
+    !sessionUser && status !== 'loading' && { href: '/sign-up?role=teacher', label: t.nav.becomeTutor },
+    sessionUser?.role === 'student' && { href: '/profile#switch-role', label: t.nav.becomeTutor },
+  ].filter((link): link is { href: string; label: string } => Boolean(link));
+
   return (
-    <header
-      className="sticky top-0 z-40 flex shrink-0 items-center justify-between gap-4 border-b border-border
-        bg-background/90 px-4 py-3 backdrop-blur sm:px-8"
-    >
-      <Link
-        href={sessionUser ? '/dashboard' : '/'}
-        className="flex items-center gap-2.5 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      >
-        <span aria-hidden="true" className="inline-flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-          <GraduationCap className="size-4" />
-        </span>
-        <span className="font-heading text-base font-semibold tracking-tight text-foreground">{APP_NAME}</span>
-      </Link>
-
-      <nav aria-label={t.nav.main} className="hidden items-center gap-1 text-muted-foreground md:flex">
-        {sessionUser?.role !== 'teacher' && (
-          <Link href="/teachers" className={cn(navLinkClassName, isActive('/teachers') && 'text-foreground')}>
-            {t.nav.findTutors}
-          </Link>
-        )}
-        {sessionUser && (
-          <Link href="/messages" className={cn(navLinkClassName, isActive('/messages') && 'text-foreground')}>
-            {t.nav.messages}
-          </Link>
-        )}
-        {!sessionUser && status !== 'loading' && (
-          <Link href="/sign-up?role=teacher" className={navLinkClassName}>
-            {t.nav.becomeTutor}
-          </Link>
-        )}
-      </nav>
-
-      <div className="flex items-center gap-1.5">
-        <LanguageSwitcher />
-        <ThemeToggle />
-        {sessionUser ? (
-          <>
-            <Link
-              href="/profile"
-              className="flex items-center gap-2 rounded-full p-1 outline-none hover:bg-accent
-                focus-visible:ring-2 focus-visible:ring-ring/50 sm:pr-3"
+    <header className="sticky top-0 z-40 shrink-0 px-3 pt-3 sm:px-6">
+      <div className="paper flex items-center justify-between gap-3 rounded-lg py-2 pl-4 pr-2 sm:pl-5">
+        <div className="flex items-center gap-2">
+          {onOpenMenu && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onOpenMenu}
+              aria-label={t.common.openNavigation}
+              aria-expanded={menuOpen}
+              className="-ml-2 lg:hidden"
             >
-              <UserAvatar name={userName} src={sessionUser.avatar} size="sm" />
-              <span className="hidden max-w-32 truncate text-sm font-medium sm:block">{userName}</span>
+              <Menu className="size-5" />
+            </Button>
+          )}
+          <Link
+            href={sessionUser ? '/dashboard' : '/'}
+            className="rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+          >
+            <BrandMark />
+          </Link>
+        </div>
+
+        <nav aria-label={t.nav.main} className="hidden items-center gap-1 md:flex">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              aria-current={isActive(link.href.split('?')[0]) ? 'page' : undefined}
+              className={cn(navLinkClassName, isActive(link.href.split('?')[0]) && 'bg-accent text-foreground')}
+            >
+              {link.label}
             </Link>
-            <Button variant="ghost" size="icon-sm" onClick={logout} aria-label={t.common.signOut} className="text-muted-foreground">
-              <LogOut className="size-4" />
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-1.5">
+          <div className="hidden items-center gap-1.5 sm:flex">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
+          {sessionUser ? (
+            <>
+              <Link
+                href="/profile"
+                className="flex items-center gap-2 rounded-lg p-1 outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring/60 sm:pr-3"
+              >
+                <UserAvatar name={userName} src={sessionUser.avatar} size="sm" />
+                <span className="hidden max-w-32 truncate text-sm font-medium sm:block">{userName}</span>
+              </Link>
+              <Button variant="ghost" size="icon" onClick={logout} aria-label={t.common.signOut} className="text-muted-foreground">
+                <LogOut className="size-4" />
+              </Button>
+            </>
+          ) : status !== 'loading' && (
+            <>
+              <Button variant="ghost" size="sm" asChild className="hidden text-muted-foreground sm:inline-flex">
+                <Link href="/sign-in">{t.common.signIn}</Link>
+              </Button>
+              <Button size="sm" asChild className="font-semibold">
+                <Link href="/sign-up">{t.common.signUp}</Link>
+              </Button>
+            </>
+          )}
+          {!onOpenMenu && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setPublicMenuOpen(true)}
+              aria-label={t.common.openNavigation}
+              aria-expanded={publicMenuOpen}
+              className="md:hidden"
+            >
+              <Menu className="size-5" />
             </Button>
-          </>
-        ) : status !== 'loading' && (
-          <>
-            <Button variant="ghost" size="sm" asChild className="text-muted-foreground">
-              <Link href="/sign-in">{t.common.signIn}</Link>
-            </Button>
-            <Button size="sm" asChild className="font-semibold">
-              <Link href="/sign-up">{t.common.signUp}</Link>
-            </Button>
-          </>
-        )}
+          )}
+        </div>
       </div>
+
+      {!onOpenMenu && (
+        <Sheet open={publicMenuOpen} onOpenChange={setPublicMenuOpen}>
+          <SheetContent side="right" closeLabel={t.common.closeNavigation} className="md:hidden">
+            <SheetHeader>
+              <SheetTitle>{t.common.navigation}</SheetTitle>
+            </SheetHeader>
+            <nav aria-label={t.nav.main} className="flex flex-col px-3">
+              {links.map((link) => (
+                <Link key={link.href} href={link.href} onClick={() => setPublicMenuOpen(false)} className={cn(navLinkClassName, 'py-3 text-base')}>
+                  {link.label}
+                </Link>
+              ))}
+              {!sessionUser && status !== 'loading' && (
+                <Link href="/sign-in" onClick={() => setPublicMenuOpen(false)} className={cn(navLinkClassName, 'py-3 text-base')}>
+                  {t.common.signIn}
+                </Link>
+              )}
+            </nav>
+            <div className="mt-auto flex items-center gap-2 border-t border-rule p-4">
+              <LanguageSwitcher />
+              <ThemeToggle />
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
     </header>
   );
 };

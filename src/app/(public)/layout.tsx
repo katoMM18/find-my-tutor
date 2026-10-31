@@ -7,7 +7,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
   return (
     <SessionProvider>
       <StoreProvider>
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen">
           {children}
         </div>
       </StoreProvider>

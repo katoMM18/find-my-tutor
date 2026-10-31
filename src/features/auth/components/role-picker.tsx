@@ -2,8 +2,8 @@
 
 import { BookOpen, Presentation, type LucideIcon } from 'lucide-react';
 
+import { ToggleGroup, ToggleGroupItem } from '@/shared/components/ui/toggle-group';
 import { useT } from '@/shared/hooks/use-t';
-import { cn } from '@/shared/lib/utils';
 
 type Role = 'student' | 'teacher';
 
@@ -21,25 +21,25 @@ export const RolePicker = ({ value, onChange }: RolePickerProps) => {
   const { t } = useT();
 
   return (
-    <div role="radiogroup" aria-label={t.auth.accountType} className="grid grid-cols-2 gap-2">
+    <ToggleGroup
+      type="single"
+      aria-label={t.auth.accountType}
+      value={value}
+      onValueChange={(next) => next && onChange(next === 'teacher' ? 'teacher' : 'student')}
+      className="grid w-full grid-cols-2 gap-2"
+    >
       {ROLE_OPTIONS.map(({ value: option, title, description, icon: Icon }) => (
-        <button
+        <ToggleGroupItem
           key={option}
-          type="button"
-          role="radio"
-          aria-checked={value === option}
-          onClick={() => onChange(option)}
-          className={cn(
-            'flex flex-col items-start gap-2 rounded-lg border p-3 text-left transition-colors outline-none',
-            'focus-visible:ring-2 focus-visible:ring-ring/50',
-            value === option ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/60'
-          )}
+          value={option}
+          variant="outline"
+          className="h-auto flex-col items-start gap-2 whitespace-normal rounded-lg p-3 text-left"
         >
-          <Icon className={cn('size-5', value === option ? 'text-primary' : 'text-muted-foreground')} aria-hidden="true" />
+          <Icon className="size-5" aria-hidden="true" />
           <span className="text-sm font-semibold">{t.auth[title]}</span>
-          <span className="text-xs leading-snug text-muted-foreground">{t.auth[description]}</span>
-        </button>
+          <span className="text-xs leading-snug opacity-80">{t.auth[description]}</span>
+        </ToggleGroupItem>
       ))}
-    </div>
+    </ToggleGroup>
   );
 };

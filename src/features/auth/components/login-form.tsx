@@ -35,9 +35,9 @@ export const LoginForm = () => {
   });
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md border-rule">
       <CardHeader>
-        <CardTitle className="text-2xl">{t.auth.welcomeBack}</CardTitle>
+        <CardTitle className="text-3xl font-extrabold"><h1>{t.auth.welcomeBack}</h1></CardTitle>
         <CardDescription>
           {callbackUrl?.startsWith('/teachers/') ? t.auth.signInToMessage : t.auth.signInLead}
         </CardDescription>
@@ -95,7 +95,7 @@ export const LoginForm = () => {
             </Button>
             <p className="text-center text-sm text-muted-foreground">
               {t.auth.noAccount}{' '}
-              <Link href={signUpHref} className="underline underline-offset-4 hover:text-primary">
+              <Link href={signUpHref} className="underline underline-offset-4 hover:text-ink">
                 {t.common.signUp}
               </Link>
             </p>

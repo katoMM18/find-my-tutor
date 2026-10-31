@@ -6,7 +6,7 @@ export const VIP_STATUS_LABELS: Record<VipStatus, string> = {
   none: '',
   vip: 'VIP',
   vip_plus: 'VIP+',
-  super_vip: 'SUPER VIP',
+  super_vip: 'Super VIP',
 };
 
 export const VIP_STATUS_RANK: Record<VipStatus, number> = {

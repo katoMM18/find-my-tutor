@@ -11,6 +11,7 @@ import { SaveBar } from '@/features/profiles/components/save-bar';
 import { SubjectInput } from '@/features/profiles/components/subject-input';
 import { TeacherProfileInput, TeacherProfileSchema } from '@/features/profiles/validations/profile.validation';
 import { Input } from '@/shared/components/ui/input';
+import { Label } from '@/shared/components/ui/label';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { useT } from '@/shared/hooks/use-t';
 import { http } from '@/shared/lib/http';
@@ -85,14 +86,14 @@ export const TeacherProfileForm = () => {
       </FormSection>
 
       <FormSection title={t.profileEditor.experienceTitle} description={t.profileEditor.experienceText}>
-        <label className="block text-sm font-medium">
-          {t.profileEditor.yearsLabel}
-          <Input type="number" min={0} max={80} className="mt-2 w-32" {...form.register('experienceYears', { valueAsNumber: true })} />
-        </label>
-        <label className="block text-sm font-medium">
-          {t.profileEditor.educationLabel}
-          <Input className="mt-2" placeholder={t.profileEditor.educationPlaceholder} {...form.register('education')} />
-        </label>
+        <div className="space-y-2">
+          <Label htmlFor="profile-years">{t.profileEditor.yearsLabel}</Label>
+          <Input id="profile-years" type="number" min={0} max={80} className="w-32" {...form.register('experienceYears', { valueAsNumber: true })} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="profile-education">{t.profileEditor.educationLabel}</Label>
+          <Input id="profile-education" placeholder={t.profileEditor.educationPlaceholder} {...form.register('education')} />
+        </div>
       </FormSection>
 
       <FormSection title={t.profileEditor.qualificationsTitle} description={t.profileEditor.qualificationsText}>

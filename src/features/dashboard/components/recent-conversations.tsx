@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { PublicConversation } from '@/features/chat/types/chat.types';
 import { DashboardPanel } from '@/features/dashboard/components/dashboard-panel';
+import { Skeleton } from '@/shared/components/ui/skeleton';
 import { UserAvatar } from '@/shared/components/ui/user-avatar';
 import { useT } from '@/shared/hooks/use-t';
 import { cn } from '@/shared/lib/utils';
@@ -20,7 +21,7 @@ export const RecentConversations = ({ conversations, loading, emptyText }: Recen
   return (
     <DashboardPanel title={t.dashboard.recentMessages} action={{ href: '/messages', label: t.dashboard.openInbox }}>
       {loading ? (
-        <div className="h-12 animate-pulse rounded-md bg-muted" aria-busy="true" />
+        <Skeleton className="h-12" aria-busy="true" />
       ) : conversations.length === 0 ? (
         <p className="text-sm text-muted-foreground">{emptyText}</p>
       ) : (

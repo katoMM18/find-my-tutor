@@ -1,10 +1,10 @@
 'use client';
 import {
   CalendarClock,
-  CreditCard,
   House,
   MessagesSquare,
   Search,
+  Sparkles,
   Star,
   UserRound,
   UsersRound,
@@ -30,7 +30,7 @@ const SIDEBAR_ICON_MAP: Record<SidebarNavIcon, LucideIcon> = {
   reviews: Star,
   availability: CalendarClock,
   profile: UserRound,
-  billing: CreditCard,
+  billing: Sparkles,
 };
 
 type SidebarProps = {
@@ -46,7 +46,7 @@ export const Sidebar = ({ className, onNavigate }: SidebarProps) => {
   const items = role === 'teacher' ? TEACHER_NAV_ITEMS : STUDENT_NAV_ITEMS;
 
   return (
-    <aside className={cn('flex w-60 shrink-0 flex-col gap-1 border-r border-border bg-sidebar p-3', className)}>
+    <aside className={cn('paper m-3 mr-0 flex w-60 shrink-0 flex-col gap-1 self-start rounded-xl p-3', className)}>
       <nav aria-label={t.nav.workspace} className="flex flex-col gap-0.5">
         {items.map(({ href, labelKey, icon }) => {
           const Icon = SIDEBAR_ICON_MAP[icon];
@@ -59,9 +59,9 @@ export const Sidebar = ({ className, onNavigate }: SidebarProps) => {
               onClick={onNavigate}
               aria-current={isActive ? 'page' : undefined}
               className={cn(
-                'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors outline-none',
-                'focus-visible:ring-2 focus-visible:ring-ring/50',
-                isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors outline-none',
+                'focus-visible:ring-2 focus-visible:ring-ring/60',
+                isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-accent hover:text-foreground'
               )}
             >
               <Icon className="size-4 shrink-0" aria-hidden="true" />

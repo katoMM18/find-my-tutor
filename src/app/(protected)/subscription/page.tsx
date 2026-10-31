@@ -1,11 +1,17 @@
 import { VipSubscriptionManager } from '@/features/vip/components/vip-subscription-manager';
-import { PageHeading } from '@/shared/components/layout/page-heading';
+import { auth } from '@/shared/lib/auth';
 
-export default function SubscriptionPage() {
+type SubscriptionPageProps = {
+  searchParams: Promise<{ billing?: string }>;
+};
+
+export default async function SubscriptionPage({ searchParams }: SubscriptionPageProps) {
+  const [session, params] = await Promise.all([auth(), searchParams]);
+  const role = (session?.user as { role?: 'teacher' | 'student' } | undefined)?.role === 'teacher' ? 'teacher' : 'student';
+
   return (
-    <div className="mx-auto w-full max-w-5xl">
-      <PageHeading title="Subscription" description="Promote your profile with a recurring VIP badge." />
-      <VipSubscriptionManager />
+    <div className="mx-auto w-full max-w-3xl">
+      <VipSubscriptionManager role={role} checkoutSucceeded={params.billing === 'success'} />
     </div>
   );
 }

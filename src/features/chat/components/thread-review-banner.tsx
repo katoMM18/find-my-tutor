@@ -40,7 +40,7 @@ export const ThreadReviewBanner = ({ role, participantId, participantName, parti
   return (
     <div className="flex flex-col gap-2 border-b border-border bg-primary/5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
       <p className="flex items-center gap-2 text-sm">
-        <Star className="size-4 fill-primary text-primary" aria-hidden="true" />
+        <Star className="size-4 fill-mark text-mark" aria-hidden="true" />
         {fmt(t.chat.enabledReview, { name })}
       </p>
       <Button asChild size="sm">

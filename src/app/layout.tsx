@@ -1,4 +1,4 @@
-import { Geist_Mono, Inter, Noto_Sans_Georgian, Space_Grotesk } from 'next/font/google';
+import { Bricolage_Grotesque, Geist_Mono, Noto_Sans_Georgian } from 'next/font/google';
 import { type ReactNode } from 'react';
 
 import { APP_NAME } from '@/shared/const/app.const';
@@ -10,22 +10,16 @@ import type { Metadata } from 'next';
 
 import './globals.css';
 
-const inter = Inter({
-  variable: '--font-inter',
+const bricolage = Bricolage_Grotesque({
+  variable: '--font-bricolage',
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  axes: ['opsz'],
 });
 
 const notoSansGeorgian = Noto_Sans_Georgian({
   variable: '--font-georgian',
   subsets: ['georgian'],
   weight: ['400', '500', '600', '700'],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: '--font-space-grotesk',
-  subsets: ['latin'],
-  weight: ['500', '600', '700'],
 });
 
 const geistMono = Geist_Mono({
@@ -44,12 +38,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   return (
     <html
       lang={locale}
-      className={`${inter.variable} ${notoSansGeorgian.variable} ${spaceGrotesk.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${notoSansGeorgian.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
         <I18nProvider locale={locale}>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
         </I18nProvider>
       </body>
     </html>

@@ -9,7 +9,7 @@ import { DashboardPanel } from '@/features/dashboard/components/dashboard-panel'
 import { RecentConversations } from '@/features/dashboard/components/recent-conversations';
 import { SetupChecklist } from '@/features/dashboard/components/setup-checklist';
 import { useProfileSetup } from '@/features/dashboard/hooks/use-profile-setup';
-import { TeacherCard } from '@/features/discovery/components/teacher-card';
+import { TeacherRegister } from '@/features/discovery/components/teacher-register';
 import { PublicTeacher, TeacherDiscoveryResult } from '@/features/discovery/types/teacher-discovery.types';
 import { useRatingRequests } from '@/features/ratings/hooks/use-rating-requests';
 import { Button } from '@/shared/components/ui/button';
@@ -86,9 +86,9 @@ export const StudentHome = () => {
           </Link>
         </div>
         <div className="space-y-3">
-          {recommended.items.map((teacher) => <TeacherCard key={teacher.id} teacher={teacher} />)}
+          {recommended.items.length > 0 && <TeacherRegister teachers={recommended.items} />}
           {loaded && recommended.items.length === 0 && (
-            <p className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+            <p className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
               {t.dashboard.noTutors} <Link href="/teachers" className="text-primary hover:underline">{t.dashboard.browseAll}</Link>
             </p>
           )}

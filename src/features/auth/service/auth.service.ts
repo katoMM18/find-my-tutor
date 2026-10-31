@@ -1,6 +1,6 @@
 import { userRepository } from '@/features/auth/repository/user.repository';
 import { User } from '@/features/auth/types/auth.types';
-import { LoginType, SignUpType } from '@/features/auth/validations/auth.validation';
+import { ChangeRoleType, LoginType, SignUpType } from '@/features/auth/validations/auth.validation';
 import { ServiceResult } from '@/shared/types/common';
 import { hashPassword } from '@/shared/utils/password';
 
@@ -78,4 +78,19 @@ export async function upsertOAuthUserService(data: {
     avatar: data.avatar ?? undefined,
   });
   return { isNew: true };
+}
+
+// Switches which side of the marketplace the account is on. Both profiles are kept, so switching back restores the old one.
+export async function changeRoleService(
+  userId: string,
+  input: ChangeRoleType
+): Promise<ServiceResult<ChangeRoleType>> {
+  const user = await userRepository.findById(userId);
+  if (!user) return { data: { error: 'NOT_FOUND' }, status: 404 };
+  if (user.role === input.role) return { data: { role: input.role }, status: 200 };
+
+  const updated = await userRepository.updateById(userId, { role: input.role });
+  if (!updated) return { data: { error: 'UPDATE_FAILED' }, status: 500 };
+
+  return { data: { role: input.role }, status: 200 };
 }

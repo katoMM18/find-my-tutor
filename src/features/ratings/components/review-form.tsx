@@ -17,12 +17,14 @@ export const ReviewForm = ({ teacherName, onSubmit }: ReviewFormProps) => {
   const [value, setValue] = useState(0);
   const [comment, setComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [confirming, setConfirming] = useState(false);
 
   const submit = async () => {
     if (!value) return;
     setSubmitting(true);
     await onSubmit(value, comment.trim());
     setSubmitting(false);
+    setConfirming(false);
   };
 
   return (
@@ -35,12 +37,21 @@ export const ReviewForm = ({ teacherName, onSubmit }: ReviewFormProps) => {
         placeholder={fmt(t.reviews.commentPlaceholder, { name: teacherName })}
         aria-label={t.reviews.commentLabel}
       />
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs text-muted-foreground">{t.reviews.permanentNote}</p>
-        <Button type="button" onClick={submit} disabled={!value || submitting}>
-          {submitting ? t.reviews.posting : t.reviews.post}
-        </Button>
-      </div>
+      {confirming ? (
+        <div className="rounded-lg paper py-4 pl-6 pr-4">
+          <p className="font-bold">{t.reviews.confirmTitle}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{fmt(t.reviews.confirmBody, { name: teacherName })}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Button type="button" variant="outline" onClick={() => setConfirming(false)} disabled={submitting}>{t.reviews.keepEditing}</Button>
+            <Button type="button" onClick={submit} disabled={submitting}>{submitting ? t.reviews.posting : t.reviews.post}</Button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted-foreground">{t.reviews.permanentNote}</p>
+          <Button type="button" onClick={() => setConfirming(true)} disabled={!value}>{t.reviews.post}</Button>
+        </div>
+      )}
     </div>
   );
 };

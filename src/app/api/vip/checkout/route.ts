@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
     const validated = await validateBody(req, VipPlanSchema);
     if (validated instanceof NextResponse) return validated;
-    const returnUrl = new URL('/profile?billing=success', req.url).toString();
+    const returnUrl = new URL('/subscription?billing=success', req.url).toString();
     const result = await createVipCheckoutService(userId, validated.data.status, returnUrl);
     return NextResponse.json(result.data, { status: result.status });
   } catch {

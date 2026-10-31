@@ -66,7 +66,7 @@ export const MessageThread = ({ conversation, currentUserId, role, onBack, onAct
             <div key={message.id} className={cn('flex max-w-4/5 flex-col', mine ? 'items-end self-end' : 'items-start')}>
               <p
                 className={cn(
-                  'whitespace-pre-wrap break-words rounded-2xl px-3.5 py-2 text-sm leading-relaxed',
+                  'whitespace-pre-wrap break-words rounded-lg px-3.5 py-2 text-sm leading-relaxed',
                   mine ? 'rounded-br-sm bg-primary text-primary-foreground' : 'rounded-bl-sm bg-muted'
                 )}
               >

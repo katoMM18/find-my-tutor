@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 
+import { ToggleGroup, ToggleGroupItem } from '@/shared/components/ui/toggle-group';
 import { LOCALE_NAMES, LOCALE_SHORT_NAMES, LOCALES, type Locale } from '@/shared/const/i18n.const';
 import { useT } from '@/shared/hooks/use-t';
 import { cn } from '@/shared/lib/utils';
@@ -20,24 +21,29 @@ export const LanguageSwitcher = () => {
   };
 
   return (
-    <div role="group" aria-label={t.common.language} className={cn('flex rounded-md border border-border p-0.5', pending && 'opacity-60')}>
+    <ToggleGroup
+      type="single"
+      size="sm"
+      aria-label={t.common.language}
+      value={locale}
+      onValueChange={(next) => {
+        const match = LOCALES.find((option) => option === next);
+        if (match) choose(match);
+      }}
+      className={cn('gap-0.5 rounded-lg border border-border bg-card p-0.5', pending && 'opacity-60')}
+    >
       {LOCALES.map((option) => (
-        <button
+        <ToggleGroupItem
           key={option}
-          type="button"
+          value={option}
           lang={option}
-          aria-pressed={option === locale}
           aria-label={LOCALE_NAMES[option]}
           title={LOCALE_NAMES[option]}
-          onClick={() => choose(option)}
-          className={cn(
-            'rounded-sm px-2 py-0.5 text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50',
-            option === locale ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
-          )}
+          className="h-6 min-w-0 rounded-md px-2.5 text-xs font-semibold text-muted-foreground"
         >
           {LOCALE_SHORT_NAMES[option]}
-        </button>
+        </ToggleGroupItem>
       ))}
-    </div>
+    </ToggleGroup>
   );
 };

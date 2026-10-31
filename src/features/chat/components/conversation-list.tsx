@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import { PublicConversation } from '@/features/chat/types/chat.types';
 import { Button } from '@/shared/components/ui/button';
+import { Skeleton } from '@/shared/components/ui/skeleton';
 import { UserAvatar } from '@/shared/components/ui/user-avatar';
 import { useT } from '@/shared/hooks/use-t';
 import { cn } from '@/shared/lib/utils';
@@ -33,8 +34,8 @@ export const ConversationList = ({
       <div className="space-y-1 p-2" aria-busy="true">
         {[0, 1, 2].map((item) => (
           <div key={item} className="flex items-center gap-3 rounded-md p-3">
-            <span className="size-10 animate-pulse rounded-full bg-muted" />
-            <span className="h-4 flex-1 animate-pulse rounded bg-muted" />
+            <Skeleton className="size-10 rounded-full" />
+            <Skeleton className="h-4 flex-1" />
           </div>
         ))}
       </div>
@@ -74,14 +75,14 @@ export const ConversationList = ({
     <ul className="flex-1 space-y-0.5 overflow-y-auto p-2">
       {conversations.map((conversation) => (
         <li key={conversation.id}>
-          <button
+          <Button
             type="button"
+            variant="ghost"
             onClick={() => onSelect(conversation.id)}
             aria-current={conversation.id === selectedId ? 'true' : undefined}
             className={cn(
-              'flex w-full items-center gap-3 rounded-md p-3 text-left transition-colors outline-none',
-              'focus-visible:ring-2 focus-visible:ring-ring/50',
-              conversation.id === selectedId ? 'bg-primary/10' : 'hover:bg-muted'
+              'h-auto w-full justify-start gap-3 whitespace-normal rounded-lg p-3 text-left font-normal',
+              conversation.id === selectedId && 'bg-primary/10'
             )}
           >
             <UserAvatar name={conversation.participantName} src={conversation.participantAvatar} />
@@ -101,7 +102,7 @@ export const ConversationList = ({
                 {conversation.unread && <span className="ml-auto size-2 shrink-0 rounded-full bg-primary" aria-label={t.common.unread} />}
               </span>
             </span>
-          </button>
+          </Button>
         </li>
       ))}
     </ul>

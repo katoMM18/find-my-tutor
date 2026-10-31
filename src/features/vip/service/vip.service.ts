@@ -11,6 +11,7 @@ export type ActiveVipStatus = {
   status: VipStatus;
   expiresAt: Date | null;
   rank: number;
+  cancelAtPeriodEnd: boolean;
 };
 
 const getActiveStatus = (subscription: VipSubscriptionDocument | null): ActiveVipStatus => {
@@ -20,7 +21,7 @@ const getActiveStatus = (subscription: VipSubscriptionDocument | null): ActiveVi
     inactiveBillingStatuses.includes(subscription.billingStatus ?? '') ||
     (subscription.expiresAt && subscription.expiresAt <= new Date())
   ) {
-    return { status: 'none', expiresAt: null, rank: 0 };
+    return { status: 'none', expiresAt: null, rank: 0, cancelAtPeriodEnd: false };
   }
 
   const status = subscription.status as VipStatus;
@@ -28,6 +29,7 @@ const getActiveStatus = (subscription: VipSubscriptionDocument | null): ActiveVi
     status,
     expiresAt: subscription.expiresAt ?? null,
     rank: VIP_STATUS_RANK[status],
+    cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
   };
 };
 
@@ -64,55 +66,70 @@ export async function createVipCheckoutService(
   status: Exclude<VipStatus, 'none'>,
   returnUrl: string
 ): Promise<ServiceResult<{ checkoutUrl: string }>> {
-  const productId = await getOrCreateProductId(status);
-  const checkout = await dodo.client.checkoutSessions.create({
-    product_cart: [{ product_id: productId, quantity: 1 }],
-    return_url: returnUrl,
-    metadata: { userId, vipStatus: status },
-  });
+  try {
+    const productId = await getOrCreateProductId(status);
+    const checkout = await dodo.client.checkoutSessions.create({
+      product_cart: [{ product_id: productId, quantity: 1 }],
+      return_url: returnUrl,
+      metadata: { userId, vipStatus: status },
+    });
 
-  if (!checkout.checkout_url) return { data: { error: 'CHECKOUT_URL_MISSING' }, status: 502 };
-  return { data: { checkoutUrl: checkout.checkout_url }, status: 200 };
+    if (!checkout.checkout_url) return { data: { error: 'CHECKOUT_URL_MISSING' }, status: 502 };
+    return { data: { checkoutUrl: checkout.checkout_url }, status: 200 };
+  } catch (error) {
+    console.error('[vip] checkout failed', error);
+    return { data: { error: dodo.errorCode(error) }, status: 503 };
+  }
 }
 
 export async function cancelVipService(userId: string): Promise<ServiceResult<ActiveVipStatus>> {
-  const subscription = await vipRepository.findByUserId(userId);
-  if (!subscription?.dodoSubscriptionId) return { data: { error: 'SUBSCRIPTION_NOT_FOUND' }, status: 404 };
+  try {
+    const subscription = await vipRepository.findByUserId(userId);
+    if (!subscription?.dodoSubscriptionId) return { data: { error: 'SUBSCRIPTION_NOT_FOUND' }, status: 404 };
 
-  const updated = await dodo.client.subscriptions.update(subscription.dodoSubscriptionId, {
-    cancel_at_next_billing_date: true,
-    cancel_reason: 'cancelled_by_customer',
-  });
-  await vipRepository.updateByDodoSubscriptionId(subscription.dodoSubscriptionId, {
-    cancelAtPeriodEnd: true,
-    expiresAt: new Date(updated.next_billing_date),
-    billingStatus: updated.status,
-  });
+    const updated = await dodo.client.subscriptions.update(subscription.dodoSubscriptionId, {
+      cancel_at_next_billing_date: true,
+      cancel_reason: 'cancelled_by_customer',
+    });
+    await vipRepository.updateByDodoSubscriptionId(subscription.dodoSubscriptionId, {
+      cancelAtPeriodEnd: true,
+      expiresAt: new Date(updated.next_billing_date),
+      billingStatus: updated.status,
+    });
 
-  return getVipStatusService(userId);
+    return getVipStatusService(userId);
+  } catch (error) {
+    console.error('[vip] cancel failed', error);
+    return { data: { error: dodo.errorCode(error) }, status: 503 };
+  }
 }
 
 export async function changeVipPlanService(
   userId: string,
   status: Exclude<VipStatus, 'none'>
 ): Promise<ServiceResult<ActiveVipStatus>> {
-  const subscription = await vipRepository.findByUserId(userId);
-  if (!subscription?.dodoSubscriptionId) return { data: { error: 'SUBSCRIPTION_NOT_FOUND' }, status: 404 };
+  try {
+    const subscription = await vipRepository.findByUserId(userId);
+    if (!subscription?.dodoSubscriptionId) return { data: { error: 'SUBSCRIPTION_NOT_FOUND' }, status: 404 };
 
-  const productId = await getOrCreateProductId(status);
-  await dodo.client.subscriptions.changePlan(subscription.dodoSubscriptionId, {
-    product_id: productId,
-    quantity: 1,
-    proration_billing_mode: 'prorated_immediately',
-  });
-  await vipRepository.updateByDodoSubscriptionId(subscription.dodoSubscriptionId, {
-    plan: status,
-    status,
-    dodoProductId: productId,
-    cancelAtPeriodEnd: false,
-  });
+    const productId = await getOrCreateProductId(status);
+    await dodo.client.subscriptions.changePlan(subscription.dodoSubscriptionId, {
+      product_id: productId,
+      quantity: 1,
+      proration_billing_mode: 'prorated_immediately',
+    });
+    await vipRepository.updateByDodoSubscriptionId(subscription.dodoSubscriptionId, {
+      plan: status,
+      status,
+      dodoProductId: productId,
+      cancelAtPeriodEnd: false,
+    });
 
-  return getVipStatusService(userId);
+    return getVipStatusService(userId);
+  } catch (error) {
+    console.error('[vip] plan change failed', error);
+    return { data: { error: dodo.errorCode(error) }, status: 503 };
+  }
 }
 
 type SubscriptionWebhookData = {

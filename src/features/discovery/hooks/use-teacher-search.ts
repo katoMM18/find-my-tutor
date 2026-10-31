@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { TeacherDiscoveryResult } from '@/features/discovery/types/teacher-discovery.types';
 import { http } from '@/shared/lib/http';
 
-export const TEACHER_FILTER_KEYS = ['search', 'subject', 'minExperience', 'minRating', 'sort'] as const;
+export const TEACHER_FILTER_KEYS = ['search', 'subject', 'day', 'minExperience', 'minRating', 'sort'] as const;
 
 export type TeacherFilterKey = (typeof TEACHER_FILTER_KEYS)[number];
 
@@ -27,10 +27,13 @@ export const useTeacherSearch = () => {
   const [result, setResult] = useState<TeacherDiscoveryResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     const params = new URLSearchParams(queryString);
+    // "today" stays readable in the URL; the API gets the viewer's own weekday.
+    if (params.get('day') === 'today') params.set('day', String(new Date().getDay()));
     const timer = window.setTimeout(() => {
       setLoading(true);
       setError(null);
@@ -46,7 +49,7 @@ export const useTeacherSearch = () => {
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [queryString]);
+  }, [queryString, attempt]);
 
   const update = (changes: Partial<Record<TeacherFilterKey | 'page', string>>) => {
     const params = new URLSearchParams(queryString);
@@ -58,8 +61,10 @@ export const useTeacherSearch = () => {
 
   const clear = () => router.replace(pathname, { scroll: false });
 
+  const retry = () => setAttempt((value) => value + 1);
+
   const activeCount = TEACHER_FILTER_KEYS.filter((key) => key !== 'sort' && values[key]).length;
   const totalPages = result ? Math.max(Math.ceil(result.total / PAGE_SIZE), 1) : 1;
 
-  return { values, page, totalPages, result, loading, error, update, clear, activeCount };
+  return { values, page, totalPages, result, loading, error, update, clear, retry, activeCount };
 };

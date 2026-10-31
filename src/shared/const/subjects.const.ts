@@ -29,3 +29,6 @@ export const SUBJECT_ALIASES: Record<string, string> = {
   js: 'JavaScript',
   ts: 'TypeScript',
 };
+
+// Radix Select cannot hold an empty value; this stands in for "no filter" and maps back to ''.
+export const ANY_FILTER_VALUE = 'any';

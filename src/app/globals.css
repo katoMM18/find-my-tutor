@@ -7,9 +7,24 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter), var(--font-georgian), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-bricolage), var(--font-georgian), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-space-grotesk), var(--font-georgian), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-bricolage), var(--font-georgian), ui-sans-serif, system-ui, sans-serif;
+  --font-narrow: var(--font-bricolage), var(--font-georgian), ui-sans-serif, system-ui, sans-serif;
+  --font-pen: var(--font-bricolage), var(--font-georgian), ui-sans-serif, system-ui, sans-serif;
+  --color-paper-white: var(--paper-white);
+  --color-paper-lemon: var(--paper-lemon);
+  --color-paper-peach: var(--paper-peach);
+  --color-paper-pink: var(--paper-pink);
+  --color-paper-sky: var(--paper-sky);
+  --color-pen: var(--pen);
+  --color-tape: var(--tape);
+  --color-tape-foreground: var(--tape-foreground);
+  --color-wall: var(--wall);
+  --color-mark: var(--mark);
+  --color-ink: var(--ink);
+  --color-rule: var(--rule);
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,126 +63,468 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Tear-off Notice: tutor flyers on coloured copy paper, taped to a Tbilisi stairwell —
+   pale-blue painted wall, a deep blue paint band, masking tape, and a red marker for marks. */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: oklch(0.941 0.013 236.6);
+  --foreground: oklch(0.228 0.006 236.8);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.228 0.006 236.8);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.555 0.243 271);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.555 0.243 271);
-  --chart-1: oklch(0.555 0.243 271);
-  --chart-2: oklch(0.62 0.16 271);
-  --chart-3: oklch(0.7 0.1 271);
-  --chart-4: oklch(0.78 0.06 271);
-  --chart-5: oklch(0.85 0.03 271);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.555 0.243 271);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.555 0.243 271);
+  --popover-foreground: oklch(0.228 0.006 236.8);
+  --primary: oklch(0.403 0.099 260.2);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.906 0.017 236.7);
+  --secondary-foreground: oklch(0.228 0.006 236.8);
+  --muted: oklch(0.906 0.017 236.7);
+  --muted-foreground: oklch(0.483 0.021 245.7);
+  --accent: oklch(0.403 0.099 260.2 / 10%);
+  --accent-foreground: oklch(0.228 0.006 236.8);
+  --destructive: oklch(0.571 0.187 30);
+  --border: oklch(0.86 0.018 240);
+  --input: oklch(0.86 0.018 240);
+  --ring: oklch(0.403 0.099 260.2);
+  --pen: oklch(0.571 0.187 30);
+  --mark: oklch(0.571 0.187 30);
+  --ink: oklch(0.403 0.099 260.2);
+  --tape: oklch(0.93 0.03 85 / 85%);
+  --tape-foreground: oklch(0.32 0.03 80);
+  --wall: oklch(0.403 0.099 260.2);
+  --rule: oklch(0.86 0.018 240);
+  --paper-white: oklch(1 0 0);
+  --paper-lemon: oklch(0.95 0.094 98.1);
+  --paper-peach: oklch(0.918 0.055 63.5);
+  --paper-pink: oklch(0.926 0.04 4.3);
+  --paper-sky: oklch(0.933 0.032 258.4);
+  --chart-1: oklch(0.403 0.099 260.2);
+  --chart-2: oklch(0.571 0.187 30);
+  --chart-3: oklch(0.95 0.094 98.1);
+  --chart-4: oklch(0.918 0.055 63.5);
+  --chart-5: oklch(0.926 0.04 4.3);
+  --radius: 0.5rem;
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.228 0.006 236.8);
+  --sidebar-primary: oklch(0.403 0.099 260.2);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.403 0.099 260.2 / 10%);
+  --sidebar-accent-foreground: oklch(0.228 0.006 236.8);
+  --sidebar-border: oklch(0.86 0.018 240);
+  --sidebar-ring: oklch(0.403 0.099 260.2);
 }
 
+/* Night stairwell: the same flyers under a dim bulb. */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.62 0.21 271);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.62 0.21 271);
-  --chart-1: oklch(0.62 0.21 271);
-  --chart-2: oklch(0.55 0.16 271);
-  --chart-3: oklch(0.48 0.12 271);
-  --chart-4: oklch(0.4 0.08 271);
-  --chart-5: oklch(0.33 0.05 271);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.62 0.21 271);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.62 0.21 271);
+  --background: oklch(0.212 0.015 235.9);
+  --foreground: oklch(0.945 0.008 228.9);
+  --card: oklch(0.263 0.015 235.6);
+  --card-foreground: oklch(0.945 0.008 228.9);
+  --popover: oklch(0.263 0.015 235.6);
+  --popover-foreground: oklch(0.945 0.008 228.9);
+  --primary: oklch(0.754 0.089 260.8);
+  --primary-foreground: oklch(0.212 0.015 235.9);
+  --secondary: oklch(0.262 0.018 234.7);
+  --secondary-foreground: oklch(0.945 0.008 228.9);
+  --muted: oklch(0.262 0.018 234.7);
+  --muted-foreground: oklch(0.75 0.019 234.6);
+  --accent: oklch(0.754 0.089 260.8 / 12%);
+  --accent-foreground: oklch(0.945 0.008 228.9);
+  --destructive: oklch(0.731 0.166 30.3);
+  --border: oklch(0.344 0.021 231.7);
+  --input: oklch(0.344 0.021 231.7);
+  --ring: oklch(0.754 0.089 260.8);
+  --pen: oklch(0.731 0.166 30.3);
+  --mark: oklch(0.731 0.166 30.3);
+  --ink: oklch(0.754 0.089 260.8);
+  --tape: oklch(0.8 0.03 85 / 55%);
+  --tape-foreground: oklch(0.95 0.02 85);
+  --wall: oklch(0.343 0.073 260.7);
+  --rule: oklch(0.344 0.021 231.7);
+  --paper-white: oklch(0.263 0.015 235.6);
+  --paper-lemon: oklch(0.319 0.04 98.3);
+  --paper-peach: oklch(0.316 0.031 58.2);
+  --paper-pink: oklch(0.293 0.042 5.6);
+  --paper-sky: oklch(0.299 0.045 257.8);
+  --chart-1: oklch(0.754 0.089 260.8);
+  --chart-2: oklch(0.731 0.166 30.3);
+  --chart-3: oklch(0.319 0.04 98.3);
+  --chart-4: oklch(0.316 0.031 58.2);
+  --chart-5: oklch(0.293 0.042 5.6);
+  --sidebar: oklch(0.263 0.015 235.6);
+  --sidebar-foreground: oklch(0.945 0.008 228.9);
+  --sidebar-primary: oklch(0.754 0.089 260.8);
+  --sidebar-primary-foreground: oklch(0.212 0.015 235.9);
+  --sidebar-accent: oklch(0.754 0.089 260.8 / 12%);
+  --sidebar-accent-foreground: oklch(0.945 0.008 228.9);
+  --sidebar-border: oklch(0.344 0.021 231.7);
+  --sidebar-ring: oklch(0.754 0.089 260.8);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
+    scrollbar-color: var(--border) transparent;
+  }
+  /* Painted plaster: a faint grain so the wall reads as a wall, not a screen. */
+  body {
+    @apply bg-background text-foreground;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    caret-color: var(--ink);
+  }
+  ::selection {
+    background-color: var(--tape);
+    color: var(--foreground);
   }
   h1,
   h2,
   h3 {
     @apply font-heading tracking-tight;
+    text-wrap: balance;
+  }
+  a {
+    text-underline-offset: 0.2em;
   }
 }
 
 @layer utilities {
-  @keyframes rise {
+  /* A sheet of photocopy paper stuck to the wall: crisp edge, small contact shadow, softer lift. */
+  .paper:not([class*='bg-paper-']) {
+    background-color: var(--card);
+  }
+  .paper {
+    border: 1px solid oklch(0 0 0 / 6%);
+    box-shadow:
+      0 1px 1px oklch(0.2 0.03 240 / 8%),
+      0 14px 28px -18px oklch(0.2 0.03 240 / 45%);
+  }
+
+  /* Flyers pinned up one after another when the wall first appears. */
+  @keyframes pin-drop {
     from {
       opacity: 0;
-      transform: translateY(0.75rem);
+      transform: translateY(-1.25rem) rotate(-4deg);
+    }
+  }
+  .pin-drop > * {
+    animation: pin-drop 560ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+  .pin-drop > :nth-child(2) {
+    animation-delay: 90ms;
+  }
+  .pin-drop > :nth-child(3) {
+    animation-delay: 180ms;
+  }
+  .pin-drop > :nth-child(4) {
+    animation-delay: 270ms;
+  }
+  .pin-drop > :nth-child(5) {
+    animation-delay: 360ms;
+  }
+
+  /* Hero flyers sway a little, as paper does in a stairwell draught. */
+  @keyframes sway {
+    from {
+      transform: rotate(-0.6deg);
     }
     to {
-      opacity: 1;
-      transform: translateY(0);
+      transform: rotate(0.6deg);
     }
   }
-  .animate-rise {
-    animation: rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  .pin-drop.sway > * {
+    animation:
+      pin-drop 560ms cubic-bezier(0.16, 1, 0.3, 1) backwards,
+      sway 5s ease-in-out 900ms infinite alternate;
+    transform-origin: 50% 0;
   }
-  .animate-rise-1 {
-    animation-delay: 0.06s;
+  .pin-drop.sway > :nth-child(2) {
+    animation-delay: 90ms, 1.6s;
   }
-  .animate-rise-2 {
-    animation-delay: 0.13s;
+  .pin-drop.sway > :nth-child(3) {
+    animation-delay: 180ms, 1.1s;
   }
-  .animate-rise-3 {
+  .pin-drop.sway > :nth-child(4) {
+    animation-delay: 270ms, 2s;
+  }
+  .pin-drop.sway > *:hover {
+    animation-play-state: running, paused;
+  }
+
+  /* The marker circle around a mark draws itself once. */
+  @keyframes marker-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+  .animate-marker {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    animation: marker-draw 700ms cubic-bezier(0.65, 0, 0.35, 1) 150ms backwards;
+  }
+
+  /* A strip of yellow tape holding a notice up. Place on a positioned element. */
+  .tape {
+    position: relative;
+  }
+  .tape::before {
+    content: '';
+    position: absolute;
+    top: -0.65rem;
+    left: 50%;
+    width: 5.5rem;
+    height: 1.4rem;
+    translate: -50% 0;
+    rotate: -3deg;
+    background: var(--tape);
+    box-shadow: 0 1px 1px oklch(0 0 0 / 8%);
+    pointer-events: none;
+  }
+  .tape-left::before {
+    left: 1.5rem;
+    translate: 0 0;
+    rotate: -8deg;
+  }
+  .tape-right::before {
+    left: auto;
+    right: 1.5rem;
+    translate: 0 0;
+    rotate: 7deg;
+  }
+
+  /* The dashed cut line above the tear-off tabs. */
+  .perforation {
+    background-image: linear-gradient(90deg, var(--border) 50%, transparent 50%);
+    background-size: 0.6rem 1px;
+    background-repeat: repeat-x;
+    background-position: top left;
+  }
+
+  /* A tab torn off: it lifts, twists and falls away before the page moves on. */
+  @keyframes tear-off {
+    0% {
+      transform: none;
+    }
+    35% {
+      transform: translateY(-0.2rem) rotate(-4deg);
+    }
+    100% {
+      transform: translateY(2.5rem) rotate(14deg);
+      opacity: 0;
+    }
+  }
+  .animate-tear {
+    animation: tear-off 420ms cubic-bezier(0.55, 0, 0.75, 0.2) forwards;
+  }
+
+  /* Notices on the home board hang slightly crooked; a hover straightens one. */
+  .tilt-l {
+    rotate: -1.2deg;
+  }
+  .tilt-r {
+    rotate: 1deg;
+  }
+  .tilt-l,
+  .tilt-r {
+    transition: rotate 300ms cubic-bezier(0.16, 1, 0.3, 1), translate 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .tilt-l:hover,
+  .tilt-r:hover {
+    rotate: 0deg;
+    translate: 0 -0.25rem;
+  }
+
+  /* Picking one notice brings it forward; the rest fade back. */
+  .register > * {
+    transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .register:has(> :hover) > :not(:hover),
+  .register:has(> :focus-within) > :not(:focus-within) {
+    opacity: 0.6;
+  }
+
+  /* Marks arrive like ballpoint: a quick stroke left to right. */
+  @keyframes ink-in {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  .animate-ink {
+    animation: ink-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+  .animate-ink-1 {
+    animation-delay: 0.1s;
+  }
+  .animate-ink-2 {
     animation-delay: 0.2s;
   }
-  .animate-rise-4 {
-    animation-delay: 0.27s;
+  .animate-ink-3 {
+    animation-delay: 0.3s;
   }
+  /* The eraser that can't: it scrubs "rub out" once, and the words stay exactly as they were. */
+  .eraser {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+  }
+  .eraser::before {
+    content: '';
+    position: absolute;
+    inset: 12% -2%;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, transparent, oklch(0.95 0.03 15 / 70%) 30%, oklch(0.95 0.03 15 / 70%) 70%, transparent);
+    transform-origin: left center;
+    transform: scaleX(0);
+    animation: eraser-smear 1.9s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+  .eraser::after {
+    content: '';
+    position: absolute;
+    top: 18%;
+    left: 0;
+    width: 0.9em;
+    height: 0.62em;
+    border-radius: 0.18em;
+    background: linear-gradient(180deg, oklch(0.8 0.1 15) 0 55%, oklch(0.62 0.16 265) 55% 100%);
+    box-shadow: 0 0.12em 0.3em oklch(0.3 0.05 265 / 25%);
+    opacity: 0;
+    animation: eraser-scrub 1.9s cubic-bezier(0.45, 0, 0.2, 1) 0.7s both;
+    pointer-events: none;
+  }
+  @keyframes eraser-smear {
+    0% {
+      transform: scaleX(0);
+      opacity: 1;
+    }
+    55% {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scaleX(1);
+      opacity: 0;
+    }
+  }
+  @keyframes eraser-scrub {
+    0% {
+      opacity: 0;
+      transform: translateX(-0.4em) rotate(-14deg);
+    }
+    10% {
+      opacity: 1;
+    }
+    30% {
+      transform: translateX(35%) rotate(-8deg);
+    }
+    45% {
+      transform: translateX(15%) rotate(-16deg);
+    }
+    70% {
+      transform: translateX(calc(100% + 1.2em)) rotate(-10deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(calc(100% + 2.4em)) rotate(-4deg);
+      opacity: 0;
+    }
+  }
+
+  /* Weekday chips fill in order, Monday first, when a row arrives. */
+  .week-fill > * {
+    animation: chip-in 380ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+  .week-fill > :nth-child(2) {
+    animation-delay: 40ms;
+  }
+  .week-fill > :nth-child(3) {
+    animation-delay: 80ms;
+  }
+  .week-fill > :nth-child(4) {
+    animation-delay: 120ms;
+  }
+  .week-fill > :nth-child(5) {
+    animation-delay: 160ms;
+  }
+  .week-fill > :nth-child(6) {
+    animation-delay: 200ms;
+  }
+  .week-fill > :nth-child(7) {
+    animation-delay: 240ms;
+  }
+  @keyframes chip-in {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+  }
+
+  /* A message on its way: the plane lifts off while sending. */
+  @keyframes lift {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(0.2rem, -0.25rem) rotate(-8deg);
+    }
+  }
+  .animate-lift {
+    animation: lift 700ms ease-in-out infinite;
+  }
+
+  /* Posted review: the stars press down like a stamp, once. */
+  @keyframes stamp {
+    from {
+      opacity: 0;
+      transform: scale(1.35) rotate(-6deg);
+    }
+    60% {
+      opacity: 1;
+      transform: scale(0.96) rotate(0deg);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  .animate-stamp {
+    animation: stamp 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-rise,
-  .animate-rise-1,
-  .animate-rise-2,
-  .animate-rise-3,
-  .animate-rise-4 {
+  .animate-ink,
+  .animate-ink-1,
+  .animate-ink-2,
+  .animate-ink-3,
+  .week-fill > *,
+  .animate-lift,
+  .animate-tear,
+  .pin-drop > *,
+  .pin-drop.sway > *,
+  .animate-marker {
     animation: none;
+  }
+  .register > *,
+  .tilt-l,
+  .tilt-r {
+    transition: none;
+  }
+  .eraser::before,
+  .eraser::after {
+    display: none;
+  }
+  .animate-stamp {
+    animation: fade-in 200ms ease both;
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
   }
 }

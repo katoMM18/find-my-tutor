@@ -77,7 +77,7 @@ export const StudentProfileForm = () => {
       </FormSection>
 
       {saved && subjects.length > 0 && (
-        <div className="mt-6 flex flex-col gap-3 rounded-xl border border-primary/30 bg-primary/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-6 flex flex-col gap-3 rounded-lg border border-primary/30 bg-primary/5 p-5 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm">{fmt(t.profileEditor.readyToFind, { subject: subject(subjects[0]) })}</p>
           <Button asChild size="sm"><Link href={`/teachers?subject=${encodeURIComponent(subjects[0])}`}>{t.profileEditor.findTutors}</Link></Button>
         </div>

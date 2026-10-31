@@ -37,7 +37,9 @@ export const MessageComposer = ({ onSend }: MessageComposerProps) => {
         rows={1}
         onChange={(event) => setBody(event.target.value)}
         onKeyDown={(event) => {
-          if (event.key === 'Enter' && !event.shiftKey) {
+          // On touch keyboards Enter makes a new line; the send button sends.
+          const touch = window.matchMedia('(pointer: coarse)').matches;
+          if (event.key === 'Enter' && !event.shiftKey && !touch && !event.nativeEvent.isComposing) {
             event.preventDefault();
             void send();
           }

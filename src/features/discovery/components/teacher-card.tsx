@@ -1,79 +1,78 @@
 'use client';
 
-import { CalendarDays, GraduationCap, MessageCircle } from 'lucide-react';
+import { ArrowRight, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
+import { TearTab } from '@/features/discovery/components/tear-tab';
+import { WeekCells } from '@/features/discovery/components/week-cells';
 import { PublicTeacher } from '@/features/discovery/types/teacher-discovery.types';
-import { RatingSummary } from '@/features/ratings/components/star-rating';
+import { InkMark } from '@/features/ratings/components/ink-mark';
 import { Badge } from '@/shared/components/ui/badge';
-import { Button } from '@/shared/components/ui/button';
 import { UserAvatar } from '@/shared/components/ui/user-avatar';
 import { VIP_STATUS_LABELS } from '@/shared/const/vip.const';
 import { useT } from '@/shared/hooks/use-t';
-import { formatWeekdays } from '@/shared/utils/format';
+import { cn } from '@/shared/lib/utils';
 
 type TeacherCardProps = {
   teacher: PublicTeacher;
+  inkDelay?: 0 | 1 | 2 | 3;
+  className?: string;
 };
 
-export const TeacherCard = ({ teacher }: TeacherCardProps) => {
+// One tutor, one flyer on the wall: a taped photo, the days they teach, a mark circled in marker, and tear-off tabs.
+export const TeacherCard = ({ teacher, inkDelay = 0, className }: TeacherCardProps) => {
   const { data: session } = useSession();
   const { t, fmt, subject } = useT();
   const role = (session?.user as { role?: 'teacher' | 'student' } | undefined)?.role;
   const profileHref = `/teachers/${teacher.id}`;
-  const messagesHref = `/messages?to=${teacher.userId}`;
-  const messageHref = session ? messagesHref : `/sign-in?callbackUrl=${encodeURIComponent(messagesHref)}`;
-  const teachesToday = teacher.availableDays.includes(new Date().getDay());
-  const days = formatWeekdays(teacher.availableDays, { short: t.weekdaysShort, everyDay: t.discovery.everyDay, weekdays: t.discovery.weekdays });
 
   return (
-    <article className="group relative flex flex-col gap-4 rounded-xl border border-border bg-card p-4 transition-shadow hover:shadow-md sm:flex-row sm:p-5">
-      <UserAvatar name={teacher.name} src={teacher.avatar} size="xl" className="size-16 text-xl sm:size-24 sm:text-3xl" />
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <h2 className="text-lg font-semibold">
-            <Link href={profileHref} className="outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:underline">
-              {teacher.name}
-            </Link>
-          </h2>
-          {teacher.vipStatus !== 'none' && <Badge variant="default">{VIP_STATUS_LABELS[teacher.vipStatus]}</Badge>}
-          <RatingSummary rating={teacher.rating} count={teacher.reviewCount} />
+    <article
+      className={cn(
+        'paper tape group flex h-full flex-col rounded-xl pt-6 transition duration-300 hover:-translate-y-1',
+        className
+      )}
+    >
+      <div className="flex flex-1 flex-col px-5">
+        <div className="flex items-start gap-4">
+          <UserAvatar
+            name={teacher.name}
+            src={teacher.avatar}
+            size="xl"
+            className="size-18 -rotate-3 rounded-sm text-xl shadow-md ring-4 ring-white transition duration-300 group-hover:rotate-0"
+          />
+          <div className="min-w-0 flex-1">
+            <h3 className="font-heading text-2xl font-extrabold leading-tight tracking-tight">
+              <Link href={profileHref} className="outline-none hover:underline focus-visible:underline">{teacher.name}</Link>
+            </h3>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              {teacher.experienceYears > 0 ? fmt(t.discovery.yearsTeaching, { count: teacher.experienceYears }) : t.discovery.newToTeaching}
+            </p>
+            {teacher.vipStatus !== 'none' && <Badge variant="stamp" className="mt-2">{VIP_STATUS_LABELS[teacher.vipStatus]}</Badge>}
+          </div>
+          <InkMark rating={teacher.rating} count={teacher.reviewCount} inkDelay={inkDelay} className="shrink-0 items-end text-right" />
         </div>
-        <div className="mt-2 flex flex-wrap gap-1.5">
-          {teacher.subjects.slice(0, 5).map((item) => (
-            <Badge key={item} variant="muted">{subject(item)}</Badge>
-          ))}
-          {teacher.subjects.length > 5 && <Badge variant="outline">+{teacher.subjects.length - 5}</Badge>}
-        </div>
-        <p className="mt-3 line-clamp-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          {teacher.bio || t.discovery.noBio}
+
+        <p className="mt-4 text-lg font-semibold leading-snug">
+          {teacher.subjects.slice(0, 4).map(subject).join(' · ')}
+          {teacher.subjects.length > 4 && <span className="text-muted-foreground"> +{teacher.subjects.length - 4}</span>}
         </p>
-        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5">
-            <GraduationCap className="size-4" aria-hidden="true" />
-            {teacher.experienceYears > 0 ? fmt(t.discovery.yearsTeaching, { count: teacher.experienceYears }) : t.discovery.newToTeaching}
-          </span>
-          {days && (
-            <span className="inline-flex items-center gap-1.5">
-              <CalendarDays className="size-4" aria-hidden="true" />
-              {teachesToday ? <span className="font-medium text-foreground">{t.discovery.teachesToday}</span> : fmt(t.discovery.teaches, { days })}
-            </span>
-          )}
-        </div>
+        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">{teacher.bio || t.discovery.noBio}</p>
+        <WeekCells days={teacher.availableDays} className="mb-5 mt-auto pt-4" />
       </div>
-      <div className="relative z-10 flex gap-2 sm:w-40 sm:flex-col sm:justify-center">
+
+      <div className={cn('perforation grid', role !== 'teacher' ? 'grid-cols-2' : 'grid-cols-1')}>
         {role !== 'teacher' && (
-          <Button asChild className="flex-1 sm:flex-none">
-            <Link href={messageHref}>
-              <MessageCircle className="size-4" aria-hidden="true" />
-              {t.common.message}
-            </Link>
-          </Button>
+          <TearTab href={`${profileHref}#message`} className="rounded-bl-xl border-r border-dashed border-border">
+            <MessageCircle className="size-4" aria-hidden="true" />
+            {t.common.message}
+          </TearTab>
         )}
-        <Button asChild variant="outline" className="flex-1 sm:flex-none">
-          <Link href={profileHref}>{t.common.viewProfile}</Link>
-        </Button>
+        <TearTab href={profileHref} className={role !== 'teacher' ? 'rounded-br-xl' : 'rounded-b-xl'}>
+          {t.common.viewProfile}
+          <ArrowRight className="size-4" aria-hidden="true" />
+        </TearTab>
       </div>
     </article>
   );

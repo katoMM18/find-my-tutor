@@ -21,7 +21,7 @@ export const StarRating = ({ value, className }: StarRatingProps) => {
           aria-hidden="true"
           className={cn(
             'size-3.5',
-            index <= Math.round(value) ? 'fill-primary text-primary' : 'fill-muted text-muted-foreground/40'
+            index <= Math.round(value) ? 'fill-mark text-mark' : 'fill-muted text-muted-foreground/40'
           )}
         />
       ))}
@@ -40,7 +40,7 @@ export const RatingSummary = ({ rating, count, className }: RatingSummaryProps) 
 
   if (rating === null || count === 0) {
     return (
-      <span className={cn('inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary', className)}>
+      <span className={cn('inline-flex items-center text-sm text-muted-foreground', className)}>
         {t.common.newTutor}
       </span>
     );
@@ -48,7 +48,7 @@ export const RatingSummary = ({ rating, count, className }: RatingSummaryProps) 
 
   return (
     <span className={cn('inline-flex items-center gap-1.5 text-sm', className)}>
-      <Star aria-hidden="true" className="size-4 fill-primary text-primary" />
+      <Star aria-hidden="true" className="size-4 fill-mark text-mark" />
       <span className="font-semibold tabular-nums">{rating.toFixed(1)}</span>
       <span className="text-muted-foreground">({plural(t.common.reviews, count)})</span>
     </span>

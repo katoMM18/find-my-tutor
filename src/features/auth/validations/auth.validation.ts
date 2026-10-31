@@ -15,3 +15,9 @@ export const SignUpSchema = z.object({
 });
 
 export type SignUpType = z.infer<typeof SignUpSchema>;
+
+export const ChangeRoleSchema = z.object({
+  role: z.enum(['teacher', 'student']),
+});
+
+export type ChangeRoleType = z.infer<typeof ChangeRoleSchema>;

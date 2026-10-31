@@ -1,7 +1,11 @@
+import { Skeleton } from '@/shared/components/ui/skeleton';
+
 export default function Loading() {
   return (
-    <div className="flex items-center justify-center min-h-96" aria-busy="true">
-      <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+    <div className="space-y-4" aria-busy="true">
+      <Skeleton className="h-9 w-64 max-w-full" />
+      <Skeleton className="h-4 w-96 max-w-full" />
+      <Skeleton className="mt-6 h-64" />
     </div>
   );
 }

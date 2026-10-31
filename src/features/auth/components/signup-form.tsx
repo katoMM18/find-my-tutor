@@ -42,9 +42,9 @@ export const SignUpForm = () => {
   const signInHref = callbackUrl ? `/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}` : '/sign-in';
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md border-rule">
       <CardHeader>
-        <CardTitle className="text-2xl">{t.auth.createTitle}</CardTitle>
+        <CardTitle className="text-3xl font-extrabold"><h1>{t.auth.createTitle}</h1></CardTitle>
         <CardDescription>{t.auth.createLead}</CardDescription>
       </CardHeader>
       <CardContent>
@@ -122,7 +122,7 @@ export const SignUpForm = () => {
             </Button>
             <p className="text-center text-sm text-muted-foreground">
               {t.auth.haveAccount}{' '}
-              <Link href={signInHref} className="underline underline-offset-4 hover:text-primary">
+              <Link href={signInHref} className="underline underline-offset-4 hover:text-ink">
                 {t.common.signIn}
               </Link>
             </p>

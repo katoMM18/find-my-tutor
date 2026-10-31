@@ -7,15 +7,17 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { AvailabilityInput, AvailabilitySchema } from '@/features/availability/validations/availability.validation';
 import { Button } from '@/shared/components/ui/button';
+import { Checkbox } from '@/shared/components/ui/checkbox';
 import { Input } from '@/shared/components/ui/input';
-import { NativeSelect } from '@/shared/components/ui/native-select';
+import { Label } from '@/shared/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select';
 import { TIMEZONE_OPTIONS } from '@/shared/const/timezone.const';
+import { WEEK_DISPLAY_ORDER } from '@/shared/const/week.const';
 import { useT } from '@/shared/hooks/use-t';
 import { http } from '@/shared/lib/http';
 import { cn } from '@/shared/lib/utils';
 
 const DEFAULT_RANGE = { start: '10:00', end: '18:00' };
-const DISPLAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
 
 const emptyWeek = () => Array.from({ length: 7 }, (_, day) => ({ day, intervals: [] as { start: string; end: string }[] }));
 
@@ -27,6 +29,7 @@ export const AvailabilityEditor = () => {
     defaultValues: { timezone: 'UTC', weekly: emptyWeek(), exceptions: [] },
   });
   const weekly = useWatch({ control: form.control, name: 'weekly' }) ?? emptyWeek();
+  const timezone = useWatch({ control: form.control, name: 'timezone' });
 
   useEffect(() => {
     void http.get<Partial<AvailabilityInput>>('/availability/me').then((availability) => {
@@ -48,7 +51,7 @@ export const AvailabilityEditor = () => {
 
   const copyToAll = (day: number) => {
     const source = weekly[day]?.intervals ?? [];
-    DISPLAY_ORDER.forEach((target) => {
+    WEEK_DISPLAY_ORDER.forEach((target) => {
       if (target !== day && weekly[target]?.intervals.length) setDay(target, source);
     });
   };
@@ -65,28 +68,28 @@ export const AvailabilityEditor = () => {
 
   return (
     <form onSubmit={form.handleSubmit(submit)} className="space-y-6">
-      <label className="block max-w-sm text-sm font-medium">
-        {t.availability.timezone}
-        <NativeSelect {...form.register('timezone')} className="mt-2">
-          {TIMEZONE_OPTIONS.map((timezone) => <option key={timezone} value={timezone}>{timezone.replace('_', ' ')}</option>)}
-        </NativeSelect>
-      </label>
+      <div className="max-w-sm space-y-2">
+        <Label htmlFor="availability-timezone">{t.availability.timezone}</Label>
+        <Select value={timezone} onValueChange={(value) => form.setValue('timezone', value, { shouldDirty: true })}>
+          <SelectTrigger id="availability-timezone">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {TIMEZONE_OPTIONS.map((timezone) => <SelectItem key={timezone} value={timezone}>{timezone.replace('_', ' ')}</SelectItem>)}
+          </SelectContent>
+        </Select>
+      </div>
 
-      <ul className="divide-y divide-border rounded-xl border border-border bg-card">
-        {DISPLAY_ORDER.map((day) => {
+      <ul className="paper divide-y divide-rule rounded-xl">
+        {WEEK_DISPLAY_ORDER.map((day) => {
           const range = weekly[day]?.intervals[0];
           const enabled = Boolean(range);
           return (
             <li key={day} className="flex flex-wrap items-center gap-3 px-4 py-3">
-              <label className="flex w-36 cursor-pointer items-center gap-3 text-sm font-medium">
-                <input
-                  type="checkbox"
-                  checked={enabled}
-                  onChange={(event) => setDay(day, event.target.checked ? [DEFAULT_RANGE] : [])}
-                  className="size-4 accent-primary"
-                />
+              <Label className="flex w-36 cursor-pointer items-center gap-3">
+                <Checkbox checked={enabled} onCheckedChange={(checked) => setDay(day, checked === true ? [DEFAULT_RANGE] : [])} />
                 {t.weekdaysLong[day]}
-              </label>
+              </Label>
               {range ? (
                 <div className="flex flex-1 flex-wrap items-center gap-2">
                   <Input type="time" aria-label={fmt(t.availability.start, { day: t.weekdaysLong[day] })} value={range.start} className="w-32"
