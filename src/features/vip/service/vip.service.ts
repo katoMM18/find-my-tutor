@@ -112,13 +112,34 @@ export async function changeVipPlanService(
     const subscription = await vipRepository.findByUserId(userId);
     if (!subscription?.dodoSubscriptionId) return { data: { error: 'SUBSCRIPTION_NOT_FOUND' }, status: 404 };
 
+    const subscriptionId = subscription.dodoSubscriptionId;
     const productId = await getOrCreateProductId(status);
-    await dodo.client.subscriptions.changePlan(subscription.dodoSubscriptionId, {
-      product_id: productId,
-      quantity: 1,
-      proration_billing_mode: 'prorated_immediately',
-    });
-    await vipRepository.updateByDodoSubscriptionId(subscription.dodoSubscriptionId, {
+    const changePlan = () =>
+      dodo.client.subscriptions.changePlan(subscriptionId, {
+        product_id: productId,
+        quantity: 1,
+        proration_billing_mode: 'prorated_immediately',
+      });
+    // Dodo refuses a plan change while a cancellation is scheduled, so choosing a plan resumes the subscription first.
+    const resume = () => dodo.client.subscriptions.update(subscriptionId, { cancel_at_next_billing_date: false });
+
+    if (subscription.status === status) {
+      // Same plan: the only change wanted is to undo a scheduled cancellation.
+      if (subscription.cancelAtPeriodEnd) await resume();
+      await vipRepository.updateByDodoSubscriptionId(subscriptionId, { cancelAtPeriodEnd: false });
+      return getVipStatusService(userId);
+    }
+
+    if (subscription.cancelAtPeriodEnd) await resume();
+    try {
+      await changePlan();
+    } catch (error) {
+      // Our flag can be stale (e.g. cancelled from Dodo's own portal): resume and retry once.
+      if (!dodo.isScheduledCancellation(error)) throw error;
+      await resume();
+      await changePlan();
+    }
+    await vipRepository.updateByDodoSubscriptionId(subscriptionId, {
       plan: status,
       status,
       dodoProductId: productId,

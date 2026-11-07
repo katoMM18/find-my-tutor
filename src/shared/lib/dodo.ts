@@ -16,6 +16,14 @@ class DodoClient {
     });
   }
 
+  // True when Dodo rejected a plan change because the subscription is set to cancel at period end.
+  isScheduledCancellation(error: unknown): boolean {
+    return (
+      error instanceof DodoPayments.ConflictError &&
+      JSON.stringify(error.error ?? '').includes('PLAN_CHANGE_NOT_ALLOWED_FOR_SCHEDULED_CANCELLATION')
+    );
+  }
+
   // Maps a thrown SDK or configuration error to a stable code the UI can explain.
   errorCode(error: unknown): DodoErrorCode {
     if (error instanceof Error && /DODO_PAYMENTS_API_KEY/.test(error.message)) return 'PAYMENTS_NOT_CONFIGURED';

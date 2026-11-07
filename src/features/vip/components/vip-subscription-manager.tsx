@@ -174,6 +174,9 @@ export const VipSubscriptionManager = ({ role, checkoutSucceeded }: VipSubscript
                           {fmt(activePlan ? t.vip.switchTo : t.vip.choose, { name: plan.name })}
                         </Button>
                       )}
+                      {isCurrent && current.cancelAtPeriodEnd && (
+                        <Button size="sm" disabled={busy} onClick={() => changePlan(plan.status)}>{t.vip.keep}</Button>
+                      )}
                     </div>
                   </div>
 
