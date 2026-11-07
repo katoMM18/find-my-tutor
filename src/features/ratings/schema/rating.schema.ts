@@ -18,6 +18,8 @@ const RatingSchema = new Schema(
     },
     value: { type: Number, required: true, min: 1, max: 5, immutable: true },
     comment: { type: String, default: '', maxlength: 2000, immutable: true },
+    // What the lessons led to, in the student's words: an exam score, an admission. Optional, permanent like the rest.
+    result: { type: String, default: '', maxlength: 120, immutable: true },
     submittedAt: { type: Date, required: true, immutable: true },
   },
   { timestamps: false }

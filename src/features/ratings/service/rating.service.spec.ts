@@ -90,6 +90,7 @@ describe('rating service', () => {
     const result = await submitRatingService(studentId, 'student', requestId, {
       value: 5,
       comment: 'Great teacher',
+      result: '',
     });
 
     expect(result).toEqual({ data: { error: 'RATING_NOT_ENABLED' }, status: 409 });

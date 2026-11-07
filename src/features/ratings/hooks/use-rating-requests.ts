@@ -51,7 +51,7 @@ export const useRatingRequests = (enabled = true) => {
     reload,
     requestReview: (teacherProfileId: string) => run(() => http.post('/ratings/requests', { teacherProfileId })),
     approve: (id: string) => run(() => http.post(`/ratings/requests/${id}/approve`)),
-    submit: (id: string, value: number, comment: string) =>
-      run(() => http.post(`/ratings/requests/${id}/submit`, { value, comment })),
+    submit: (id: string, value: number, comment: string, result = '') =>
+      run(() => http.post(`/ratings/requests/${id}/submit`, { value, comment, result })),
   };
 };

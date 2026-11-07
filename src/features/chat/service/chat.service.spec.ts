@@ -12,6 +12,10 @@ vi.mock('@/features/chat/repository/chat.repository', () => ({
     findMessages: vi.fn(),
     createMessage: vi.fn(),
     markMessagesRead: vi.fn(),
+    findFirstMessage: vi.fn(),
+    countMessagesBySender: vi.fn(),
+    findTeacherResponseStats: vi.fn(),
+    updateTeacherResponseStats: vi.fn(),
   },
 }));
 
@@ -80,5 +84,48 @@ describe('chat service', () => {
       conversationId,
       expect.objectContaining({ lastMessagePreview: 'Hello' })
     );
+  });
+});
+
+describe('tutor response time', () => {
+  const tutorId = new mongoose.Types.ObjectId().toString();
+  const studentId = new mongoose.Types.ObjectId().toString();
+  const conversationId = new mongoose.Types.ObjectId().toString();
+  const repo = vi.mocked(chatRepository);
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    repo.findConversationById.mockResolvedValue({
+      _id: new mongoose.Types.ObjectId(conversationId),
+      participants: [new mongoose.Types.ObjectId(tutorId), new mongoose.Types.ObjectId(studentId)],
+    } as never);
+    repo.createMessage.mockResolvedValue({
+      _id: new mongoose.Types.ObjectId(),
+      senderId: new mongoose.Types.ObjectId(tutorId),
+      body: 'Hi',
+      createdAt: new Date(),
+    } as never);
+    repo.findUserById.mockResolvedValue({ role: 'teacher' } as never);
+  });
+
+  it("averages the tutor's first reply into their response time", async () => {
+    repo.countMessagesBySender.mockResolvedValue(1);
+    repo.findFirstMessage.mockResolvedValue({ senderId: new mongoose.Types.ObjectId(studentId), createdAt: new Date(Date.now() - 60 * 60000) } as never);
+    repo.findTeacherResponseStats.mockResolvedValue({ responseMinutes: 20, responseSamples: 1 });
+
+    await sendMessageService(tutorId, conversationId, { body: 'Hi' });
+    const [, minutes, samples] = repo.updateTeacherResponseStats.mock.calls[0];
+    expect(samples).toBe(2);
+    expect(minutes).toBeGreaterThanOrEqual(39);
+    expect(minutes).toBeLessThanOrEqual(41);
+  });
+
+  it('ignores later replies and conversations the tutor started', async () => {
+    repo.countMessagesBySender.mockResolvedValue(2);
+    await sendMessageService(tutorId, conversationId, { body: 'Again' });
+    repo.countMessagesBySender.mockResolvedValue(1);
+    repo.findFirstMessage.mockResolvedValue({ senderId: new mongoose.Types.ObjectId(tutorId), createdAt: new Date() } as never);
+    await sendMessageService(tutorId, conversationId, { body: 'Opening' });
+    expect(repo.updateTeacherResponseStats).not.toHaveBeenCalled();
   });
 });

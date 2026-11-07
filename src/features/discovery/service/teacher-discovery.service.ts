@@ -5,11 +5,13 @@ import {
   TeacherDiscoveryResult,
 } from '@/features/discovery/types/teacher-discovery.types';
 import { ServiceResult } from '@/shared/types/common';
+import { subjectFilterValue } from '@/shared/utils/subjects';
 
 export async function listTeachersService(
   filters: TeacherDiscoveryFilters
 ): Promise<ServiceResult<TeacherDiscoveryResult>> {
-  const result = await teacherDiscoveryRepository.findMany(filters);
+  const subject = typeof filters.subject === 'string' ? subjectFilterValue(filters.subject) : filters.subject;
+  const result = await teacherDiscoveryRepository.findMany({ ...filters, subject });
   return {
     data: { ...result, page: filters.page, limit: filters.limit },
     status: 200,

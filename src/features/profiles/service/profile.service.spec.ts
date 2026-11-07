@@ -32,6 +32,10 @@ describe('profile service', () => {
         qualifications: '',
         certificates: [],
         licenses: [],
+        pricePerLesson: null,
+        lessonFormats: ['online'],
+        areas: [],
+        acceptingStudents: true,
       },
       status: 200,
     });

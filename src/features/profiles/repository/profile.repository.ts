@@ -32,6 +32,11 @@ export const profileRepository = {
       .exec() as Promise<TeacherProfileDocument>;
   },
 
+  async setTeacherVerified(userId: string, verified: boolean): Promise<void> {
+    await mongo.connect();
+    await TeacherProfileModel.updateOne({ userId }, { $set: { verified } });
+  },
+
   async findStudentByUserId(userId: string): Promise<StudentProfileDocument | null> {
     await mongo.connect();
     return StudentProfileModel.findOne({ userId }).lean<StudentProfileDocument>().exec();

@@ -15,6 +15,7 @@ export type PublicReview = {
   id: string;
   value: number;
   comment: string;
+  result: string;
   submittedAt: string;
   studentName: string;
   studentAvatar: string | null;

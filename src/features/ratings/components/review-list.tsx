@@ -1,5 +1,7 @@
 'use client';
 
+import { Trophy } from 'lucide-react';
+
 import { StarRating } from '@/features/ratings/components/star-rating';
 import { PublicReview } from '@/features/ratings/types/rating.types';
 import { UserAvatar } from '@/shared/components/ui/user-avatar';
@@ -30,6 +32,12 @@ export const ReviewList = ({ reviews, emptyText }: ReviewListProps) => {
                 {date(review.submittedAt)}
               </time>
             </div>
+            {review.result && (
+              <p className="mt-1.5 inline-flex items-center gap-1.5 rounded-md bg-mark/10 px-2 py-0.5 text-sm font-semibold text-mark">
+                <Trophy className="size-3.5" aria-hidden="true" />
+                {review.result}
+              </p>
+            )}
             {review.comment && <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{review.comment}</p>}
           </div>
         </li>

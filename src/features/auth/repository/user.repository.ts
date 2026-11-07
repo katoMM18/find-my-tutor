@@ -19,7 +19,8 @@ export const userRepository = {
     return { items };
   },
 
-  async create(data: Omit<UserDocument, '_id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+  // Roles are granted by hand in MongoDB, never at sign-up.
+  async create(data: Omit<UserDocument, '_id' | 'createdAt' | 'updatedAt' | 'roles'>): Promise<string> {
     await mongo.connect();
     const doc = await UserModel.create(data);
     return doc._id.toString();

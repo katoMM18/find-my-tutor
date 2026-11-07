@@ -76,3 +76,18 @@ export async function sendPasswordResetEmail(to: Recipient, resetUrl: string, lo
     note: t.resetIgnore,
   }, locale);
 }
+
+export async function sendVerificationResultEmail(
+  to: Recipient,
+  result: { approved: boolean; reason: string },
+  locale: Locale
+): Promise<boolean> {
+  const t = i18n.dictionary(locale).emails;
+  return send(to, result.approved ? t.verifiedSubject : t.rejectedSubject, {
+    heading: result.approved ? t.verifiedHeading : t.rejectedHeading,
+    body: result.approved
+      ? i18n.format(t.verifiedBody, { name: to.name })
+      : i18n.format(t.rejectedBody, { name: to.name, reason: result.reason }),
+    action: { label: t.profileAction, url: appUrl('/profile') },
+  }, locale);
+}

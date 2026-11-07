@@ -67,7 +67,7 @@ export const Header = ({ onOpenMenu, menuOpen = false }: HeaderProps) => {
             </Button>
           )}
           <Link
-            href={sessionUser ? '/dashboard' : '/'}
+            href="/"
             className="rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
           >
             <BrandMark />

@@ -1,6 +1,7 @@
 export type StudentDiscoveryFilters = {
   search?: string;
-  subject?: string;
+  // A RegExp only after the service expands a subject group (e.g. every second foreign language).
+  subject?: string | RegExp;
   page: number;
   limit: number;
 };

@@ -1,5 +1,7 @@
 import mongoose, { Schema, InferSchemaType } from 'mongoose';
 
+import { USER_ROLES } from '@/shared/const/roles.const';
+
 const UserSchema = new Schema(
   {
     name: { type: String, required: true },
@@ -9,6 +11,8 @@ const UserSchema = new Schema(
     role: { type: String, enum: ['teacher', 'student'], default: 'student', required: true },
     // false only for new email sign-ups until they enter their code; accounts from before verification existed have no value.
     emailVerified: { type: Boolean, required: false },
+    // Extra permissions such as 'admin', added by hand in MongoDB. Never set by the app.
+    roles: { type: [{ type: String, enum: USER_ROLES }], default: [] },
   },
   { timestamps: true }
 );

@@ -8,6 +8,7 @@ import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/shared/components/ui/select';
+import { LESSON_FORMATS, MAX_PRICE_FILTERS, OTHER_CITIES, TBILISI_DISTRICTS } from '@/shared/const/lesson.const';
 import { ANY_FILTER_VALUE, EXPERIENCE_VALUES, RATING_VALUES, SUBJECT_CATALOG } from '@/shared/const/subjects.const';
 import { WEEK_DISPLAY_ORDER } from '@/shared/const/week.const';
 import { useT } from '@/shared/hooks/use-t';
@@ -23,7 +24,7 @@ type TeacherFiltersProps = {
 export const TeacherFilters = ({ values, onChange }: TeacherFiltersProps) => {
   const { t, fmt, subject: subjectName } = useT();
   const [search, setSearch] = useState(values.search);
-  const [showMore, setShowMore] = useState(Boolean(values.minExperience || values.minRating));
+  const [showMore, setShowMore] = useState(Boolean(values.minExperience || values.minRating || values.format || values.area));
   const timer = useRef<number | undefined>(undefined);
 
   const changeSearch = (value: string) => {
@@ -34,7 +35,7 @@ export const TeacherFilters = ({ values, onChange }: TeacherFiltersProps) => {
 
   return (
     <section aria-label={t.discovery.filtersLabel} className="grid grid-cols-2 gap-2 lg:grid-cols-12">
-      <Label className="relative col-span-2 lg:col-span-3">
+      <Label className="relative col-span-2 lg:col-span-4">
         <span className="sr-only">{t.discovery.searchLabel}</span>
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink" aria-hidden="true" />
         <Input
@@ -71,6 +72,15 @@ export const TeacherFilters = ({ values, onChange }: TeacherFiltersProps) => {
           {WEEK_DISPLAY_ORDER.map((day) => <SelectItem key={day} value={String(day)}>{t.weekdaysLong[day]}</SelectItem>)}
         </SelectContent>
       </Select>
+      <Select value={values.maxPrice || ANY_FILTER_VALUE} onValueChange={(value) => onChange({ maxPrice: fromAny(value) })}>
+        <SelectTrigger aria-label={t.lessons.price} className="lg:col-span-3">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={ANY_FILTER_VALUE}>{t.lessons.anyPrice}</SelectItem>
+          {MAX_PRICE_FILTERS.map((price) => <SelectItem key={price} value={price}>{fmt(t.lessons.upTo, { price })}</SelectItem>)}
+        </SelectContent>
+      </Select>
       <Button
         type="button"
         variant="outline"
@@ -81,7 +91,36 @@ export const TeacherFilters = ({ values, onChange }: TeacherFiltersProps) => {
         <SlidersHorizontal className="size-4" aria-hidden="true" />
         {showMore ? t.discovery.fewerFilters : t.discovery.moreFilters}
       </Button>
-      <div className={cn('lg:col-span-2 lg:block', !showMore && 'hidden')}>
+      <div className={cn('lg:col-span-3 lg:block', !showMore && 'hidden')}>
+        <Select value={values.format || ANY_FILTER_VALUE} onValueChange={(value) => onChange({ format: fromAny(value) })}>
+          <SelectTrigger aria-label={t.lessons.format}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ANY_FILTER_VALUE}>{t.lessons.anyFormat}</SelectItem>
+            {LESSON_FORMATS.map((format) => <SelectItem key={format} value={format}>{t.lessons.formats[format]}</SelectItem>)}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className={cn('lg:col-span-3 lg:block', !showMore && 'hidden')}>
+        <Select value={values.area || ANY_FILTER_VALUE} onValueChange={(value) => onChange({ area: fromAny(value) })}>
+          <SelectTrigger aria-label={t.lessons.area}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ANY_FILTER_VALUE}>{t.lessons.anyArea}</SelectItem>
+            <SelectGroup>
+              <SelectLabel>{t.lessons.tbilisi}</SelectLabel>
+              {TBILISI_DISTRICTS.map((area) => <SelectItem key={area} value={area}>{t.lessons.areas[area]}</SelectItem>)}
+            </SelectGroup>
+            <SelectGroup>
+              <SelectLabel>{t.lessons.otherCities}</SelectLabel>
+              {OTHER_CITIES.map((area) => <SelectItem key={area} value={area}>{t.lessons.areas[area]}</SelectItem>)}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className={cn('lg:col-span-3 lg:block', !showMore && 'hidden')}>
         <Select value={values.minExperience || ANY_FILTER_VALUE} onValueChange={(value) => onChange({ minExperience: fromAny(value) })}>
           <SelectTrigger aria-label={t.discovery.experience}>
             <SelectValue />
@@ -94,7 +133,7 @@ export const TeacherFilters = ({ values, onChange }: TeacherFiltersProps) => {
           </SelectContent>
         </Select>
       </div>
-      <div className={cn('lg:col-span-2 lg:block', !showMore && 'hidden')}>
+      <div className={cn('lg:col-span-3 lg:block', !showMore && 'hidden')}>
         <Select value={values.minRating || ANY_FILTER_VALUE} onValueChange={(value) => onChange({ minRating: fromAny(value) })}>
           <SelectTrigger aria-label={t.discovery.rating}>
             <SelectValue />

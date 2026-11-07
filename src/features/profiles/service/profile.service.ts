@@ -28,6 +28,10 @@ export async function getMyProfileService(
             qualifications: '',
             certificates: [],
             licenses: [],
+            pricePerLesson: null,
+            lessonFormats: ['online'],
+            areas: [],
+            acceptingStudents: true,
           }
           : { bio: '', subjects: [] },
     status: 200,

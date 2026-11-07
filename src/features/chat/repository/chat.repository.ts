@@ -79,6 +79,28 @@ export const chatRepository = {
     return { items, total };
   },
 
+  async findFirstMessage(conversationId: string): Promise<MessageDocument | null> {
+    await mongo.connect();
+    return MessageModel.findOne({ conversationId }).sort({ createdAt: 1 }).lean<MessageDocument>().exec();
+  },
+
+  async countMessagesBySender(conversationId: string, senderId: string): Promise<number> {
+    await mongo.connect();
+    return MessageModel.countDocuments({ conversationId, senderId });
+  },
+
+  async findTeacherResponseStats(userId: string): Promise<{ responseMinutes?: number | null; responseSamples?: number | null } | null> {
+    await mongo.connect();
+    return TeacherProfileModel.findOne({ userId }, { responseMinutes: 1, responseSamples: 1 })
+      .lean<{ responseMinutes?: number | null; responseSamples?: number | null }>()
+      .exec();
+  },
+
+  async updateTeacherResponseStats(userId: string, responseMinutes: number, responseSamples: number): Promise<void> {
+    await mongo.connect();
+    await TeacherProfileModel.updateOne({ userId }, { $set: { responseMinutes, responseSamples } });
+  },
+
   async createMessage(data: {
     conversationId: mongoose.Types.ObjectId;
     senderId: mongoose.Types.ObjectId;

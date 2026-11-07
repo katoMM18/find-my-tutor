@@ -3,7 +3,9 @@ import {
   CalendarClock,
   House,
   MessagesSquare,
+  Megaphone,
   Search,
+  ShieldCheck,
   Sparkles,
   Star,
   UserRound,
@@ -15,6 +17,7 @@ import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 import {
+  ADMIN_NAV_ITEMS,
   STUDENT_NAV_ITEMS,
   TEACHER_NAV_ITEMS,
   type SidebarNavIcon,
@@ -31,6 +34,8 @@ const SIDEBAR_ICON_MAP: Record<SidebarNavIcon, LucideIcon> = {
   availability: CalendarClock,
   profile: UserRound,
   billing: Sparkles,
+  requests: Megaphone,
+  admin: ShieldCheck,
 };
 
 type SidebarProps = {
@@ -42,8 +47,8 @@ export const Sidebar = ({ className, onNavigate }: SidebarProps) => {
   const pathname = usePathname();
   const { t } = useT();
   const { data: session } = useSession();
-  const role = (session?.user as { role?: 'teacher' | 'student' } | undefined)?.role;
-  const items = role === 'teacher' ? TEACHER_NAV_ITEMS : STUDENT_NAV_ITEMS;
+  const sessionUser = session?.user as { role?: 'teacher' | 'student'; isAdmin?: boolean } | undefined;
+  const items = [...(sessionUser?.role === 'teacher' ? TEACHER_NAV_ITEMS : STUDENT_NAV_ITEMS), ...(sessionUser?.isAdmin ? ADMIN_NAV_ITEMS : [])];
 
   return (
     <aside className={cn('paper m-3 mr-0 flex w-60 shrink-0 flex-col gap-1 self-start rounded-xl p-3', className)}>

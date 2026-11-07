@@ -6,6 +6,7 @@ import { userRepository } from '@/features/auth/repository/user.repository';
 import { sendWelcomeEmail } from '@/features/auth/service/auth-email.service';
 import { upsertOAuthUserService } from '@/features/auth/service/auth.service';
 import { DEFAULT_LOCALE } from '@/shared/const/i18n.const';
+import { hasRole } from '@/shared/utils/admin';
 import { hashPassword } from '@/shared/utils/password';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -75,6 +76,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           token.role = (dbUser.role as 'teacher' | 'student') ?? 'student';
           // Only new email sign-ups carry false until they enter their code.
           token.isVerified = dbUser.emailVerified !== false;
+          token.isAdmin = hasRole(dbUser.roles, 'admin');
         } else {
           token.role = 'student';
         }
@@ -90,6 +92,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           role: 'teacher' | 'student';
           avatar?: string | null;
           isVerified: boolean;
+          isAdmin: boolean;
         };
         user.id = token.id as string;
         user.email = token.email as string;
@@ -97,6 +100,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         user.avatar = (token.avatar as string | null | undefined) ?? null;
         user.role = (token.role as 'teacher' | 'student' | undefined) ?? 'student';
         user.isVerified = token.isVerified !== false;
+        user.isAdmin = token.isAdmin === true;
       }
       return session;
     },

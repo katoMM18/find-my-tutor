@@ -108,6 +108,7 @@ export async function submitRatingService(
     teacherProfileId: request.teacherProfileId,
     value: input.value,
     comment: input.comment,
+    result: input.result,
     submittedAt: new Date(),
   });
   await ratingRepository.updateRequest(requestId, {
@@ -141,6 +142,7 @@ export async function getTeacherReviewsService(
       id: rating._id.toString(),
       value: rating.value,
       comment: rating.comment ?? '',
+      result: rating.result ?? '',
       submittedAt: rating.submittedAt.toISOString(),
       studentName: student?.name ?? 'Student',
       studentAvatar: student?.avatar ?? null,

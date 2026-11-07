@@ -115,6 +115,26 @@ export async function listMessagesService(
   };
 }
 
+// Longest wait that still counts toward a tutor's response time; slower replies count as this, so one holiday doesn't skew it.
+const RESPONSE_CAP_MINUTES = 3 * 24 * 60;
+
+// When a tutor answers a conversation the student started, fold that wait into the tutor's running average.
+const recordTutorResponse = async (userId: string, conversationId: string, sentAt: Date) => {
+  const sender = await chatRepository.findUserById(userId);
+  if (sender?.role !== 'teacher') return;
+  if ((await chatRepository.countMessagesBySender(conversationId, userId)) !== 1) return;
+
+  const first = await chatRepository.findFirstMessage(conversationId);
+  if (!first || first.senderId.toString() === userId) return;
+
+  const stats = await chatRepository.findTeacherResponseStats(userId);
+  if (!stats) return;
+  const minutes = Math.min((sentAt.getTime() - first.createdAt.getTime()) / 60000, RESPONSE_CAP_MINUTES);
+  const samples = stats.responseSamples ?? 0;
+  const average = ((stats.responseMinutes ?? 0) * samples + minutes) / (samples + 1);
+  await chatRepository.updateTeacherResponseStats(userId, Math.round(average), samples + 1);
+};
+
 export async function sendMessageService(
   userId: string,
   conversationId: string,
@@ -139,6 +159,8 @@ export async function sendMessageService(
     lastMessagePreview: input.body.slice(0, 120),
     unreadBy,
   });
+  // Response time is a nice-to-have; a failure here must never lose the message.
+  await recordTutorResponse(userId, conversationId, now).catch((error) => console.error('[chat] response time not recorded', error));
   return {
     data: {
       id: message._id.toString(),

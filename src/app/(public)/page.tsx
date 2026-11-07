@@ -1,15 +1,8 @@
-import { redirect } from 'next/navigation';
-
 import { HomePage } from '@/features/marketing/components/home-page';
-import { auth } from '@/shared/lib/auth';
-import { isSessionRole } from '@/shared/utils/session-role';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Page() {
-  const session = await auth();
-  const role = (session?.user as { role?: string } | undefined)?.role;
-  if (isSessionRole(role)) redirect('/dashboard');
-
+// Everyone can open the home page, signed in or not; the dashboard is one click away in the header.
+export default function Page() {
   return <HomePage />;
 }

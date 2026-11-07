@@ -7,6 +7,7 @@ export const CreateRatingRequestSchema = z.object({
 export const SubmitRatingSchema = z.object({
   value: z.number().int().min(1).max(5),
   comment: z.string().max(2000),
+  result: z.string().trim().max(120).default(''),
 });
 
 export type CreateRatingRequestInput = z.infer<typeof CreateRatingRequestSchema>;

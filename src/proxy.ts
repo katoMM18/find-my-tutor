@@ -27,6 +27,8 @@ export const config = {
     '/availability/:path*',
     '/students/:path*',
     '/reviews/:path*',
+    '/requests/:path*',
+    '/admin/:path*',
     '/sign-in',
     '/sign-up',
   ],

@@ -7,6 +7,8 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react';
 
 import { AvailabilityPreview } from '@/features/availability/components/availability-preview';
 import { TeacherContactCard } from '@/features/discovery/components/teacher-contact-card';
+import { TutorFacts } from '@/features/discovery/components/tutor-facts';
+import { VerifiedBadge } from '@/features/discovery/components/verified-badge';
 import { PublicTeacher } from '@/features/discovery/types/teacher-discovery.types';
 import { InkMark } from '@/features/ratings/components/ink-mark';
 import { ReviewList } from '@/features/ratings/components/review-list';
@@ -90,11 +92,13 @@ export const TeacherProfilePage = ({ id }: { id: string }) => {
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-3">
                   <h1 className="font-heading text-4xl font-extrabold leading-none sm:text-6xl">{teacher.name}</h1>
-                  {teacher.vipStatus !== 'none' && <Badge variant="outline" className="text-foreground">{VIP_STATUS_LABELS[teacher.vipStatus]}</Badge>}
+                  {teacher.verified && <VerifiedBadge />}
+                  {teacher.vipStatus !== 'none' && <Badge variant="stamp">{VIP_STATUS_LABELS[teacher.vipStatus]}</Badge>}
                 </div>
                 <p className="mt-2 text-muted-foreground">
                   {teacher.experienceYears > 0 ? fmt(t.discovery.yearsTeaching, { count: teacher.experienceYears }) : t.discovery.newToTeaching}
                 </p>
+                <TutorFacts teacher={teacher} className="mt-3" />
                 <div className="mt-3 flex flex-wrap gap-1.5">
                   {teacher.subjects.map((item) => <Badge key={item} variant="outline" className="text-foreground">{subject(item)}</Badge>)}
                 </div>

@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
 import { TearTab } from '@/features/discovery/components/tear-tab';
+import { TutorFacts } from '@/features/discovery/components/tutor-facts';
+import { VerifiedBadge } from '@/features/discovery/components/verified-badge';
 import { WeekCells } from '@/features/discovery/components/week-cells';
 import { PublicTeacher } from '@/features/discovery/types/teacher-discovery.types';
 import { InkMark } from '@/features/ratings/components/ink-mark';
@@ -49,7 +51,10 @@ export const TeacherCard = ({ teacher, inkDelay = 0, className }: TeacherCardPro
             <p className="mt-1.5 text-sm text-muted-foreground">
               {teacher.experienceYears > 0 ? fmt(t.discovery.yearsTeaching, { count: teacher.experienceYears }) : t.discovery.newToTeaching}
             </p>
-            {teacher.vipStatus !== 'none' && <Badge variant="stamp" className="mt-2">{VIP_STATUS_LABELS[teacher.vipStatus]}</Badge>}
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {teacher.verified && <VerifiedBadge />}
+              {teacher.vipStatus !== 'none' && <Badge variant="stamp">{VIP_STATUS_LABELS[teacher.vipStatus]}</Badge>}
+            </div>
           </div>
           <InkMark rating={teacher.rating} count={teacher.reviewCount} inkDelay={inkDelay} className="shrink-0 items-end text-right" />
         </div>
@@ -58,6 +63,7 @@ export const TeacherCard = ({ teacher, inkDelay = 0, className }: TeacherCardPro
           {teacher.subjects.slice(0, 4).map(subject).join(' · ')}
           {teacher.subjects.length > 4 && <span className="text-muted-foreground"> +{teacher.subjects.length - 4}</span>}
         </p>
+        <TutorFacts teacher={teacher} className="mt-3" />
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">{teacher.bio || t.discovery.noBio}</p>
         <WeekCells days={teacher.availableDays} className="mb-5 mt-auto pt-4" />
       </div>

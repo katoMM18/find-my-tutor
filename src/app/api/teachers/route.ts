@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { listTeachersService } from '@/features/discovery/service/teacher-discovery.service';
 import { TeacherDiscoveryFilters } from '@/features/discovery/types/teacher-discovery.types';
 import { TEACHER_SORTS, type TeacherSort } from '@/shared/const/subjects.const';
+import { isLessonArea, isLessonFormat } from '@/shared/utils/lesson';
 
 const MAX_LIMIT = 24;
 
@@ -22,12 +23,17 @@ export async function GET(req: NextRequest) {
     const page = Math.max(Number(params.get('page')) || 1, 1);
     const limit = Math.min(Math.max(Number(params.get('limit')) || 12, 1), MAX_LIMIT);
     const sort = params.get('sort');
+    const format = params.get('format') ?? '';
+    const area = params.get('area') ?? '';
     const filters: TeacherDiscoveryFilters = {
       search: params.get('search') || undefined,
       subject: params.get('subject') || undefined,
       minExperience: toPositiveNumber(params.get('minExperience')),
       minRating: toPositiveNumber(params.get('minRating')),
       day: toWeekday(params.get('day')),
+      format: isLessonFormat(format) ? format : undefined,
+      area: isLessonArea(area) ? area : undefined,
+      maxPrice: toPositiveNumber(params.get('maxPrice')),
       sort: TEACHER_SORTS.includes(sort as TeacherSort) ? (sort as TeacherSort) : 'recommended',
       page,
       limit,

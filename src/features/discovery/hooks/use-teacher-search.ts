@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { TeacherDiscoveryResult } from '@/features/discovery/types/teacher-discovery.types';
 import { http } from '@/shared/lib/http';
 
-export const TEACHER_FILTER_KEYS = ['search', 'subject', 'day', 'minExperience', 'minRating', 'sort'] as const;
+export const TEACHER_FILTER_KEYS = ['search', 'subject', 'day', 'format', 'area', 'maxPrice', 'minExperience', 'minRating', 'sort'] as const;
 
 export type TeacherFilterKey = (typeof TEACHER_FILTER_KEYS)[number];
 

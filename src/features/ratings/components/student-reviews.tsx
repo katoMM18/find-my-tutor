@@ -45,7 +45,7 @@ export const StudentReviews = () => {
           </div>
           {request.status === 'approved' && (
             <div className="mt-4 border-t border-border pt-4">
-              <ReviewForm teacherName={firstName(request.counterpartName)} onSubmit={(value, comment) => submit(request.id, value, comment)} />
+              <ReviewForm teacherName={firstName(request.counterpartName)} onSubmit={(value, comment, result) => submit(request.id, value, comment, result)} />
             </div>
           )}
           {request.status === 'expired' && (

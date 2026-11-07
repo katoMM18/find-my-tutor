@@ -17,9 +17,10 @@ type MediaUploadProps = {
   accept: string;
   currentUrl?: string | null;
   name?: string;
+  onUploaded?: () => void;
 };
 
-export const MediaUpload = ({ kind, label, hint, accept, currentUrl, name = '' }: MediaUploadProps) => {
+export const MediaUpload = ({ kind, label, hint, accept, currentUrl, name = '', onUploaded }: MediaUploadProps) => {
   const inputId = useId();
   const { t, fmt } = useT();
   const [message, setMessage] = useState<{ kind: 'success' | 'error'; text: string } | null>(null);
@@ -38,6 +39,7 @@ export const MediaUpload = ({ kind, label, hint, accept, currentUrl, name = '' }
       if (!response.ok) throw new Error(result.error ?? 'UPLOAD_FAILED');
       if (result.media?.secureUrl && kind === 'profile_image') setPreviewUrl(result.media.secureUrl);
       setMessage({ kind: 'success', text: fmt(t.profileEditor.uploaded, { file: file.name }) });
+      onUploaded?.();
     } catch {
       setMessage({ kind: 'error', text: t.profileEditor.uploadFailed });
     } finally {

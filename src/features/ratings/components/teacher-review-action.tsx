@@ -29,8 +29,8 @@ export const TeacherReviewAction = ({ teacherProfileId, teacherName, onReviewPos
           <p className="mb-3 text-sm font-semibold">{fmt(t.reviews.enabledByTeacher, { name })}</p>
           <ReviewForm
             teacherName={name}
-            onSubmit={async (value, comment) => {
-              const ok = await submit(request.id, value, comment);
+            onSubmit={async (value, comment, result) => {
+              const ok = await submit(request.id, value, comment, result);
               if (ok) onReviewPosted();
               return ok;
             }}

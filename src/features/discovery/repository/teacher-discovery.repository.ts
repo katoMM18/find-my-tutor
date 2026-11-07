@@ -119,6 +119,12 @@ const publicProjection: PipelineStage.Project = {
     availableDays: 1,
     timezone: { $ifNull: ['$availability.timezone', null] },
     vipStatus: 1,
+    pricePerLesson: { $ifNull: ['$pricePerLesson', null] },
+    lessonFormats: { $ifNull: ['$lessonFormats', ['online']] },
+    areas: { $ifNull: ['$areas', []] },
+    acceptingStudents: { $ifNull: ['$acceptingStudents', true] },
+    verified: { $ifNull: ['$verified', false] },
+    responseMinutes: { $ifNull: ['$responseMinutes', null] },
   },
 };
 
@@ -131,6 +137,9 @@ export const teacherDiscoveryRepository = {
     const match: Record<string, unknown> = {};
     if (filters.subject) match.subjects = filters.subject;
     if (filters.minExperience !== undefined) match.experienceYears = { $gte: filters.minExperience };
+    if (filters.format) match.lessonFormats = filters.format;
+    if (filters.area) match.areas = filters.area;
+    if (filters.maxPrice !== undefined) match.pricePerLesson = { $lte: filters.maxPrice };
 
     const search = filters.search?.trim();
     const pattern = search ? escapeRegex(search) : '';
