@@ -7,6 +7,8 @@ const UserSchema = new Schema(
     passwordHash: { type: String, required: false, default: '' },
     avatar: { type: String, required: false },
     role: { type: String, enum: ['teacher', 'student'], default: 'student', required: true },
+    // false only for new email sign-ups until they enter their code; accounts from before verification existed have no value.
+    emailVerified: { type: Boolean, required: false },
   },
   { timestamps: true }
 );

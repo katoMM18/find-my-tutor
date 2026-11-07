@@ -5,7 +5,7 @@ type BrandMarkProps = {
   className?: string;
 };
 
-// The TutorConnect mark: a little notice with its tear-off tabs, one already taken.
+// The Find My Tutor mark: a little notice with its tear-off tabs, one already taken.
 export const BrandMark = ({ className }: BrandMarkProps) => (
   <span className={cn('inline-flex items-center gap-2.5', className)}>
     <svg aria-hidden="true" viewBox="0 0 32 32" className="size-8 shrink-0 -rotate-3">

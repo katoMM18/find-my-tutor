@@ -1,8 +1,8 @@
-# TutorConnect - Product Specification
+# Find My Tutor - Product Specification
 
 ## 1. Product Overview
 
-TutorConnect is a platform that connects students with teachers/tutors.
+Find My Tutor is a platform that connects students with teachers/tutors.
 
 The main problem we solve is simple:
 

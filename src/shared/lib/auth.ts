@@ -3,7 +3,9 @@ import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
 
 import { userRepository } from '@/features/auth/repository/user.repository';
+import { sendWelcomeEmail } from '@/features/auth/service/auth-email.service';
 import { upsertOAuthUserService } from '@/features/auth/service/auth.service';
+import { DEFAULT_LOCALE } from '@/shared/const/i18n.const';
 import { hashPassword } from '@/shared/utils/password';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -44,11 +46,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return true;
       }
 
-      await upsertOAuthUserService({
+      const { isNew } = await upsertOAuthUserService({
         email: user.email,
         name: user.name,
         avatar: user.image ?? null,
       });
+      if (isNew) await sendWelcomeEmail({ email: user.email, name: user.name }, 'student', DEFAULT_LOCALE);
 
       return true;
     },
@@ -70,6 +73,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           token.name = dbUser.name;
           token.avatar = dbUser.avatar ?? (token.avatar as string | null | undefined);
           token.role = (dbUser.role as 'teacher' | 'student') ?? 'student';
+          // Only new email sign-ups carry false until they enter their code.
+          token.isVerified = dbUser.emailVerified !== false;
         } else {
           token.role = 'student';
         }
@@ -84,12 +89,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: string;
           role: 'teacher' | 'student';
           avatar?: string | null;
+          isVerified: boolean;
         };
         user.id = token.id as string;
         user.email = token.email as string;
         user.name = token.name as string;
         user.avatar = (token.avatar as string | null | undefined) ?? null;
         user.role = (token.role as 'teacher' | 'student' | undefined) ?? 'student';
+        user.isVerified = token.isVerified !== false;
       }
       return session;
     },

@@ -63,7 +63,10 @@ export const LoginForm = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t.common.password}</FormLabel>
+                  <div className="flex items-center justify-between gap-3">
+                    <FormLabel>{t.common.password}</FormLabel>
+                    <Link href="/forgot-password" className="text-sm text-ink underline-offset-4 hover:underline">{t.auth.forgotPassword}</Link>
+                  </div>
                   <FormControl>
                     <Input type="password" autoComplete="current-password" placeholder="••••••••" {...field} />
                   </FormControl>

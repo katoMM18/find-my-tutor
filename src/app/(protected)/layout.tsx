@@ -10,6 +10,8 @@ export default async function ProtectedLayout({ children }: { children: ReactNod
   const session = await auth();
 
   if (!session) redirect('/sign-in');
+  // New email sign-ups enter their code before anything else.
+  if ((session.user as { isVerified?: boolean } | undefined)?.isVerified === false) redirect('/verify-email');
 
   return (
     <SessionProvider>

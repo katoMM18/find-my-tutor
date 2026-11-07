@@ -39,7 +39,8 @@ describe('registerService', () => {
     mockRepo.create.mockResolvedValueOnce('507f1f77bcf86cd799439011');
     const result = await registerService({ fullName: 'Bob', email: 'bob@example.com', password: 'password123', role: 'teacher' });
     expect(result.status).toBe(201);
-    expect(result.data).toEqual({ message: 'Account created' });
+    expect(result.data).toEqual({ message: 'Account created', id: '507f1f77bcf86cd799439011' });
+    expect(mockRepo.create).toHaveBeenCalledWith(expect.objectContaining({ emailVerified: false }));
   });
 
   it('creates user with the selected role', async () => {

@@ -6,18 +6,19 @@ import { hashPassword } from '@/shared/utils/password';
 
 export async function registerService(
   input: SignUpType
-): Promise<ServiceResult<{ message: string }>> {
+): Promise<ServiceResult<{ message: string; id: string }>> {
   const existing = await userRepository.findByEmail(input.email);
   if (existing) return { data: { error: 'EMAIL_TAKEN' }, status: 409 };
 
-  await userRepository.create({
+  const id = await userRepository.create({
     name: input.fullName,
     email: input.email,
     passwordHash: hashPassword(input.password),
     role: input.role,
+    emailVerified: false,
   });
 
-  return { data: { message: 'Account created' }, status: 201 };
+  return { data: { message: 'Account created', id }, status: 201 };
 }
 
 export async function loginService(input: LoginType): Promise<ServiceResult<User>> {
@@ -63,10 +64,12 @@ export async function upsertOAuthUserService(data: {
   avatar: string | null;
 }): Promise<{ isNew: boolean }> {
   const existing = await userRepository.findByEmail(data.email);
+  // Google has already verified the address, so OAuth accounts never wait for a code.
   if (existing) {
     await userRepository.updateByEmail(data.email, {
       name: data.name,
       avatar: data.avatar ?? undefined,
+      emailVerified: true,
     });
     return { isNew: false };
   }
@@ -76,6 +79,7 @@ export async function upsertOAuthUserService(data: {
     passwordHash: '',
     role: 'student',
     avatar: data.avatar ?? undefined,
+    emailVerified: true,
   });
   return { isNew: true };
 }

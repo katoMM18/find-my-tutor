@@ -1,4 +1,4 @@
-# TutorConnect implementation tickets
+# Find My Tutor implementation tickets
 
 Product source: [`PRODUCT.md`](../PRODUCT.md)
 
