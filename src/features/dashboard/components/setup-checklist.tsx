@@ -19,9 +19,11 @@ export type SetupStep = {
 
 type SetupChecklistProps = {
   steps: SetupStep[];
+  // Extra line under the progress, e.g. why the profile is not in search yet.
+  note?: string;
 };
 
-export const SetupChecklist = ({ steps }: SetupChecklistProps) => {
+export const SetupChecklist = ({ steps, note }: SetupChecklistProps) => {
   const { t, fmt } = useT();
   const completed = steps.filter((step) => step.complete).length;
   const firstOpenStep = steps.find((step) => !step.complete);
@@ -35,6 +37,7 @@ export const SetupChecklist = ({ steps }: SetupChecklistProps) => {
             <p className="mt-1 text-sm text-muted-foreground">
               {fmt(t.dashboard.setupProgress, { done: completed, total: steps.length })}
             </p>
+            {note && <p className="mt-2 text-sm font-semibold text-foreground">{note}</p>}
           </div>
         </div>
         <div

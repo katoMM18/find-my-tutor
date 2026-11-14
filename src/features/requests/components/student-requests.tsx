@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
@@ -18,8 +19,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { ToggleGroup, ToggleGroupItem } from '@/shared/components/ui/toggle-group';
-import { LESSON_FORMATS, OTHER_CITIES, TBILISI_DISTRICTS } from '@/shared/const/lesson.const';
-import { REQUEST_GOALS } from '@/shared/const/requests.const';
+import { LESSON_FORMATS, OTHER_CITIES, PRICE_MAX_GEL, TBILISI_DISTRICTS } from '@/shared/const/lesson.const';
+import { REQUEST_GOALS, type RequestGoal } from '@/shared/const/requests.const';
 import { ANY_FILTER_VALUE, SUBJECT_CATALOG } from '@/shared/const/subjects.const';
 import { useT } from '@/shared/hooks/use-t';
 import { isLessonArea, isLessonFormat } from '@/shared/utils/lesson';
@@ -28,9 +29,22 @@ export const StudentRequests = () => {
   const { t, plural, subject: subjectName } = useT();
   const { items, busyId, error, create, close } = useRequests<PublicRequest>();
   const [posted, setPosted] = useState(false);
+  // Links from search and "Match me" arrive with the answers already chosen.
+  const params = useSearchParams();
+  const goalParam = params.get('goal') ?? '';
+  const formatParam = params.get('format') ?? '';
+  const areaParam = params.get('area') ?? '';
+  const budgetParam = Number(params.get('budget'));
   const form = useForm<RequestFormType>({
     resolver: zodResolver(RequestFormSchema),
-    defaultValues: { subject: '', goal: 'national_exams', format: '', area: '', budget: null, note: '' },
+    defaultValues: {
+      subject: params.get('subject') ?? '',
+      goal: REQUEST_GOALS.includes(goalParam as RequestGoal) ? (goalParam as RequestGoal) : 'national_exams',
+      format: isLessonFormat(formatParam) ? formatParam : '',
+      area: isLessonArea(areaParam) ? areaParam : '',
+      budget: Number.isInteger(budgetParam) && budgetParam > 0 && budgetParam <= PRICE_MAX_GEL ? budgetParam : null,
+      note: params.get('note') ?? '',
+    },
   });
   const [subject, goal, format, area] = useWatch({ control: form.control, name: ['subject', 'goal', 'format', 'area'] });
 

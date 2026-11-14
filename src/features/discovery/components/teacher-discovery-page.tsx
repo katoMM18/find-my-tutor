@@ -1,8 +1,12 @@
 'use client';
 
-import { X } from 'lucide-react';
+import { Sparkles, X } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 
+import { ActiveFilterChips } from '@/features/discovery/components/active-filter-chips';
+import { EmptyResults } from '@/features/discovery/components/empty-results';
+import { RecruitFlyer } from '@/features/discovery/components/recruit-flyer';
 import { TeacherFilters } from '@/features/discovery/components/teacher-filters';
 import { TeacherRegister } from '@/features/discovery/components/teacher-register';
 import { useTeacherSearch } from '@/features/discovery/hooks/use-teacher-search';
@@ -10,6 +14,7 @@ import { Alert, AlertDescription } from '@/shared/components/ui/alert';
 import { Button } from '@/shared/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select';
 import { Skeleton } from '@/shared/components/ui/skeleton';
+import { RECRUIT_BELOW_RESULTS } from '@/shared/const/listing.const';
 import { TEACHER_SORTS } from '@/shared/const/subjects.const';
 import { useT } from '@/shared/hooks/use-t';
 import { cn } from '@/shared/lib/utils';
@@ -33,13 +38,25 @@ export const TeacherDiscoveryPage = () => {
             {values.subject ? fmt(t.discovery.subjectTitle, { subject: subject(values.subject) }) : t.discovery.title}
           </h1>
           <p className="mt-3 max-w-2xl text-muted-foreground">{t.discovery.lead}</p>
+          <Button asChild variant="outline" className="mt-5">
+            <Link href={values.subject ? `/match?subject=${encodeURIComponent(values.subject)}` : '/match'}>
+              <Sparkles className="size-4" aria-hidden="true" />
+              {t.match.cta}
+            </Link>
+          </Button>
         </div>
       </section>
 
       <div className="px-4 pb-16 sm:px-8">
         <div className="mx-auto w-full max-w-6xl">
           <div className="paper rounded-xl p-3 sm:p-4">
-            <TeacherFilters key={filtersKey} values={values} onChange={update} />
+            <TeacherFilters
+              key={filtersKey}
+              values={values}
+              onChange={update}
+              onClear={clearAll}
+              resultCount={loading ? null : total}
+            />
           </div>
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
@@ -67,6 +84,10 @@ export const TeacherDiscoveryPage = () => {
             </div>
           </div>
 
+          <div className="mt-3 empty:hidden">
+            <ActiveFilterChips values={values} onRemove={(key) => update({ [key]: '' })} />
+          </div>
+
           <div className="mt-3">
             {error ? (
               <Alert variant="destructive" className="py-5 sm:flex-row sm:items-center sm:justify-between">
@@ -87,13 +108,16 @@ export const TeacherDiscoveryPage = () => {
                 ))}
               </div>
             ) : result && result.items.length === 0 ? (
-              <div className="paper rounded-xl p-8">
-                <p className="text-lg font-bold ">{t.discovery.emptyTitle}</p>
-                <p className="max-w-md  text-muted-foreground">{t.discovery.emptyText}</p>
-                {activeCount > 0 && <Button type="button" variant="outline" onClick={clearAll} className="mt-4">{t.discovery.clearAll}</Button>}
+              <div className="space-y-6">
+                <EmptyResults subject={values.subject} activeCount={activeCount} onClear={clearAll} />
+                <RecruitFlyer subject={values.subject} />
               </div>
             ) : result ? (
-              <TeacherRegister teachers={result.items} className={cn('transition-opacity', loading && 'opacity-60')} />
+              <TeacherRegister
+                teachers={result.items}
+                className={cn('transition-opacity', loading && 'opacity-60')}
+                footer={total < RECRUIT_BELOW_RESULTS ? <RecruitFlyer subject={values.subject} /> : undefined}
+              />
             ) : null}
           </div>
 

@@ -4,12 +4,54 @@ vi.mock('@/features/discovery/repository/teacher-discovery.repository', () => ({
   teacherDiscoveryRepository: {
     findMany: vi.fn(),
     findById: vi.fn(),
+    findListedPrices: vi.fn(),
   },
 }));
 
 import { teacherDiscoveryRepository } from '@/features/discovery/repository/teacher-discovery.repository';
+import { PublicTeacher } from '@/features/discovery/types/teacher-discovery.types';
+import { MatchType } from '@/features/discovery/validations/match.validation';
 
-import { getTeacherService, listTeachersService } from './teacher-discovery.service';
+import {
+  getPriceGuideService,
+  getTeacherService,
+  listTeachersService,
+  matchTutorsService,
+  scoreTutor,
+} from './teacher-discovery.service';
+
+const teacher = (overrides: Partial<PublicTeacher> = {}): PublicTeacher => ({
+  id: 'teacher-1',
+  userId: 'user-1',
+  name: 'Nino Beridze',
+  bio: 'Maths tutor',
+  subjects: ['Mathematics'],
+  experienceYears: 5,
+  education: '',
+  qualifications: '',
+  rating: null,
+  reviewCount: 0,
+  availableDays: [1, 3],
+  timezone: null,
+  vipStatus: 'none',
+  pricePerLesson: 40,
+  lessonFormats: ['online'],
+  areas: [],
+  acceptingStudents: true,
+  verified: false,
+  responseMinutes: null,
+  ...overrides,
+});
+
+const answers = (overrides: Partial<MatchType> = {}): MatchType => ({
+  subject: 'Mathematics',
+  goal: 'school',
+  budget: 50,
+  format: null,
+  area: null,
+  days: [],
+  ...overrides,
+});
 
 const mockRepository = vi.mocked(teacherDiscoveryRepository);
 
@@ -35,5 +77,73 @@ describe('teacher discovery service', () => {
     const result = await getTeacherService('missing');
 
     expect(result).toEqual({ data: { error: 'NOT_FOUND' }, status: 404 });
+  });
+
+  describe('price guide', () => {
+    it('uses the area median when enough tutors cover the area', async () => {
+      mockRepository.findListedPrices.mockResolvedValueOnce([30, 50, 40]);
+
+      const result = await getPriceGuideService({ subject: 'Mathematics', area: 'vake' });
+
+      expect(mockRepository.findListedPrices).toHaveBeenCalledWith('Mathematics', 'vake');
+      expect(result).toEqual({ data: { median: 40, count: 3, scope: 'area' }, status: 200 });
+    });
+
+    it('falls back to every listed tutor when the area is thin', async () => {
+      mockRepository.findListedPrices.mockResolvedValueOnce([30]).mockResolvedValueOnce([20, 30, 40, 50]);
+
+      const result = await getPriceGuideService({ subject: 'Mathematics', area: 'vake' });
+
+      expect(result).toEqual({ data: { median: 35, count: 4, scope: 'all' }, status: 200 });
+    });
+
+    it('withholds a median until enough tutors are listed', async () => {
+      mockRepository.findListedPrices.mockResolvedValueOnce([30, 60]);
+
+      const result = await getPriceGuideService({ subject: 'Mathematics' });
+
+      expect(result).toEqual({ data: { median: null, count: 2, scope: 'all' }, status: 200 });
+    });
+  });
+
+  describe('tutor matching', () => {
+    it('explains shared days, budget and quick replies', () => {
+      const match = scoreTutor(teacher({ responseMinutes: 30 }), answers({ days: [1, 2] }));
+
+      expect(match.reasons).toEqual([
+        { kind: 'days', days: [1] },
+        { kind: 'budget', difference: 10 },
+        { kind: 'fastReply', minutes: 30 },
+      ]);
+    });
+
+    it('ranks a tutor free on your days above one who is not', () => {
+      const free = scoreTutor(teacher({ id: 'free', availableDays: [2] }), answers({ days: [2] }));
+      const busy = scoreTutor(teacher({ id: 'busy', availableDays: [5] }), answers({ days: [2] }));
+
+      expect(free.score).toBeGreaterThan(busy.score);
+    });
+
+    it('stretches the budget, skips tutors not taking students and returns the top three', async () => {
+      mockRepository.findMany.mockResolvedValueOnce({
+        items: [
+          teacher({ id: 'a', pricePerLesson: 58 }),
+          teacher({ id: 'b', pricePerLesson: 30, verified: true }),
+          teacher({ id: 'c', acceptingStudents: false }),
+          teacher({ id: 'd', pricePerLesson: 45 }),
+          teacher({ id: 'e', pricePerLesson: 40 }),
+        ],
+        total: 5,
+      });
+
+      const result = await matchTutorsService(answers({ format: 'online', area: 'vake' }));
+
+      expect(mockRepository.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ subject: 'Mathematics', format: 'online', area: undefined, maxPrice: 60, limit: 24 })
+      );
+      expect(result.status).toBe(200);
+      expect(result.data).toMatchObject({ considered: 5 });
+      expect('matches' in result.data && result.data.matches.map((match) => match.teacher.id)).toEqual(['b', 'e', 'd']);
+    });
   });
 });

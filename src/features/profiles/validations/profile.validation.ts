@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { LESSON_AREAS, LESSON_FORMATS, PRICE_MAX_GEL, PRICE_MIN_GEL } from '@/shared/const/lesson.const';
+import { LISTING_MAX_EXPERIENCE_YEARS } from '@/shared/const/listing.const';
 
 const QualificationSchema = z.object({
   name: z.string().min(1).max(200),
@@ -12,7 +13,7 @@ const QualificationSchema = z.object({
 export const TeacherProfileSchema = z.object({
   bio: z.string().max(2000),
   subjects: z.array(z.string().min(1).max(100)).max(20),
-  experienceYears: z.number().int().min(0).max(80),
+  experienceYears: z.number().int().min(0).max(LISTING_MAX_EXPERIENCE_YEARS),
   education: z.string().max(1000),
   qualifications: z.string().max(2000),
   certificates: z.array(QualificationSchema).max(20),

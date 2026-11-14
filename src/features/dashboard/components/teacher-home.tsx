@@ -34,7 +34,7 @@ export const TeacherHome = () => {
 
   return (
     <div className="space-y-6">
-      {loaded && steps.some((step) => !step.complete) && <SetupChecklist steps={steps} />}
+      {loaded && steps.some((step) => !step.complete) && <SetupChecklist steps={steps} note={t.dashboard.hiddenFromSearch} />}
 
       <ul className="divide-y divide-rule rounded-lg paper pl-2">
         <li className="flex items-center justify-between gap-4 px-5 py-4">

@@ -1,11 +1,12 @@
 'use client';
-import { LogOut, Menu } from 'lucide-react';
+import { Heart, LogOut, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 import { useLogout } from '@/features/auth/hooks/use-logout';
+import { useShortlistStore } from '@/features/shortlist/hooks/useShortlistStore';
 import { BrandMark } from '@/shared/components/layout/brand-mark';
 import { LanguageSwitcher } from '@/shared/components/layout/language-switcher';
 import { ThemeToggle } from '@/shared/components/layout/theme-toggle';
@@ -36,14 +37,16 @@ export const Header = ({ onOpenMenu, menuOpen = false }: HeaderProps) => {
   const { data: session, status } = useSession();
   const { logout } = useLogout();
   const pathname = usePathname();
-  const { t } = useT();
+  const { t, fmt } = useT();
   const [publicMenuOpen, setPublicMenuOpen] = useState(false);
+  const { ids: savedIds } = useShortlistStore();
   const sessionUser = session?.user as SessionUser | undefined;
   const userName = sessionUser?.name ?? '';
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   const links = [
     sessionUser?.role !== 'teacher' && { href: '/teachers', label: t.nav.findTutors },
+    sessionUser?.role !== 'teacher' && { href: '/match', label: t.nav.match },
     sessionUser && { href: '/messages', label: t.nav.messages },
     sessionUser && { href: '/dashboard', label: t.nav.home },
     !sessionUser && status !== 'loading' && { href: '/sign-up?role=teacher', label: t.nav.becomeTutor },
@@ -92,6 +95,23 @@ export const Header = ({ onOpenMenu, menuOpen = false }: HeaderProps) => {
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
+          {sessionUser?.role !== 'teacher' && (
+            <Button variant="ghost" size="icon" asChild className="relative text-muted-foreground">
+              <Link href="/saved" aria-label={fmt(t.shortlist.headerLabel, { count: savedIds.length })}>
+                <Heart className={cn('size-4', savedIds.length > 0 && 'fill-current text-primary')} />
+                {savedIds.length > 0 && (
+                  <span
+                    className={cn(
+                      'absolute -right-0.5 -top-0.5 inline-flex size-4 items-center justify-center rounded-sm',
+                      'bg-primary text-xs leading-none text-primary-foreground tabular-nums'
+                    )}
+                  >
+                    {savedIds.length}
+                  </span>
+                )}
+              </Link>
+            </Button>
+          )}
           {sessionUser ? (
             <>
               <Link

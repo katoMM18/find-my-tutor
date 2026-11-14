@@ -1,10 +1,9 @@
 import mongoose, { PipelineStage } from 'mongoose';
 
-import {
-  PublicTeacher,
-  TeacherDiscoveryFilters,
-} from '@/features/discovery/types/teacher-discovery.types';
+import { PublicTeacher, TeacherDiscoveryFilters } from '@/features/discovery/types/teacher-discovery.types';
 import { TeacherProfileModel } from '@/features/profiles/schema/teacher-profile.schema';
+import { type LessonArea } from '@/shared/const/lesson.const';
+import { LISTING_MAX_EXPERIENCE_YEARS, LISTING_MIN_BIO_LENGTH } from '@/shared/const/listing.const';
 import { type TeacherSort } from '@/shared/const/subjects.const';
 import { VIP_STATUS_RANK } from '@/shared/const/vip.const';
 import { mongo } from '@/shared/lib/mongo';
@@ -19,6 +18,24 @@ const SORT_STAGES: Record<TeacherSort, Record<string, 1 | -1>> = {
   recommended: { vipRank: -1, reviewCount: -1, rating: -1, experienceYears: -1, _id: 1 },
   rating: { rating: -1, reviewCount: -1, vipRank: -1, _id: 1 },
   experience: { experienceYears: -1, vipRank: -1, _id: 1 },
+};
+
+// Listed flyers only. Profile fields first (cheap, before any lookup): a price, believable experience, subjects, a real intro.
+const listedProfileMatch: PipelineStage.Match = {
+  $match: {
+    pricePerLesson: { $gt: 0 },
+    experienceYears: { $lte: LISTING_MAX_EXPERIENCE_YEARS },
+    'subjects.0': { $exists: true },
+    $expr: { $gte: [{ $strLenCP: { $trim: { input: { $ifNull: ['$bio', ''] } } } }, LISTING_MIN_BIO_LENGTH] },
+  },
+};
+
+// Then, after the lookups: at least one teaching day and a photo (OAuth avatar or upload).
+const listedEnrichedMatch: PipelineStage.Match = {
+  $match: {
+    'availableDays.0': { $exists: true },
+    $or: [{ 'user.avatar': { $nin: [null, ''] } }, { 'profileMedia.0': { $exists: true } }],
+  },
 };
 
 const enrichmentStages = (now: Date): PipelineStage[] => [
@@ -109,14 +126,8 @@ const publicProjection: PipelineStage.Project = {
         },
       ],
     },
-    bio: 1,
-    subjects: 1,
-    experienceYears: 1,
-    education: 1,
-    qualifications: 1,
-    rating: 1,
-    reviewCount: 1,
-    availableDays: 1,
+    bio: 1, subjects: 1, experienceYears: 1, education: 1, qualifications: 1,
+    rating: 1, reviewCount: 1, availableDays: 1,
     timezone: { $ifNull: ['$availability.timezone', null] },
     vipStatus: 1,
     pricePerLesson: { $ifNull: ['$pricePerLesson', null] },
@@ -145,7 +156,9 @@ export const teacherDiscoveryRepository = {
     const pattern = search ? escapeRegex(search) : '';
     const pipeline: PipelineStage[] = [
       { $match: match },
+      listedProfileMatch,
       ...enrichmentStages(new Date()),
+      listedEnrichedMatch,
       ...(pattern
         ? [{
           $match: {
@@ -172,15 +185,23 @@ export const teacherDiscoveryRepository = {
       },
     ];
 
-    const [result] = await TeacherProfileModel.aggregate<{
-      items: PublicTeacher[];
-      total: { value: number }[];
-    }>(pipeline).exec();
+    const [result] = await TeacherProfileModel.aggregate<{ items: PublicTeacher[]; total: { value: number }[] }>(pipeline).exec();
 
     return {
       items: result?.items ?? [],
       total: result?.total[0]?.value ?? 0,
     };
+  },
+
+  // Prices of listed tutors for a subject, optionally only those covering one area.
+  async findListedPrices(subject: string | RegExp, area?: LessonArea): Promise<number[]> {
+    await mongo.connect();
+
+    const rows = await TeacherProfileModel.aggregate<{ price: number }>([
+      { $match: area ? { subjects: subject, areas: area } : { subjects: subject } }, listedProfileMatch,
+      ...enrichmentStages(new Date()), listedEnrichedMatch, { $project: { _id: 0, price: '$pricePerLesson' } },
+    ]).exec();
+    return rows.map((row) => row.price);
   },
 
   async findById(id: string): Promise<PublicTeacher | null> {

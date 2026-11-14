@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { MediaUpload } from '@/features/media/components/media-upload';
+import { BioCounter } from '@/features/profiles/components/bio-counter';
 import { FormSection } from '@/features/profiles/components/form-section';
 import { SaveBar } from '@/features/profiles/components/save-bar';
 import { SubjectInput } from '@/features/profiles/components/subject-input';
@@ -18,6 +19,7 @@ import { Label } from '@/shared/components/ui/label';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { ToggleGroup, ToggleGroupItem } from '@/shared/components/ui/toggle-group';
 import { LESSON_FORMATS, OTHER_CITIES, PRICE_MAX_GEL, PRICE_MIN_GEL, TBILISI_DISTRICTS } from '@/shared/const/lesson.const';
+import { LISTING_MAX_EXPERIENCE_YEARS as MAX_YEARS } from '@/shared/const/listing.const';
 import { useT } from '@/shared/hooks/use-t';
 import { http } from '@/shared/lib/http';
 import { isLessonArea, isLessonFormat } from '@/shared/utils/lesson';
@@ -100,12 +102,11 @@ export const TeacherProfileForm = () => {
       <FormSection title={t.profileEditor.aboutTitle} description={t.profileEditor.aboutText}>
         <Textarea
           {...form.register('bio')}
-          rows={6}
-          maxLength={2000}
+          rows={6} maxLength={2000}
           aria-label={t.profileEditor.bioLabel}
           placeholder={t.profileEditor.bioPlaceholder}
         />
-        <p className="text-right text-xs tabular-nums text-muted-foreground">{bio.length} / 2000</p>
+        <BioCounter bio={bio} max={2000} />
       </FormSection>
 
       <FormSection title={t.profileEditor.subjectsTitle} description={fmt(t.profileEditor.subjectsText, { count: subjects.length })}>
@@ -178,7 +179,7 @@ export const TeacherProfileForm = () => {
       <FormSection title={t.profileEditor.experienceTitle} description={t.profileEditor.experienceText}>
         <div className="space-y-2">
           <Label htmlFor="profile-years">{t.profileEditor.yearsLabel}</Label>
-          <Input id="profile-years" type="number" min={0} max={80} className="w-32" {...form.register('experienceYears', { valueAsNumber: true })} />
+          <Input id="profile-years" type="number" min={0} max={MAX_YEARS} className="w-32" {...form.register('experienceYears', { valueAsNumber: true })} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="profile-education">{t.profileEditor.educationLabel}</Label>

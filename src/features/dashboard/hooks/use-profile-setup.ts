@@ -4,6 +4,7 @@ import { CalendarClock, ImagePlus, UserRound } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { type SetupStep } from '@/features/dashboard/components/setup-checklist';
+import { LISTING_MIN_BIO_LENGTH } from '@/shared/const/listing.const';
 import { useT } from '@/shared/hooks/use-t';
 import { http } from '@/shared/lib/http';
 
@@ -13,6 +14,7 @@ type Profile = {
   subjects?: string[];
   experienceYears?: number;
   education?: string;
+  pricePerLesson?: number | null;
 };
 
 type Availability = {
@@ -74,7 +76,10 @@ export const useProfileSetup = (role: 'teacher' | 'student') => {
         description: t.dashboard.setup.teacherProfileText,
         href: '/profile',
         icon: UserRound,
-        complete: Boolean(profile?.bio?.trim() && profile.subjects?.length && profile.education?.trim()),
+        // Same bar the public search applies: a real introduction, subjects and a price.
+        complete: Boolean(
+          (profile?.bio?.trim().length ?? 0) >= LISTING_MIN_BIO_LENGTH && profile?.subjects?.length && profile.pricePerLesson
+        ),
       },
       photoStep,
       {

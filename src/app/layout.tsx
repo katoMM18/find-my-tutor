@@ -1,12 +1,12 @@
 import { Bricolage_Grotesque, Geist_Mono, Noto_Sans_Georgian } from 'next/font/google';
 import { type ReactNode } from 'react';
 
-import { APP_NAME } from '@/shared/const/app.const';
+import { APP_NAME, APP_THEME_COLOR, APP_THEME_COLOR_DARK } from '@/shared/const/app.const';
 import { I18nProvider } from '@/shared/providers/i18n-provider';
 import { ThemeProvider } from '@/shared/providers/theme-provider';
 import { getServerI18n } from '@/shared/utils/server-i18n';
 
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 import './globals.css';
 
@@ -29,8 +29,19 @@ const geistMono = Geist_Mono({
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getServerI18n();
-  return { title: APP_NAME, description: t.meta.description };
+  return {
+    title: APP_NAME,
+    description: t.meta.description,
+    appleWebApp: { capable: true, title: APP_NAME, statusBarStyle: 'default' },
+  };
 }
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: APP_THEME_COLOR },
+    { media: '(prefers-color-scheme: dark)', color: APP_THEME_COLOR_DARK },
+  ],
+};
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const { locale } = await getServerI18n();

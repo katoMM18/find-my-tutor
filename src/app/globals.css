@@ -317,6 +317,25 @@
     animation: tear-off 420ms cubic-bezier(0.55, 0, 0.75, 0.2) forwards;
   }
 
+  /* A saved heart gives one small press-and-release, like a pin pushed into the wall. */
+  @keyframes pop {
+    0% { scale: 0.6; }
+    60% { scale: 1.2; }
+    100% { scale: 1; }
+  }
+  .animate-pop {
+    animation: pop 260ms cubic-bezier(0.2, 0.9, 0.3, 1.3);
+  }
+
+  /* Match steps slide in from the right as the form moves forward. */
+  @keyframes step-in {
+    from { opacity: 0; translate: 1.5rem 0; }
+    to { opacity: 1; translate: 0 0; }
+  }
+  .animate-step {
+    animation: step-in 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
   /* Notices on the home board hang slightly crooked; a hover straightens one. */
   .tilt-l {
     rotate: -1.2deg;
@@ -505,6 +524,8 @@
   .week-fill > *,
   .animate-lift,
   .animate-tear,
+  .animate-pop,
+  .animate-step,
   .pin-drop > *,
   .pin-drop.sway > *,
   .animate-marker {

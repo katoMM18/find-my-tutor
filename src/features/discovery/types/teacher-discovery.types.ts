@@ -46,3 +46,30 @@ export type TeacherDiscoveryResult = {
   page: number;
   limit: number;
 };
+
+// Typical price for a subject: the median of listed tutors, in the area when enough tutors cover it.
+export type PriceGuide = {
+  median: number | null;
+  count: number;
+  scope: 'area' | 'all';
+};
+
+// Why a tutor was matched. The client turns each into one short, translated line.
+export type MatchReason =
+  | { kind: 'days'; days: number[] }
+  | { kind: 'budget'; difference: number }
+  | { kind: 'nearby'; area: LessonArea }
+  | { kind: 'fastReply'; minutes: number }
+  | { kind: 'rated'; rating: number; count: number }
+  | { kind: 'verified' };
+
+export type TutorMatch = {
+  teacher: PublicTeacher;
+  score: number;
+  reasons: MatchReason[];
+};
+
+export type TutorMatchResult = {
+  matches: TutorMatch[];
+  considered: number;
+};

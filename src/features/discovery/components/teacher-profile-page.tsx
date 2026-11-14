@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 
 import { AvailabilityPreview } from '@/features/availability/components/availability-preview';
+import { PriceGuideNote } from '@/features/discovery/components/price-guide';
 import { TeacherContactCard } from '@/features/discovery/components/teacher-contact-card';
 import { TutorFacts } from '@/features/discovery/components/tutor-facts';
 import { VerifiedBadge } from '@/features/discovery/components/verified-badge';
@@ -14,6 +15,7 @@ import { InkMark } from '@/features/ratings/components/ink-mark';
 import { ReviewList } from '@/features/ratings/components/review-list';
 import { TeacherReviewAction } from '@/features/ratings/components/teacher-review-action';
 import { TeacherReviews } from '@/features/ratings/types/rating.types';
+import { SaveTutorButton } from '@/features/shortlist/components/save-tutor-button';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import { Skeleton } from '@/shared/components/ui/skeleton';
@@ -99,12 +101,16 @@ export const TeacherProfilePage = ({ id }: { id: string }) => {
                   {teacher.experienceYears > 0 ? fmt(t.discovery.yearsTeaching, { count: teacher.experienceYears }) : t.discovery.newToTeaching}
                 </p>
                 <TutorFacts teacher={teacher} className="mt-3" />
+                <PriceGuideNote teacher={teacher} className="mt-2" />
                 <div className="mt-3 flex flex-wrap gap-1.5">
                   {teacher.subjects.map((item) => <Badge key={item} variant="outline" className="text-foreground">{subject(item)}</Badge>)}
                 </div>
               </div>
             </div>
-            <InkMark rating={reviews?.average ?? teacher.rating} count={reviews?.count ?? teacher.reviewCount} size="lg" />
+            <div className="flex items-end justify-between gap-4 sm:flex-col">
+              <InkMark rating={reviews?.average ?? teacher.rating} count={reviews?.count ?? teacher.reviewCount} size="lg" />
+              {role !== 'teacher' && <SaveTutorButton teacherId={teacher.id} name={name} variant="button" />}
+            </div>
           </div>
         </div>
       </div>
@@ -156,9 +162,16 @@ export const TeacherProfilePage = ({ id }: { id: string }) => {
       </div>
 
       {role !== 'teacher' && (
-        <div className="paper fixed inset-x-3 bottom-3 z-30 rounded-lg p-2 lg:hidden">
-          <Button asChild size="lg" className="w-full">
-            <a href="#message"><MessageCircle className="size-4" aria-hidden="true" /> {fmt(t.profile.messageName, { name })}</a>
+        <div className="paper fixed inset-x-3 bottom-3 z-30 flex items-center gap-2 rounded-lg p-2 lg:hidden">
+          <div className="min-w-0 flex-1 px-2">
+            <p className="truncate text-sm font-semibold">{name}</p>
+            {teacher.pricePerLesson !== null && (
+              <p className="text-xs text-muted-foreground">{fmt(t.lessons.pricePerLesson, { price: teacher.pricePerLesson })}</p>
+            )}
+          </div>
+          <SaveTutorButton teacherId={teacher.id} name={name} className="h-11 rounded-lg" />
+          <Button asChild size="lg">
+            <a href="#message"><MessageCircle className="size-4" aria-hidden="true" /> {t.common.message}</a>
           </Button>
         </div>
       )}

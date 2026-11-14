@@ -2,6 +2,7 @@
 
 import { Clock3, MapPin, Wallet } from 'lucide-react';
 
+import { useResponseTime } from '@/features/discovery/hooks/use-response-time';
 import { PublicTeacher } from '@/features/discovery/types/teacher-discovery.types';
 import { useT } from '@/shared/hooks/use-t';
 import { cn } from '@/shared/lib/utils';
@@ -13,20 +14,13 @@ type TutorFactsProps = {
 
 // The practical facts parents compare first: price, where lessons happen, and how quickly the tutor replies.
 export const TutorFacts = ({ teacher, className }: TutorFactsProps) => {
-  const { t, fmt, plural } = useT();
+  const { t, fmt } = useT();
+  const formatResponseTime = useResponseTime();
   const where = [
     ...teacher.lessonFormats.map((format) => t.lessons.formats[format]),
     ...teacher.areas.slice(0, 3).map((area) => t.lessons.areas[area]),
   ];
-  const minutes = teacher.responseMinutes;
-  const responseTime =
-    minutes === null
-      ? null
-      : minutes < 60
-        ? fmt(t.lessons.responseMinutes, { count: Math.max(5, Math.ceil(minutes / 5) * 5) })
-        : minutes < 24 * 60
-          ? plural(t.lessons.responseHours, Math.ceil(minutes / 60))
-          : t.lessons.responseDay;
+  const responseTime = formatResponseTime(teacher.responseMinutes);
 
   return (
     <ul className={cn('space-y-1 text-sm', className)}>

@@ -10,6 +10,7 @@ import { VerifiedBadge } from '@/features/discovery/components/verified-badge';
 import { WeekCells } from '@/features/discovery/components/week-cells';
 import { PublicTeacher } from '@/features/discovery/types/teacher-discovery.types';
 import { InkMark } from '@/features/ratings/components/ink-mark';
+import { SaveTutorButton } from '@/features/shortlist/components/save-tutor-button';
 import { Badge } from '@/shared/components/ui/badge';
 import { UserAvatar } from '@/shared/components/ui/user-avatar';
 import { VIP_STATUS_LABELS } from '@/shared/const/vip.const';
@@ -68,17 +69,20 @@ export const TeacherCard = ({ teacher, inkDelay = 0, className }: TeacherCardPro
         <WeekCells days={teacher.availableDays} className="mb-5 mt-auto pt-4" />
       </div>
 
-      <div className={cn('perforation grid', role !== 'teacher' ? 'grid-cols-2' : 'grid-cols-1')}>
+      <div className="perforation flex">
         {role !== 'teacher' && (
-          <TearTab href={`${profileHref}#message`} className="rounded-bl-xl border-r border-dashed border-border">
+          <TearTab href={`${profileHref}#message`} className="flex-1 rounded-bl-xl border-r border-dashed border-border">
             <MessageCircle className="size-4" aria-hidden="true" />
             {t.common.message}
           </TearTab>
         )}
-        <TearTab href={profileHref} className={role !== 'teacher' ? 'rounded-br-xl' : 'rounded-b-xl'}>
+        <TearTab href={profileHref} className={cn('flex-1', role === 'teacher' && 'rounded-b-xl')}>
           {t.common.viewProfile}
           <ArrowRight className="size-4" aria-hidden="true" />
         </TearTab>
+        {role !== 'teacher' && (
+          <SaveTutorButton teacherId={teacher.id} name={teacher.name} className="rounded-br-xl border-l border-dashed border-border" />
+        )}
       </div>
     </article>
   );
