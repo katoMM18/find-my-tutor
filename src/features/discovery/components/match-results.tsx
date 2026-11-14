@@ -74,7 +74,7 @@ export const MatchResults = ({ result, answers, onRestart }: MatchResultsProps) 
         </Button>
       </div>
 
-      <ol className="pin-drop mt-8 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+      <ol className="pin-drop mt-8 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
         {result.matches.map((match, index) => (
           <li key={match.teacher.id} className="flex min-w-0 flex-col gap-3">
             <div className="rounded-lg bg-card/60 p-4">

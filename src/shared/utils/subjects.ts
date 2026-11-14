@@ -40,3 +40,8 @@ export function paperForSubject(subject: string | undefined): string {
   const category = SUBJECT_CATALOG.find((group) => group.subjects.includes(normalized))?.label;
   return (category && PAPER_BY_CATEGORY[category]) || DEFAULT_PAPER;
 }
+
+// Subjects saved as catalog keys (e.g. "SoftwareEngineering") read as words when no translation exists.
+export function humanizeSubjectKey(value: string): string {
+  return value.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').trim();
+}

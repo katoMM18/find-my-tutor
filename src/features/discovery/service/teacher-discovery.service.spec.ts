@@ -5,11 +5,12 @@ vi.mock('@/features/discovery/repository/teacher-discovery.repository', () => ({
     findMany: vi.fn(),
     findById: vi.fn(),
     findListedPrices: vi.fn(),
+    countBySubject: vi.fn(),
   },
 }));
 
 import { teacherDiscoveryRepository } from '@/features/discovery/repository/teacher-discovery.repository';
-import { PublicTeacher } from '@/features/discovery/types/teacher-discovery.types';
+import { PublicTeacher, TeacherRow } from '@/features/discovery/types/teacher-discovery.types';
 import { MatchType } from '@/features/discovery/validations/match.validation';
 
 import {
@@ -18,12 +19,14 @@ import {
   listTeachersService,
   matchTutorsService,
   scoreTutor,
+  subjectCountsService,
 } from './teacher-discovery.service';
 
 const teacher = (overrides: Partial<PublicTeacher> = {}): PublicTeacher => ({
   id: 'teacher-1',
   userId: 'user-1',
   name: 'Nino Beridze',
+  headline: '',
   bio: 'Maths tutor',
   subjects: ['Mathematics'],
   experienceYears: 5,
@@ -40,8 +43,16 @@ const teacher = (overrides: Partial<PublicTeacher> = {}): PublicTeacher => ({
   acceptingStudents: true,
   verified: false,
   responseMinutes: null,
+  freeIntro: false,
+  nextFree: null,
   ...overrides,
 });
+
+const row = (overrides: Partial<PublicTeacher> = {}): TeacherRow => {
+  const rest: Omit<PublicTeacher, 'nextFree'> & { nextFree?: PublicTeacher['nextFree'] } = teacher(overrides);
+  delete rest.nextFree;
+  return { ...rest, weekly: [] };
+};
 
 const answers = (overrides: Partial<MatchType> = {}): MatchType => ({
   subject: 'Mathematics',
@@ -127,11 +138,11 @@ describe('teacher discovery service', () => {
     it('stretches the budget, skips tutors not taking students and returns the top three', async () => {
       mockRepository.findMany.mockResolvedValueOnce({
         items: [
-          teacher({ id: 'a', pricePerLesson: 58 }),
-          teacher({ id: 'b', pricePerLesson: 30, verified: true }),
-          teacher({ id: 'c', acceptingStudents: false }),
-          teacher({ id: 'd', pricePerLesson: 45 }),
-          teacher({ id: 'e', pricePerLesson: 40 }),
+          row({ id: 'a', pricePerLesson: 58 }),
+          row({ id: 'b', pricePerLesson: 30, verified: true }),
+          row({ id: 'c', acceptingStudents: false }),
+          row({ id: 'd', pricePerLesson: 45 }),
+          row({ id: 'e', pricePerLesson: 40 }),
         ],
         total: 5,
       });
@@ -145,5 +156,30 @@ describe('teacher discovery service', () => {
       expect(result.data).toMatchObject({ considered: 5 });
       expect('matches' in result.data && result.data.matches.map((match) => match.teacher.id)).toEqual(['b', 'e', 'd']);
     });
+  });
+
+  it('turns weekly hours into the next free slot and drops them from the public card', async () => {
+    mockRepository.findMany.mockResolvedValueOnce({
+      items: [{ ...row(), timezone: 'Asia/Tbilisi', weekly: [{ day: 1, intervals: [{ start: '10:00', end: '11:00' }] }] }],
+      total: 1,
+    });
+
+    const result = await listTeachersService({ page: 1, limit: 12 });
+
+    const [card] = 'items' in result.data ? result.data.items : [];
+    expect(card).not.toHaveProperty('weekly');
+    expect(card.nextFree).toMatchObject({ day: 1, start: '10:00' });
+  });
+
+  it('counts tutors per subject and folds second languages together', async () => {
+    mockRepository.countBySubject.mockResolvedValueOnce([
+      { subject: 'Mathematics', count: 4 },
+      { subject: 'SecondLanguage:German', count: 2 },
+      { subject: 'SecondLanguage:French', count: 1 },
+    ]);
+
+    const result = await subjectCountsService();
+
+    expect(result).toEqual({ data: { Mathematics: 4, SecondLanguage: 3 }, status: 200 });
   });
 });

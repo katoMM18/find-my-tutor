@@ -1,6 +1,9 @@
 /* eslint-disable max-lines */
 export const EN_DICTIONARY = {
   meta: {
+    tutorRole: '{subject} tutor',
+    tutorRoleGeneric: 'Tutor',
+    tutorRoleIn: '{role} in {area}',
     description: 'Find trusted tutors, compare profiles and honest reviews, and message the one who fits.',
   },
   common: {
@@ -27,6 +30,7 @@ export const EN_DICTIONARY = {
     language: 'Language',
     unread: 'Unread',
     today: 'Today',
+    tomorrow: 'tomorrow',
     teacher: 'Teacher',
     student: 'Student',
     reviews: { one: '{count} review', other: '{count} reviews' },
@@ -83,6 +87,46 @@ export const EN_DICTIONARY = {
     flyerLine: 'Tutors who teach it',
     flyerTab: 'Find tutors',
     teachTab: 'Become a tutor',
+    howTitle: 'How it works',
+    howLead: 'No booking fees, no middleman. Three steps from search to first lesson.',
+    howSteps: [
+      { title: 'Find or get matched', text: 'Filter by subject, price, area and days, or answer five questions and get three tutors who fit.' },
+      { title: 'Message for free', text: 'Ask about level, goals and times. Most tutors reply the same day, and every card shows how fast.' },
+      { title: 'Try a lesson, then review', text: 'Many tutors give the first lesson free. After you study together, your review is permanent.' },
+    ],
+    subjectsTitle: 'Every subject on the wall',
+    subjectsLead: 'Pick a subject to see who teaches it, what they charge and when they are free.',
+    subjectAsk: 'Ask',
+    faqTitle: 'Questions parents ask',
+    faqLead: 'Still unsure? Message any tutor; it costs nothing.',
+    faq: [
+      {
+        question: 'Does it cost anything to use Find My Tutor?',
+        answer:
+          'No. Searching, saving and messaging tutors is free for students and parents. You pay the tutor directly for lessons.',
+      },
+      {
+        question: 'How do I know a tutor is real?',
+        answer:
+          'Tutors with a "Diploma checked" mark have had their diploma reviewed by us. ' +
+          'Every profile shows reviews from students the tutor confirmed they taught.',
+      },
+      {
+        question: 'Can tutors delete bad reviews?',
+        answer:
+          'No. Once published, a review cannot be edited, hidden or removed by the tutor. Paid visibility never changes a rating.',
+      },
+      {
+        question: 'Is the first lesson free?',
+        answer:
+          'It depends on the tutor. Look for the "First lesson free" badge; Match me also ranks those tutors higher.',
+      },
+      {
+        question: 'Online or in person?',
+        answer:
+          'Both. Each tutor shows whether they teach online, at their place or at the student\'s home, and which areas of Tbilisi and other cities they cover.',
+      },
+    ],
   },
   auth: {
     forgotPassword: 'Forgot password?',
@@ -212,6 +256,14 @@ export const EN_DICTIONARY = {
   },
   profile: {
     allTutors: 'All tutors',
+    share: 'Share',
+    shareTitle: '{name} on Find My Tutor',
+    linkCopied: 'Link copied',
+    perLesson: 'per 60-minute lesson',
+    priceOnRequest: 'Price on request',
+    promiseNoFees: 'No booking fees. You pay the tutor directly.',
+    promiseReviews: 'Reviews only from students the tutor really taught.',
+    promiseDiploma: 'Diploma checked by Find My Tutor.',
     notFoundTitle: 'Tutor not found',
     notFoundText: 'This profile may have been removed.',
     browseTutors: 'Browse tutors',
@@ -332,6 +384,8 @@ export const EN_DICTIONARY = {
     aboutText: 'Open with who you help and how. This is the first thing students read.',
     bioLabel: 'Bio',
     bioPlaceholder: 'e.g. I help high-school students go from dreading maths to enjoying it, with short weekly sessions and clear homework.',
+    headlineLabel: 'Tagline (one line under your name)',
+    headlinePlaceholder: 'e.g. National exam maths in 3 months, with weekly mock tests',
     bioToList: '{count} more characters to move up in search',
     bioListed: 'Long enough to rank in search',
     subjectsTitle: 'Subjects you teach',
@@ -547,6 +601,11 @@ export const EN_DICTIONARY = {
     responseMinutes: '{count} min',
     responseHours: { one: '{count} hour', other: '{count} hours' },
     responseDay: 'a day',
+    nextFree: 'Free {when} {time}',
+    freeIntro: 'First lesson free',
+    freeIntroLong: 'The first lesson is free',
+    freeIntroLabel: 'First lesson free',
+    freeIntroHint: 'A free intro lesson gets you a badge on your card and more first messages.',
   },
   verification: {
     badge: 'Verified',
@@ -679,6 +738,8 @@ export const EN_DICTIONARY = {
     checked: 'Checked',
     best: 'Best',
     noReviews: 'No reviews yet',
+    nextFree: 'Next free time',
+    yes: 'Yes',
   },
   sorts: {
     recommended: 'Recommended',

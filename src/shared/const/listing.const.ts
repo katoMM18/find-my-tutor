@@ -15,3 +15,6 @@ export const MATCH_FAST_REPLY_MINUTES = 180;
 
 // Below this many results, the wall shows a "teach this subject?" flyer to recruit tutors.
 export const RECRUIT_BELOW_RESULTS = 6;
+
+// The one-line tagline under a tutor's name.
+export const HEADLINE_MAX_LENGTH = 120;

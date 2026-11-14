@@ -25,6 +25,7 @@ describe('profile service', () => {
 
     expect(result).toEqual({
       data: {
+        headline: '',
         bio: '',
         subjects: [],
         experienceYears: 0,
@@ -36,6 +37,7 @@ describe('profile service', () => {
         lessonFormats: ['online'],
         areas: [],
         acceptingStudents: true,
+        freeIntro: false,
       },
       status: 200,
     });

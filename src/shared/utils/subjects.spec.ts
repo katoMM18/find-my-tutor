@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
-import { normalizeSubject, normalizeSubjects, paperForSubject, secondLanguageOf, subjectFilterValue, toSecondLanguageSubject } from './subjects';
+import {
+  humanizeSubjectKey,
+  normalizeSubject,
+  normalizeSubjects,
+  paperForSubject,
+  secondLanguageOf,
+  subjectFilterValue,
+  toSecondLanguageSubject,
+} from './subjects';
 
 describe('subject normalisation', () => {
   it('maps casing, spacing and aliases onto the catalog', () => {
@@ -42,5 +50,12 @@ describe('second foreign language subjects', () => {
     expect(filter instanceof RegExp && filter.test('SecondLanguage:French')).toBe(true);
     expect(subjectFilterValue('Art')).toBe('Art');
     expect(paperForSubject('SecondLanguage:French')).toBe('bg-paper-pink');
+  });
+});
+
+describe('humanizeSubjectKey', () => {
+  it('splits catalog keys into words', () => {
+    expect(humanizeSubjectKey('SoftwareEngineering')).toBe('Software Engineering');
+    expect(humanizeSubjectKey('web_design')).toBe('web design');
   });
 });

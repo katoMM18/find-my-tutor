@@ -15,3 +15,6 @@ export const TIMEZONE_OPTIONS = [
   'America/Denver',
   'America/Los_Angeles',
 ] as const;
+
+// Most tutors teach in Georgia; used when a stored zone is not a real IANA name.
+export const DEFAULT_TUTOR_TIMEZONE = 'Asia/Tbilisi';

@@ -5,6 +5,8 @@ import { LESSON_AREAS, LESSON_FORMATS, PRICE_MAX_GEL, PRICE_MIN_GEL } from '@/sh
 const TeacherProfileSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
+    // One line under the name on the flyer: who the tutor helps and how.
+    headline: { type: String, default: '', maxlength: 120 },
     bio: { type: String, default: '', maxlength: 2000 },
     subjects: { type: [String], default: [] },
     experienceYears: { type: Number, default: 0, min: 0, max: 80 },
@@ -14,6 +16,8 @@ const TeacherProfileSchema = new Schema(
     lessonFormats: { type: [{ type: String, enum: LESSON_FORMATS }], default: ['online'] },
     areas: { type: [{ type: String, enum: LESSON_AREAS }], default: [] },
     acceptingStudents: { type: Boolean, default: true },
+    // The first (intro) lesson is free.
+    freeIntro: { type: Boolean, default: false },
     // Set only by an admin after checking an uploaded diploma.
     verified: { type: Boolean, default: false },
     // Running average of how fast the tutor first replies to a new conversation; set by the chat service.

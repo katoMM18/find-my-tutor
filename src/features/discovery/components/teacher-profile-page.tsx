@@ -6,7 +6,10 @@ import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 
 import { AvailabilityPreview } from '@/features/availability/components/availability-preview';
+import { FreeIntroBadge } from '@/features/discovery/components/free-intro-badge';
+import { OfferSummary } from '@/features/discovery/components/offer-summary';
 import { PriceGuideNote } from '@/features/discovery/components/price-guide';
+import { ShareProfileButton } from '@/features/discovery/components/share-profile-button';
 import { TeacherContactCard } from '@/features/discovery/components/teacher-contact-card';
 import { TutorFacts } from '@/features/discovery/components/tutor-facts';
 import { VerifiedBadge } from '@/features/discovery/components/verified-badge';
@@ -96,7 +99,9 @@ export const TeacherProfilePage = ({ id }: { id: string }) => {
                   <h1 className="font-heading text-4xl font-extrabold leading-none sm:text-6xl">{teacher.name}</h1>
                   {teacher.verified && <VerifiedBadge />}
                   {teacher.vipStatus !== 'none' && <Badge variant="stamp">{VIP_STATUS_LABELS[teacher.vipStatus]}</Badge>}
+                  {teacher.freeIntro && <FreeIntroBadge />}
                 </div>
+                {teacher.headline && <p className="mt-3 max-w-2xl text-lg font-semibold leading-snug">{teacher.headline}</p>}
                 <p className="mt-2 text-muted-foreground">
                   {teacher.experienceYears > 0 ? fmt(t.discovery.yearsTeaching, { count: teacher.experienceYears }) : t.discovery.newToTeaching}
                 </p>
@@ -107,9 +112,12 @@ export const TeacherProfilePage = ({ id }: { id: string }) => {
                 </div>
               </div>
             </div>
-            <div className="flex items-end justify-between gap-4 sm:flex-col">
+            <div className="flex flex-wrap items-end justify-between gap-4 sm:flex-col sm:flex-nowrap">
               <InkMark rating={reviews?.average ?? teacher.rating} count={reviews?.count ?? teacher.reviewCount} size="lg" />
-              {role !== 'teacher' && <SaveTutorButton teacherId={teacher.id} name={name} variant="button" />}
+              <div className="flex flex-wrap gap-2">
+                <ShareProfileButton name={name} />
+                {role !== 'teacher' && <SaveTutorButton teacherId={teacher.id} name={name} variant="button" />}
+              </div>
             </div>
           </div>
         </div>
@@ -156,7 +164,8 @@ export const TeacherProfilePage = ({ id }: { id: string }) => {
           </ProfileSection>
         </div>
 
-        <aside className="lg:sticky lg:top-24 lg:mt-8 lg:self-start">
+        <aside className="space-y-4 lg:sticky lg:top-24 lg:mt-8 lg:self-start">
+          <OfferSummary teacher={teacher} />
           <TeacherContactCard teacher={teacher} />
         </aside>
       </div>

@@ -1,7 +1,8 @@
 'use client';
 
-import { BadgeCheck, CalendarCheck, Clock3, MapPin, Star, Wallet } from 'lucide-react';
+import { BadgeCheck, CalendarCheck, CalendarClock, Clock3, Gift, MapPin, Star, Wallet } from 'lucide-react';
 
+import { useNextFreeLabel } from '@/features/discovery/hooks/use-next-free-label';
 import { useResponseTime } from '@/features/discovery/hooks/use-response-time';
 import { MatchReason } from '@/features/discovery/types/teacher-discovery.types';
 import { WEEK_DISPLAY_ORDER } from '@/shared/const/week.const';
@@ -15,6 +16,8 @@ const ICONS = {
   fastReply: Clock3,
   rated: Star,
   verified: BadgeCheck,
+  soon: CalendarClock,
+  freeIntro: Gift,
 } as const;
 
 // Shown under each match: the three strongest reasons, in plain words.
@@ -28,6 +31,7 @@ type MatchReasonsProps = {
 export const MatchReasons = ({ reasons, className }: MatchReasonsProps) => {
   const { t, fmt, plural } = useT();
   const responseTime = useResponseTime();
+  const nextFreeLabel = useNextFreeLabel();
 
   const text = (reason: MatchReason) => {
     switch (reason.kind) {
@@ -48,6 +52,10 @@ export const MatchReasons = ({ reasons, className }: MatchReasonsProps) => {
         return fmt(t.match.reasons.rated, { rating: reason.rating.toFixed(1), reviews: plural(t.match.reasons.reviews, reason.count) });
       case 'verified':
         return t.match.reasons.verified;
+      case 'soon':
+        return nextFreeLabel(reason.slot);
+      case 'freeIntro':
+        return t.lessons.freeIntro;
     }
   };
 

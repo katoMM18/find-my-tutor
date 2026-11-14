@@ -1,6 +1,7 @@
 import { type LessonArea, type LessonFormat } from '@/shared/const/lesson.const';
 import { type TeacherSort } from '@/shared/const/subjects.const';
 import { type VipStatus } from '@/shared/const/vip.const';
+import { type NextFreeSlot } from '@/shared/utils/availability';
 
 export type TeacherDiscoveryFilters = {
   search?: string;
@@ -22,6 +23,7 @@ export type PublicTeacher = {
   userId: string;
   name: string;
   avatar?: string;
+  headline: string;
   bio: string;
   subjects: string[];
   experienceYears: number;
@@ -38,6 +40,13 @@ export type PublicTeacher = {
   acceptingStudents: boolean;
   verified: boolean;
   responseMinutes: number | null;
+  freeIntro: boolean;
+  nextFree: NextFreeSlot | null;
+};
+
+// What the repository returns: the public card plus the weekly hours the service turns into nextFree.
+export type TeacherRow = Omit<PublicTeacher, 'nextFree'> & {
+  weekly: { day: number; intervals: { start: string; end: string }[] }[];
 };
 
 export type TeacherDiscoveryResult = {
@@ -61,7 +70,9 @@ export type MatchReason =
   | { kind: 'nearby'; area: LessonArea }
   | { kind: 'fastReply'; minutes: number }
   | { kind: 'rated'; rating: number; count: number }
-  | { kind: 'verified' };
+  | { kind: 'verified' }
+  | { kind: 'soon'; slot: NextFreeSlot }
+  | { kind: 'freeIntro' };
 
 export type TutorMatch = {
   teacher: PublicTeacher;

@@ -4,6 +4,7 @@ import { ArrowRight, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
+import { FreeIntroBadge } from '@/features/discovery/components/free-intro-badge';
 import { TearTab } from '@/features/discovery/components/tear-tab';
 import { TutorFacts } from '@/features/discovery/components/tutor-facts';
 import { VerifiedBadge } from '@/features/discovery/components/verified-badge';
@@ -54,6 +55,7 @@ export const TeacherCard = ({ teacher, inkDelay = 0, className }: TeacherCardPro
             </p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {teacher.verified && <VerifiedBadge />}
+              {teacher.freeIntro && <FreeIntroBadge />}
               {teacher.vipStatus !== 'none' && <Badge variant="stamp">{VIP_STATUS_LABELS[teacher.vipStatus]}</Badge>}
             </div>
           </div>
@@ -70,7 +72,9 @@ export const TeacherCard = ({ teacher, inkDelay = 0, className }: TeacherCardPro
           {teacher.subjects.length > 4 && <span className="text-muted-foreground"> +{teacher.subjects.length - 4}</span>}
         </p>
         <TutorFacts teacher={teacher} className="mt-3" />
-        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">{teacher.bio || t.discovery.noBio}</p>
+        <p className={cn('mt-2 line-clamp-2 text-sm leading-relaxed', teacher.headline ? 'font-medium text-foreground' : 'text-muted-foreground')}>
+          {teacher.headline || teacher.bio || t.discovery.noBio}
+        </p>
         <WeekCells days={teacher.availableDays} className="mb-5 mt-auto pt-4" />
       </div>
 

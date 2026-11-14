@@ -5,6 +5,7 @@ import {
   PublicTeacher,
   TeacherDiscoveryFilters,
   TeacherDiscoveryResult,
+  TeacherRow,
   TutorMatch,
   TutorMatchResult,
 } from '@/features/discovery/types/teacher-discovery.types';
@@ -16,16 +17,24 @@ import {
   MATCH_RESULT_COUNT,
   PRICE_GUIDE_MIN_SAMPLES,
 } from '@/shared/const/listing.const';
+import { SECOND_LANGUAGE_SUBJECT } from '@/shared/const/subjects.const';
 import { ServiceResult } from '@/shared/types/common';
-import { subjectFilterValue } from '@/shared/utils/subjects';
+import { nextFreeSlot } from '@/shared/utils/availability';
+import { secondLanguageOf, subjectFilterValue } from '@/shared/utils/subjects';
+
+// Weekly hours stay server-side; the card only needs the next opening.
+export function toPublicTeacher({ weekly, ...teacher }: TeacherRow, now: Date = new Date()): PublicTeacher {
+  return { ...teacher, nextFree: nextFreeSlot(weekly, teacher.timezone, now) };
+}
 
 export async function listTeachersService(
   filters: TeacherDiscoveryFilters
 ): Promise<ServiceResult<TeacherDiscoveryResult>> {
   const subject = typeof filters.subject === 'string' ? subjectFilterValue(filters.subject) : filters.subject;
   const result = await teacherDiscoveryRepository.findMany({ ...filters, subject });
+  const now = new Date();
   return {
-    data: { ...result, page: filters.page, limit: filters.limit },
+    data: { items: result.items.map((row) => toPublicTeacher(row, now)), total: result.total, page: filters.page, limit: filters.limit },
     status: 200,
   };
 }
@@ -35,7 +44,7 @@ export async function getTeacherService(
 ): Promise<ServiceResult<PublicTeacher>> {
   const teacher = await teacherDiscoveryRepository.findById(id);
   if (!teacher) return { data: { error: 'NOT_FOUND' }, status: 404 };
-  return { data: teacher, status: 200 };
+  return { data: toPublicTeacher(teacher), status: 200 };
 }
 
 const median = (values: number[]) => {
@@ -89,6 +98,17 @@ export function scoreTutor(teacher: PublicTeacher, answers: MatchType): TutorMat
     reasons.push({ kind: 'nearby', area: answers.area });
   }
 
+  // Free within a day: the student can start this week, not next month.
+  if (teacher.nextFree && teacher.nextFree.inDays <= 1) {
+    score += 1;
+    reasons.push({ kind: 'soon', slot: teacher.nextFree });
+  }
+
+  if (teacher.freeIntro) {
+    score += 1;
+    reasons.push({ kind: 'freeIntro' });
+  }
+
   if (teacher.responseMinutes !== null && teacher.responseMinutes <= MATCH_FAST_REPLY_MINUTES) {
     score += 1.5;
     reasons.push({ kind: 'fastReply', minutes: teacher.responseMinutes });
@@ -122,11 +142,24 @@ export async function matchTutorsService(
     limit: MATCH_CANDIDATE_LIMIT,
   });
 
+  const now = new Date();
   const matches = items
+    .map((row) => toPublicTeacher(row, now))
     .filter((teacher) => teacher.acceptingStudents)
     .map((teacher) => scoreTutor(teacher, answers))
     .sort((a, b) => b.score - a.score)
     .slice(0, MATCH_RESULT_COUNT);
 
   return { data: { matches, considered: items.length }, status: 200 };
+}
+
+// Tutors per subject; every "SecondLanguage:<language>" counts toward the second-language subject.
+export async function subjectCountsService(): Promise<ServiceResult<Record<string, number>>> {
+  const rows = await teacherDiscoveryRepository.countBySubject();
+  const counts: Record<string, number> = {};
+  rows.forEach(({ subject, count }) => {
+    const key = secondLanguageOf(subject) ? SECOND_LANGUAGE_SUBJECT : subject;
+    counts[key] = (counts[key] ?? 0) + count;
+  });
+  return { data: counts, status: 200 };
 }

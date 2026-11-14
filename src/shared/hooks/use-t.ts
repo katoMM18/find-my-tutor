@@ -6,10 +6,7 @@ import { DEFAULT_LOCALE } from '@/shared/const/i18n.const';
 import { i18n } from '@/shared/lib/i18n';
 import { I18nContext } from '@/shared/providers/i18n-provider';
 import { type PluralForms, type TemplateValues } from '@/shared/types/i18n';
-import { secondLanguageOf } from '@/shared/utils/subjects';
-
-// Subjects saved as catalog keys (e.g. "SoftwareEngineering") read as words when no translation exists.
-const humanizeKey = (value: string) => value.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').trim();
+import { humanizeSubjectKey, secondLanguageOf } from '@/shared/utils/subjects';
 
 export const useT = () => {
   const context = useContext(I18nContext);
@@ -25,7 +22,7 @@ export const useT = () => {
     subject: (name: string) => {
       const language = secondLanguageOf(name);
       if (language) return `${t.subjects.SecondLanguage ?? 'Second foreign language'} (${t.languages[language] ?? language})`;
-      return t.subjects[name] ?? humanizeKey(name);
+      return t.subjects[name] ?? humanizeSubjectKey(name);
     },
     date: (value: Date | string) => i18n.formatDate(value, locale),
     dateTime: (value: Date | string) => i18n.formatDateTime(value, locale),

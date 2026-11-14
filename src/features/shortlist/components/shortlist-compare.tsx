@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { type ReactNode } from 'react';
 
 import { WeekCells } from '@/features/discovery/components/week-cells';
+import { useNextFreeLabel } from '@/features/discovery/hooks/use-next-free-label';
 import { useResponseTime } from '@/features/discovery/hooks/use-response-time';
 import { PublicTeacher } from '@/features/discovery/types/teacher-discovery.types';
 import { useShortlistTeachers } from '@/features/shortlist/hooks/use-shortlist-teachers';
@@ -36,12 +37,23 @@ export const ShortlistCompare = () => {
   const { teachers, count, loading, remove, clear } = useShortlistTeachers();
   const { t, fmt, plural, subject } = useT();
   const responseTime = useResponseTime();
+  const nextFreeLabel = useNextFreeLabel();
 
   const rows: Row[] = [
     {
       label: t.lessons.price,
       cell: (teacher) => (teacher.pricePerLesson !== null ? fmt(t.lessons.pricePerLesson, { price: teacher.pricePerLesson }) : '—'),
       best: (list) => bestBy(list, (teacher) => teacher.pricePerLesson, true),
+    },
+    {
+      label: t.shortlist.nextFree,
+      cell: (teacher) => nextFreeLabel(teacher.nextFree) ?? '—',
+      // Sooner wins: days ahead first, then the clock time.
+      best: (list) => bestBy(list, ({ nextFree }) => (nextFree ? nextFree.inDays * 10000 + Number(nextFree.start.replace(':', '')) : null), true),
+    },
+    {
+      label: t.lessons.freeIntro,
+      cell: (teacher) => (teacher.freeIntro ? t.shortlist.yes : '—'),
     },
     {
       label: t.discovery.rating,

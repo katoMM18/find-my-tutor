@@ -137,6 +137,7 @@ export const publicProjection: PipelineStage.Project = {
         },
       ],
     },
+    headline: { $ifNull: ['$headline', ''] },
     bio: 1, subjects: 1, experienceYears: 1, education: 1, qualifications: 1,
     rating: 1, reviewCount: 1, availableDays: 1,
     timezone: { $ifNull: ['$availability.timezone', null] },
@@ -147,5 +148,7 @@ export const publicProjection: PipelineStage.Project = {
     acceptingStudents: { $ifNull: ['$acceptingStudents', true] },
     verified: { $ifNull: ['$verified', false] },
     responseMinutes: { $ifNull: ['$responseMinutes', null] },
+    freeIntro: { $ifNull: ['$freeIntro', false] },
+    weekly: { $ifNull: ['$availability.weekly', []] },
   },
 };

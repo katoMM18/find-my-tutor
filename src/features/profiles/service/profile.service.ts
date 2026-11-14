@@ -21,6 +21,7 @@ export async function getMyProfileService(
     data:
         role === 'teacher'
           ? {
+            headline: '',
             bio: '',
             subjects: [],
             experienceYears: 0,
@@ -32,6 +33,7 @@ export async function getMyProfileService(
             lessonFormats: ['online'],
             areas: [],
             acceptingStudents: true,
+            freeIntro: false,
           }
           : { bio: '', subjects: [] },
     status: 200,

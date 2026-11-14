@@ -20,7 +20,7 @@ export const TeacherRegister = ({ teachers, footer, className, tilted = false }:
 
   return (
     <div className={className}>
-      <ol ref={listRef} className="register pin-drop grid grid-cols-1 gap-x-6 gap-y-10 pt-3 sm:grid-cols-2 lg:grid-cols-3">
+      <ol ref={listRef} className="register pin-drop grid grid-cols-1 gap-x-6 gap-y-10 pt-3 sm:grid-cols-2 xl:grid-cols-3">
         {teachers.map((teacher, index) => (
           <li key={teacher.id} data-flip-key={teacher.id} className="min-w-0">
             <TeacherCard

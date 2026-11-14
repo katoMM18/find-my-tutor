@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { LESSON_AREAS, LESSON_FORMATS, PRICE_MAX_GEL, PRICE_MIN_GEL } from '@/shared/const/lesson.const';
-import { LISTING_MAX_EXPERIENCE_YEARS } from '@/shared/const/listing.const';
+import { HEADLINE_MAX_LENGTH, LISTING_MAX_EXPERIENCE_YEARS } from '@/shared/const/listing.const';
 
 const QualificationSchema = z.object({
   name: z.string().min(1).max(200),
@@ -11,6 +11,7 @@ const QualificationSchema = z.object({
 });
 
 export const TeacherProfileSchema = z.object({
+  headline: z.string().trim().max(HEADLINE_MAX_LENGTH),
   bio: z.string().max(2000),
   subjects: z.array(z.string().min(1).max(100)).max(20),
   experienceYears: z.number().int().min(0).max(LISTING_MAX_EXPERIENCE_YEARS),
@@ -22,6 +23,7 @@ export const TeacherProfileSchema = z.object({
   lessonFormats: z.array(z.enum(LESSON_FORMATS)).min(1).max(LESSON_FORMATS.length),
   areas: z.array(z.enum(LESSON_AREAS)).max(LESSON_AREAS.length),
   acceptingStudents: z.boolean(),
+  freeIntro: z.boolean(),
 });
 
 export const StudentProfileSchema = z.object({

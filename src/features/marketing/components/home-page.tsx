@@ -2,17 +2,21 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 import { TeacherRegister } from '@/features/discovery/components/teacher-register';
-import { listTeachersService } from '@/features/discovery/service/teacher-discovery.service';
+import { listTeachersService, subjectCountsService } from '@/features/discovery/service/teacher-discovery.service';
+import { HomeFaq } from '@/features/marketing/components/home-faq';
 import { HomeSearch } from '@/features/marketing/components/home-search';
+import { HowItWorks } from '@/features/marketing/components/how-it-works';
 import { NoticeBoard } from '@/features/marketing/components/notice-board';
 import { OrderDemo } from '@/features/marketing/components/order-demo';
+import { SubjectDirectory } from '@/features/marketing/components/subject-directory';
 import { Footer } from '@/shared/components/layout/footer';
 import { Header } from '@/shared/components/layout/header';
 import { getServerI18n } from '@/shared/utils/server-i18n';
 
 export const HomePage = async () => {
-  const [featured, { t }] = await Promise.all([
-    listTeachersService({ page: 1, limit: 5, sort: 'recommended' }),
+  const [featured, subjectCounts, { t }] = await Promise.all([
+    listTeachersService({ page: 1, limit: 6, sort: 'recommended' }),
+    subjectCountsService(),
     getServerI18n(),
   ]);
   const tutors = 'items' in featured.data ? featured.data.items : [];
@@ -43,7 +47,9 @@ export const HomePage = async () => {
         {/* The stairwell paint band: the wall changes colour here, like real stairwell paint. */}
         <div aria-hidden="true" className="h-10 border-t-4 border-foreground/10 bg-wall" />
 
-        <section aria-labelledby="wall-heading" className="px-4 pt-16 sm:px-8">
+        <HowItWorks />
+
+        <section aria-labelledby="wall-heading" className="px-4 pt-20 sm:px-8">
           <div className="mx-auto w-full max-w-6xl">
             <div className="mb-6 flex items-end justify-between gap-4">
               <h2 id="wall-heading" className="font-heading text-3xl font-extrabold sm:text-4xl">{t.home.featured}</h2>
@@ -61,6 +67,8 @@ export const HomePage = async () => {
           </div>
         </section>
 
+        <SubjectDirectory counts={'error' in subjectCounts.data ? {} : subjectCounts.data} />
+
         <section aria-labelledby="marks-heading" className="px-4 py-20 sm:px-8 sm:py-28">
           <div className="mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-12">
             <div className="lg:col-span-5">
@@ -77,6 +85,7 @@ export const HomePage = async () => {
             </div>
           </div>
         </section>
+        <HomeFaq />
       </main>
 
       <Footer />

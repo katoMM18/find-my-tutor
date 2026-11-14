@@ -1,14 +1,15 @@
 'use client';
 
-import { Clock3, MapPin, Wallet } from 'lucide-react';
+import { CalendarClock, Clock3, MapPin, Wallet } from 'lucide-react';
 
+import { useNextFreeLabel } from '@/features/discovery/hooks/use-next-free-label';
 import { useResponseTime } from '@/features/discovery/hooks/use-response-time';
 import { PublicTeacher } from '@/features/discovery/types/teacher-discovery.types';
 import { useT } from '@/shared/hooks/use-t';
 import { cn } from '@/shared/lib/utils';
 
 type TutorFactsProps = {
-  teacher: Pick<PublicTeacher, 'pricePerLesson' | 'lessonFormats' | 'areas' | 'responseMinutes' | 'acceptingStudents'>;
+  teacher: Pick<PublicTeacher, 'pricePerLesson' | 'lessonFormats' | 'areas' | 'responseMinutes' | 'acceptingStudents' | 'nextFree'>;
   className?: string;
 };
 
@@ -21,6 +22,7 @@ export const TutorFacts = ({ teacher, className }: TutorFactsProps) => {
     ...teacher.areas.slice(0, 3).map((area) => t.lessons.areas[area]),
   ];
   const responseTime = formatResponseTime(teacher.responseMinutes);
+  const nextFree = useNextFreeLabel()(teacher.nextFree);
 
   return (
     <ul className={cn('space-y-1 text-sm', className)}>
@@ -28,6 +30,12 @@ export const TutorFacts = ({ teacher, className }: TutorFactsProps) => {
         <li className="flex items-center gap-2 font-semibold">
           <Wallet className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
           {fmt(t.lessons.pricePerLesson, { price: teacher.pricePerLesson })}
+        </li>
+      )}
+      {nextFree && teacher.acceptingStudents && (
+        <li className="flex items-center gap-2 font-medium text-primary">
+          <CalendarClock className="size-4 shrink-0" aria-hidden="true" />
+          {nextFree}
         </li>
       )}
       {where.length > 0 && (
