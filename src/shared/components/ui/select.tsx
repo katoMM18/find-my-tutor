@@ -30,7 +30,7 @@ function SelectTrigger({ className, children, ...props }: React.ComponentProps<t
       )}
       {...props}
     >
-      <span className="truncate">{children}</span>
+      <span className="min-w-0 truncate">{children}</span>
       <SelectPrimitive.Icon asChild>
         <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground" />
       </SelectPrimitive.Icon>

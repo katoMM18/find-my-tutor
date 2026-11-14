@@ -30,8 +30,8 @@ export const NoticeBoard = () => {
             </div>
             <div className="perforation grid grid-cols-4">
               {TAB_COUNT.map((tab) => (
-                <TearTab key={tab} href={href} className="h-24 border-r border-dashed border-foreground/15 px-0 last:border-r-0">
-                  <span className="-rotate-90 whitespace-nowrap text-xs">{t.home.flyerTab}</span>
+                <TearTab key={tab} href={href} className="min-h-24 border-r border-dashed border-foreground/15 px-0 py-3 last:border-r-0">
+                  <span className="vertical-label whitespace-nowrap text-xs">{t.home.flyerTab}</span>
                 </TearTab>
               ))}
             </div>
@@ -46,8 +46,8 @@ export const NoticeBoard = () => {
         </div>
         <div className="perforation grid grid-cols-4">
           {TAB_COUNT.map((tab) => (
-            <TearTab key={tab} href="/sign-up?role=teacher" className="h-24 border-r border-dashed border-foreground/15 px-0 last:border-r-0">
-              <span className="-rotate-90 whitespace-nowrap text-xs">{t.home.teachTab}</span>
+            <TearTab key={tab} href="/sign-up?role=teacher" className="min-h-24 border-r border-dashed border-foreground/15 px-0 py-3 last:border-r-0">
+              <span className="vertical-label whitespace-nowrap text-xs">{t.home.teachTab}</span>
             </TearTab>
           ))}
         </div>

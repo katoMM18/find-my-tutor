@@ -74,7 +74,7 @@ export const TeacherDiscoveryPage = () => {
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span id="sort-label">{t.discovery.sortBy}</span>
               <Select value={values.sort || 'recommended'} onValueChange={(value) => update({ sort: value === 'recommended' ? '' : value })}>
-                <SelectTrigger aria-labelledby="sort-label" className="h-9 w-44 text-foreground">
+                <SelectTrigger aria-labelledby="sort-label" className="h-9 w-auto min-w-44 text-foreground">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent align="end">

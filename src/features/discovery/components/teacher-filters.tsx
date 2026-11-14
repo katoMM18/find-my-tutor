@@ -120,7 +120,7 @@ export const TeacherFilters = ({ values, onChange, onClear, resultCount }: Teach
 
   return (
     <section aria-label={t.discovery.filtersLabel} className="grid grid-cols-2 gap-2 lg:grid-cols-12">
-      <Label className="relative col-span-2 lg:col-span-4">
+      <Label className="relative col-span-2 lg:col-span-3">
         <span className="sr-only">{t.discovery.searchLabel}</span>
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink" aria-hidden="true" />
         <Input
@@ -164,7 +164,7 @@ export const TeacherFilters = ({ values, onChange, onClear, resultCount }: Teach
         )}
       </Button>
 
-      <div className="hidden lg:col-span-2 lg:block">{field('day')}</div>
+      <div className="hidden lg:col-span-3 lg:block">{field('day')}</div>
       <div className="hidden lg:col-span-3 lg:block">{field('maxPrice')}</div>
       <div className="hidden lg:col-span-3 lg:block">{field('format')}</div>
       <div className="hidden lg:col-span-3 lg:block">{field('area')}</div>

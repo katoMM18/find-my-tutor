@@ -4,7 +4,6 @@ import { FileUp } from 'lucide-react';
 import { useId, useState } from 'react';
 
 import { buttonVariants } from '@/shared/components/ui/button';
-import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
 import { UserAvatar } from '@/shared/components/ui/user-avatar';
 import { useT } from '@/shared/hooks/use-t';
@@ -61,7 +60,8 @@ export const MediaUpload = ({ kind, label, hint, accept, currentUrl, name = '', 
         >
           <FileUp className="size-4" aria-hidden="true" />
           {uploading ? t.profileEditor.uploading : label}
-          <Input
+          {/* Native input: the styled Input's w-full beat sr-only and pushed the page sideways. */}
+          <input
             id={inputId}
             type="file"
             accept={accept}

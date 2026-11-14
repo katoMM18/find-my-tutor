@@ -1,4 +1,4 @@
-// A tutor's flyer goes on the public wall only once it is worth reading:
+// A tutor's flyer counts as complete (pinned first in search) once it is worth reading:
 // a real introduction, a photo, a price, at least one teaching day and a believable experience figure.
 export const LISTING_MIN_BIO_LENGTH = 80;
 export const LISTING_MAX_EXPERIENCE_YEARS = 60;

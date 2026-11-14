@@ -57,7 +57,12 @@ export const TeacherCard = ({ teacher, inkDelay = 0, className }: TeacherCardPro
               {teacher.vipStatus !== 'none' && <Badge variant="stamp">{VIP_STATUS_LABELS[teacher.vipStatus]}</Badge>}
             </div>
           </div>
-          <InkMark rating={teacher.rating} count={teacher.reviewCount} inkDelay={inkDelay} className="shrink-0 items-end text-right" />
+          <InkMark
+            rating={teacher.rating}
+            count={teacher.reviewCount}
+            inkDelay={inkDelay}
+            className="max-w-24 shrink-0 items-end text-right whitespace-normal"
+          />
         </div>
 
         <p className="mt-4 text-lg font-semibold leading-snug">

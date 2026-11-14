@@ -317,6 +317,12 @@
     animation: tear-off 420ms cubic-bezier(0.55, 0, 0.75, 0.2) forwards;
   }
 
+  /* Tear-off tab labels run bottom-to-top, and the tab grows to fit the words (long Georgian labels included). */
+  .vertical-label {
+    writing-mode: vertical-rl;
+    rotate: 180deg;
+  }
+
   /* A saved heart gives one small press-and-release, like a pin pushed into the wall. */
   @keyframes pop {
     0% { scale: 0.6; }

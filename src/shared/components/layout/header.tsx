@@ -29,7 +29,7 @@ type HeaderProps = {
 };
 
 const navLinkClassName = cn(
-  'rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors outline-none',
+  'whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors outline-none',
   'hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/60'
 );
 
@@ -77,7 +77,7 @@ export const Header = ({ onOpenMenu, menuOpen = false }: HeaderProps) => {
           </Link>
         </div>
 
-        <nav aria-label={t.nav.main} className="hidden items-center gap-1 md:flex">
+        <nav aria-label={t.nav.main} className="hidden items-center gap-1 xl:flex">
           {links.map((link) => (
             <Link
               key={link.href}
@@ -119,7 +119,7 @@ export const Header = ({ onOpenMenu, menuOpen = false }: HeaderProps) => {
                 className="flex items-center gap-2 rounded-lg p-1 outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring/60 sm:pr-3"
               >
                 <UserAvatar name={userName} src={sessionUser.avatar} size="sm" />
-                <span className="hidden max-w-32 truncate text-sm font-medium sm:block">{userName}</span>
+                <span className="hidden max-w-32 truncate text-sm font-medium 2xl:block">{userName}</span>
               </Link>
               <Button variant="ghost" size="icon" onClick={logout} aria-label={t.common.signOut} className="text-muted-foreground">
                 <LogOut className="size-4" />
@@ -142,7 +142,7 @@ export const Header = ({ onOpenMenu, menuOpen = false }: HeaderProps) => {
               onClick={() => setPublicMenuOpen(true)}
               aria-label={t.common.openNavigation}
               aria-expanded={publicMenuOpen}
-              className="md:hidden"
+              className="xl:hidden"
             >
               <Menu className="size-5" />
             </Button>
@@ -152,7 +152,7 @@ export const Header = ({ onOpenMenu, menuOpen = false }: HeaderProps) => {
 
       {!onOpenMenu && (
         <Sheet open={publicMenuOpen} onOpenChange={setPublicMenuOpen}>
-          <SheetContent side="right" closeLabel={t.common.closeNavigation} className="md:hidden">
+          <SheetContent side="right" closeLabel={t.common.closeNavigation} className="xl:hidden">
             <SheetHeader>
               <SheetTitle>{t.common.navigation}</SheetTitle>
             </SheetHeader>

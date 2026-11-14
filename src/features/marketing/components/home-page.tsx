@@ -25,7 +25,7 @@ export const HomePage = async () => {
         <section className="overflow-x-clip px-4 pb-16 pt-12 sm:px-8 sm:pt-16">
           <div className="mx-auto grid w-full max-w-6xl items-start gap-12 lg:grid-cols-12">
             <div className="lg:col-span-6 lg:pt-8">
-              <h1 className="font-heading text-5xl font-extrabold leading-none tracking-tight sm:text-7xl">
+              <h1 className="break-words font-heading text-4xl font-extrabold leading-none tracking-tight sm:text-6xl lg:text-5xl xl:text-6xl">
                 {t.home.titleStart} <span className="eraser">{t.home.titleErase}</span>
                 {t.home.titleEnd}
               </h1>

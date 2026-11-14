@@ -160,7 +160,7 @@ export const VipSubscriptionManager = ({ role, checkoutSucceeded }: VipSubscript
                       <p className="mt-1 text-sm text-muted-foreground">{rankCopy[plan.status]}</p>
                     </div>
                     <div className="flex items-center justify-between gap-5 sm:justify-end">
-                      <p className="font-heading text-2xl font-extrabold tabular-nums">
+                      <p className="shrink-0 whitespace-nowrap font-heading text-2xl font-extrabold tabular-nums">
                         ${plan.price}
                         <span className="ml-1 font-sans text-sm text-muted-foreground">{t.vip.perMonth}</span>
                       </p>
