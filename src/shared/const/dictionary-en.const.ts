@@ -130,6 +130,7 @@ export const EN_DICTIONARY = {
     ],
   },
   auth: {
+    oauthFailed: "Google sign-in didn't finish. Please try again.",
     forgotPassword: 'Forgot password?',
     forgotTitle: 'Reset your password',
     forgotLead: "Enter your account email and we'll send you a link to choose a new password.",

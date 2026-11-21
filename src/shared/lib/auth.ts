@@ -11,6 +11,12 @@ import { isAdminAccount } from '@/shared/utils/admin';
 import { hashPassword } from '@/shared/utils/password';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  // Auth.js v5 reads AUTH_SECRET; this project's env uses NEXTAUTH_SECRET. Name it so every deployment encrypts
+  // and decrypts the OAuth state and PKCE cookies with the same key.
+  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+  // Build callback URLs from the request's own host (Vercel, preview and custom domains) so the PKCE cookie
+  // set when sign-in starts is the one read on the callback.
+  trustHost: true,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -108,5 +114,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   pages: {
     signIn: '/sign-in',
+    // A failed Google round trip (expired or unreadable PKCE cookie) lands back on sign-in with a retry message.
+    error: '/sign-in',
   },
 });

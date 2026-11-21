@@ -23,7 +23,10 @@ import { useT } from '@/shared/hooks/use-t';
 import { safeRedirect } from '@/shared/utils/safe-redirect';
 
 export const LoginForm = () => {
-  const callbackUrl = useSearchParams().get('callbackUrl');
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl');
+  // Set by Auth.js when a Google sign-in fails part-way (e.g. ?error=Configuration).
+  const oauthFailed = searchParams.has('error');
   const { login } = useLogin(callbackUrl);
   const signUpHref = callbackUrl ? `/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}` : '/sign-up';
   const { loading, error } = useAuthStore();
@@ -74,6 +77,9 @@ export const LoginForm = () => {
                 </FormItem>
               )}
             />
+            {oauthFailed && !error && (
+              <p role="alert" className="text-sm font-medium text-destructive">{t.auth.oauthFailed}</p>
+            )}
             {error && (
               <p className="text-sm font-medium text-destructive">{error}</p>
             )}

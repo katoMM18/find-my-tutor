@@ -137,6 +137,7 @@ export const KA_DICTIONARY: Dictionary = {
     ],
   },
   auth: {
+    oauthFailed: 'Google-ით შესვლა ვერ დასრულდა. სცადე თავიდან.',
     forgotPassword: 'დაგავიწყდა პაროლი?',
     forgotTitle: 'პაროლის აღდგენა',
     forgotLead: 'შეიყვანე ანგარიშის ელფოსტა და გამოგიგზავნით ბმულს ახალი პაროლის ასარჩევად.',
