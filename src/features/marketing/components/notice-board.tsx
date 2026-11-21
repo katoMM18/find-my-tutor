@@ -41,7 +41,7 @@ export const NoticeBoard = () => {
 
       <section aria-labelledby="teach-heading" className={cn(flyerClassName, 'col-span-2 mx-auto max-w-xs bg-paper-white -rotate-1')}>
         <div className="px-5 pb-4">
-          <h2 id="teach-heading" className="font-heading text-3xl font-extrabold leading-none tracking-tight text-mark">{t.home.teachTitle}</h2>
+          <h2 id="teach-heading" className="font-heading text-3xl font-extrabold leading-none tracking-tight">{t.home.teachTitle}</h2>
           <p className="mt-2 text-sm leading-relaxed">{t.home.teachLead}</p>
         </div>
         <div className="perforation grid grid-cols-4">

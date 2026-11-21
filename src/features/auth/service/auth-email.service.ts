@@ -19,21 +19,21 @@ export const appUrl = (path = '') => `${(process.env.NEXTAUTH_URL ?? 'http://loc
 
 const renderButton = (action: { label: string; url: string }) =>
   `<p style="margin:0 0 20px"><a href="${escapeHtml(action.url)}" ` +
-  'style="display:inline-block;background:#27477d;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 20px;border-radius:8px">' +
+  'style="display:inline-block;background:#3b2a20;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 20px;border-radius:8px">' +
   `${escapeHtml(action.label)}</a></p>`;
 
 // Email clients ignore stylesheets, so this one layout carries its styling inline (the only place the app does so).
 const renderHtml = (content: EmailContent, footer: string) => `<!doctype html>
-<html><body style="margin:0;padding:24px;background:#e4edf3;font-family:Arial,Helvetica,sans-serif;color:#1a1d1f">
+<html><body style="margin:0;padding:24px;background:#f6f0e9;font-family:Arial,Helvetica,sans-serif;color:#231a14">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
 <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="max-width:480px;background:#ffffff;border-radius:12px;padding:32px">
 <tr><td>
 <h1 style="margin:0 0 12px;font-size:24px">${escapeHtml(content.heading)}</h1>
 <p style="margin:0 0 20px;font-size:16px;line-height:1.5">${escapeHtml(content.body)}</p>
-${content.code ? `<p style="margin:0 0 20px;font-size:32px;font-weight:bold;letter-spacing:8px;color:#27477d">${content.code}</p>` : ''}
+${content.code ? `<p style="margin:0 0 20px;font-size:32px;font-weight:bold;letter-spacing:8px;color:#3b2a20">${content.code}</p>` : ''}
 ${content.action ? renderButton(content.action) : ''}
-${content.note ? `<p style="margin:0 0 20px;font-size:13px;color:#55606a">${escapeHtml(content.note)}</p>` : ''}
-<p style="margin:24px 0 0;font-size:12px;color:#55606a">${escapeHtml(footer)}</p>
+${content.note ? `<p style="margin:0 0 20px;font-size:13px;color:#6a5c52">${escapeHtml(content.note)}</p>` : ''}
+<p style="margin:24px 0 0;font-size:12px;color:#6a5c52">${escapeHtml(footer)}</p>
 </td></tr></table>
 </td></tr></table>
 </body></html>`;

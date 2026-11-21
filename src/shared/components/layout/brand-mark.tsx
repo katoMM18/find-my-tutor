@@ -5,15 +5,14 @@ type BrandMarkProps = {
   className?: string;
 };
 
-// The Find My Tutor mark: a little notice with its tear-off tabs, one already taken.
+// The Find My Tutor mark: a tutor and a student (red) sharing one open book.
 export const BrandMark = ({ className }: BrandMarkProps) => (
   <span className={cn('inline-flex items-center gap-2.5', className)}>
-    <svg aria-hidden="true" viewBox="0 0 32 32" className="size-8 shrink-0 -rotate-3">
-      <rect x="4" y="2" width="24" height="18" rx="2.5" className="fill-primary" />
-      <rect x="11" y="0.5" width="10" height="4" rx="1" className="fill-mark" />
-      <path d="M9 9.5h14M9 13.5h9" className="stroke-primary-foreground" strokeWidth="2" strokeLinecap="round" />
-      <path d="M4 22h6v8.5H5.5A1.5 1.5 0 0 1 4 29zM11 22h6v8.5h-6zM25 22h3v7a1.5 1.5 0 0 1-1.5 1.5H25z" className="fill-primary" />
-      <path d="M18 22.5l2 1.5 2-1 1 1.5" fill="none" className="stroke-primary" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    <svg aria-hidden="true" viewBox="0 0 32 32" className="size-8 shrink-0">
+      <circle cx="10" cy="7.5" r="4.3" className="fill-logo" />
+      <circle cx="22" cy="9.3" r="3.4" className="fill-mark" />
+      <path d="M2.5 17.5C6.5 15.2 11.5 15.4 15.2 17.8V29C11.5 26.6 6.5 26.4 2.5 28.7Z" className="fill-logo" />
+      <path d="M16.8 17.8C20.5 15.4 25.5 15.2 29.5 17.5V28.7C25.5 26.4 20.5 26.6 16.8 29Z" className="fill-logo" />
     </svg>
     <span className="font-heading text-xl font-extrabold tracking-tight">{APP_NAME}</span>
   </span>

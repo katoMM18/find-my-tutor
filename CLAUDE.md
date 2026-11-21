@@ -307,7 +307,7 @@ STATUS: locked
 Product:    Consumer marketplace — students/parents choosing tutors (Georgia, ka + en)
 World:      Tear-off Notice (user-picked 2026-10-31; seed dae15939): tutor flyers taped to a Tbilisi stairwell wall.
             Replaced "Daylight sky" glass (rejected: generic, glass broken in light mode) and "Class Register".
-Palette:    Pale-blue painted stairwell wall #E4EDF3 with plaster grain (background) and a deep turquoise
+Palette:    Espresso & cream palette (user-picked 2026-11-21): cream wall #F6F0E9, espresso #3B2A20 actions/band/logo, caramel #9E5A1E (dark #E09A5C) ratings/VIP/student head, latte #D8B79A highlight. Dark = light-brown #2B211B wall, latte buttons, caramel marks with plaster grain (background) and a deep turquoise
             paint band #1E6B70 (.dado; also --primary buttons/links/focus). Flyers on coloured copy paper by
             subject group (paper.const.ts): Languages pink, Science lemon, Programming mint, Humanities sky,
             other white. Red marker #CF3B2B (--mark) only for circled ratings and the VIP stamp. Beige masking tape.
