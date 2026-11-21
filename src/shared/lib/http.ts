@@ -5,9 +5,13 @@ type RequestOptions = {
   params?: Record<string, string | number | boolean | undefined>;
 };
 
+export type HttpErrorDetails = Record<string, string | number | boolean | null>;
+
 type HttpError = {
   message: string;
   status: number;
+  // The JSON error body, e.g. { error: 'INVALID_FIELD', field: 'email', reason: 'INVALID' }.
+  details?: HttpErrorDetails;
 };
 
 type HttpClientOptions = {
@@ -66,14 +70,16 @@ class HttpClient {
       }
 
       let message = response.statusText;
+      let details: HttpErrorDetails | undefined;
       try {
         const errorData = await response.json();
+        details = errorData;
         if (errorData.error) message = errorData.error;
         else if (errorData.message) message = errorData.message;
       } catch {
         // ignore parse errors
       }
-      const err: HttpError = { message, status: response.status };
+      const err: HttpError = { message, status: response.status, details };
       throw Object.assign(new Error(message), err);
     }
 

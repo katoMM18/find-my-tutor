@@ -6,7 +6,8 @@ import { userRepository } from '@/features/auth/repository/user.repository';
 import { sendWelcomeEmail } from '@/features/auth/service/auth-email.service';
 import { upsertOAuthUserService } from '@/features/auth/service/auth.service';
 import { DEFAULT_LOCALE } from '@/shared/const/i18n.const';
-import { hasRole } from '@/shared/utils/admin';
+import { type AccountRole } from '@/shared/const/roles.const';
+import { isAdminAccount } from '@/shared/utils/admin';
 import { hashPassword } from '@/shared/utils/password';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -34,7 +35,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: user._id.toString(),
           name: user.name,
           email: user.email,
-          role: user.role as 'teacher' | 'student',
+          role: user.role as AccountRole,
           avatar: user.avatar,
         };
       },
@@ -58,7 +59,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
 
     async jwt({ token, user }) {
-      const authUser = user as ({ role?: 'teacher' | 'student'; avatar?: string | null } & typeof user) | undefined;
+      const authUser = user as ({ role?: AccountRole; avatar?: string | null } & typeof user) | undefined;
 
       if (user) {
         token.id = authUser?.id ?? token.sub ?? '';
@@ -73,10 +74,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           token.id = dbUser._id.toString();
           token.name = dbUser.name;
           token.avatar = dbUser.avatar ?? (token.avatar as string | null | undefined);
-          token.role = (dbUser.role as 'teacher' | 'student') ?? 'student';
+          token.role = (dbUser.role as AccountRole) ?? 'student';
           // Only new email sign-ups carry false until they enter their code.
           token.isVerified = dbUser.emailVerified !== false;
-          token.isAdmin = hasRole(dbUser.roles, 'admin');
+          token.isAdmin = isAdminAccount(dbUser.role, dbUser.roles);
         } else {
           token.role = 'student';
         }
@@ -89,7 +90,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token) {
         const user = session.user as typeof session.user & {
           id: string;
-          role: 'teacher' | 'student';
+          role: AccountRole;
           avatar?: string | null;
           isVerified: boolean;
           isAdmin: boolean;
@@ -98,7 +99,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         user.email = token.email as string;
         user.name = token.name as string;
         user.avatar = (token.avatar as string | null | undefined) ?? null;
-        user.role = (token.role as 'teacher' | 'student' | undefined) ?? 'student';
+        user.role = (token.role as AccountRole | undefined) ?? 'student';
         user.isVerified = token.isVerified !== false;
         user.isAdmin = token.isAdmin === true;
       }

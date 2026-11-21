@@ -1,6 +1,6 @@
 import mongoose, { InferSchemaType, Schema } from 'mongoose';
 
-export const VERIFICATION_STATUSES = ['pending', 'approved', 'rejected'] as const;
+import { VERIFICATION_STATUSES } from '@/shared/const/verification.const';
 
 // One record per tutor: the latest diploma or certificate they submitted and what an admin decided.
 const TutorVerificationSchema = new Schema(

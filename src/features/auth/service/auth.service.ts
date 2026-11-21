@@ -91,6 +91,8 @@ export async function changeRoleService(
 ): Promise<ServiceResult<ChangeRoleType>> {
   const user = await userRepository.findById(userId);
   if (!user) return { data: { error: 'NOT_FOUND' }, status: 404 };
+  // Admins leave the admin role only through the admin panel, never by the student/tutor switch.
+  if (user.role === 'admin') return { data: { error: 'ADMIN_ROLE_LOCKED' }, status: 403 };
   if (user.role === input.role) return { data: { role: input.role }, status: 200 };
 
   const updated = await userRepository.updateById(userId, { role: input.role });

@@ -115,6 +115,13 @@ describe('changeRoleService', () => {
     expect(result).toEqual({ data: { role: 'teacher' }, status: 200 });
   });
 
+  it('refuses to switch an admin to student or teacher', async () => {
+    mockRepo.findById.mockResolvedValueOnce({ ...fakeUser, role: 'admin' } as never);
+    const result = await changeRoleService('507f1f77bcf86cd799439011', { role: 'teacher' });
+    expect(result.status).toBe(403);
+    expect(mockRepo.updateById).not.toHaveBeenCalled();
+  });
+
   it('returns 500 when the update does not apply', async () => {
     mockRepo.findById.mockResolvedValueOnce({ ...fakeUser, role: 'student' } as never);
     mockRepo.updateById.mockResolvedValueOnce(false);

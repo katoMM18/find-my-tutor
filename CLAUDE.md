@@ -269,6 +269,10 @@ Never create `next-auth.d.ts` or any global NextAuth type augmentation files. Us
 
 OAuth users are persisted via `userRepository.upsertOAuthUser()`. `passwordHash` is optional (empty string for OAuth users).
 
+Every user has one `role`: `student`, `teacher` (shown as "Tutor") or `admin` (`ACCOUNT_ROLES` in `src/shared/const/roles.const.ts`). Sign-up only offers student/teacher; admin is granted from the admin panel or MongoDB. The session's `isAdmin` is true for `role: 'admin'` or the legacy `roles: ['admin']`. Admin pages check `isAdminSession`; `/api/admin/*` routes start with `requireAdmin()` from `src/shared/middleware/require-admin.ts`.
+
+The admin panel (`/admin`, `src/features/admin/`) is config-driven: each browsable collection and its editable fields live in `src/shared/const/admin-people.const.ts` and `admin-activity.const.ts`. To expose a new collection, add its key to `ADMIN_COLLECTION_KEYS`, its model to `admin.repository.ts`, its fields to one of those files, and its label to `admin.collections` in both dictionaries. Never list secret fields (`passwordHash`, `tokenHash`).
+
 ## 19. Design Direction (per-project brand)
 
 This repo is a **template**. Its job is to become a different-looking product every time it is reused — never to ship the same default home page, logo, and styles twice. This section is the mechanism that guarantees that. The §0 Design Gate points here.

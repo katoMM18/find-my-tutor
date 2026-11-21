@@ -1,6 +1,6 @@
 import mongoose, { InferSchemaType, Schema } from 'mongoose';
 
-export const AUTH_TOKEN_PURPOSES = ['verify_email', 'reset_password'] as const;
+import { AUTH_TOKEN_PURPOSES } from '@/shared/const/auth-token.const';
 
 // One-time secrets for email verification codes and password reset links. Only the SHA-256 hash is stored.
 const AuthTokenSchema = new Schema(

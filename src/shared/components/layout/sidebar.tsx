@@ -1,5 +1,6 @@
 'use client';
 import {
+  BadgeCheck,
   CalendarClock,
   House,
   MessagesSquare,
@@ -22,6 +23,7 @@ import {
   TEACHER_NAV_ITEMS,
   type SidebarNavIcon,
 } from '@/shared/const/navigation.const';
+import { type AccountRole } from '@/shared/const/roles.const';
 import { useT } from '@/shared/hooks/use-t';
 import { cn } from '@/shared/lib/utils';
 
@@ -36,6 +38,7 @@ const SIDEBAR_ICON_MAP: Record<SidebarNavIcon, LucideIcon> = {
   billing: Sparkles,
   requests: Megaphone,
   admin: ShieldCheck,
+  verify: BadgeCheck,
 };
 
 type SidebarProps = {
@@ -47,15 +50,21 @@ export const Sidebar = ({ className, onNavigate }: SidebarProps) => {
   const pathname = usePathname();
   const { t } = useT();
   const { data: session } = useSession();
-  const sessionUser = session?.user as { role?: 'teacher' | 'student'; isAdmin?: boolean } | undefined;
-  const items = [...(sessionUser?.role === 'teacher' ? TEACHER_NAV_ITEMS : STUDENT_NAV_ITEMS), ...(sessionUser?.isAdmin ? ADMIN_NAV_ITEMS : [])];
+  const sessionUser = session?.user as { role?: AccountRole; isAdmin?: boolean } | undefined;
+  const roleItems = sessionUser?.role === 'admin' ? [] : sessionUser?.role === 'teacher' ? TEACHER_NAV_ITEMS : STUDENT_NAV_ITEMS;
+  const items = [...roleItems, ...(sessionUser?.isAdmin ? ADMIN_NAV_ITEMS : [])];
+  // The longest matching link wins, so /admin/verifications doesn't also light up /admin.
+  const activeHref = items
+    .map(({ href }) => href)
+    .filter((href) => pathname === href || pathname.startsWith(`${href}/`))
+    .sort((a, b) => b.length - a.length)[0];
 
   return (
     <aside className={cn('paper m-3 mr-0 flex w-60 shrink-0 flex-col gap-1 self-start rounded-xl p-3', className)}>
       <nav aria-label={t.nav.workspace} className="flex flex-col gap-0.5">
         {items.map(({ href, labelKey, icon }) => {
           const Icon = SIDEBAR_ICON_MAP[icon];
-          const isActive = pathname === href || pathname.startsWith(`${href}/`);
+          const isActive = href === activeHref;
 
           return (
             <Link

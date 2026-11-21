@@ -55,6 +55,14 @@ describe('HttpClient', () => {
     await expect(client.get('/missing')).rejects.toThrow('NOT_FOUND');
   });
 
+  it('keeps the JSON error body on the thrown error', async () => {
+    mockFetch.mockResolvedValueOnce(makeResponse({ error: 'INVALID_FIELD', field: 'email', reason: 'INVALID' }, 400));
+    await expect(client.post('/things', {})).rejects.toMatchObject({
+      status: 400,
+      details: { error: 'INVALID_FIELD', field: 'email', reason: 'INVALID' },
+    });
+  });
+
   it('calls onUnauthorized and throws on 401', async () => {
     const onUnauthorized = vi.fn();
     const guardedClient = new HttpClient({ baseUrl: 'https://api.example.com', onUnauthorized });
