@@ -131,11 +131,11 @@ export const ShortlistCompare = () => {
           <caption className="sr-only">{t.shortlist.compareCaption}</caption>
           <thead>
             <tr className="border-b border-rule align-top">
-              <th scope="col" className="sticky left-0 z-10 w-36 min-w-32 bg-card p-4 font-semibold text-muted-foreground">
+              <th scope="col" className="sticky left-0 z-10 w-24 min-w-24 bg-card p-3 sm:w-36 sm:min-w-32 sm:p-4 font-semibold text-muted-foreground">
                 <span className="sr-only">{t.shortlist.tutor}</span>
               </th>
               {teachers.map((teacher) => (
-                <th key={teacher.id} scope="col" className="min-w-56 p-4 font-normal">
+                <th key={teacher.id} scope="col" className="min-w-52 p-3 font-normal sm:min-w-56 sm:p-4">
                   <div className="flex items-start justify-between gap-2">
                     <Link
                       href={`/teachers/${teacher.id}`}
@@ -162,11 +162,11 @@ export const ShortlistCompare = () => {
           <tbody className="divide-y divide-rule">
             {rows.map((row) => (
               <tr key={row.label} className="align-top">
-                <th scope="row" className="sticky left-0 z-10 bg-card p-4 font-semibold text-muted-foreground">{row.label}</th>
+                <th scope="row" className="sticky left-0 z-10 bg-card p-3 text-xs font-semibold text-muted-foreground sm:p-4 sm:text-sm">{row.label}</th>
                 {teachers.map((teacher) => {
                   const best = winners.get(row.label) === teacher.id;
                   return (
-                    <td key={teacher.id} className={cn('p-4', best && 'font-semibold')}>
+                    <td key={teacher.id} className={cn('p-3 sm:p-4', best && 'font-semibold')}>
                       {row.cell(teacher)}
                       {best && <Badge variant="soft" className="ml-2">{t.shortlist.best}</Badge>}
                     </td>
@@ -175,9 +175,9 @@ export const ShortlistCompare = () => {
               </tr>
             ))}
             <tr>
-              <th scope="row" className="sticky left-0 z-10 bg-card p-4"><span className="sr-only">{t.common.message}</span></th>
+              <th scope="row" className="sticky left-0 z-10 bg-card p-3 sm:p-4"><span className="sr-only">{t.common.message}</span></th>
               {teachers.map((teacher) => (
-                <td key={teacher.id} className="p-4">
+                <td key={teacher.id} className="p-3 sm:p-4">
                   <Button asChild className="w-full">
                     <Link href={`/teachers/${teacher.id}#message`}>
                       <MessageCircle className="size-4" aria-hidden="true" /> {fmt(t.profile.messageName, { name: firstName(teacher.name) })}

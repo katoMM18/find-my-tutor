@@ -74,13 +74,13 @@ export const StudentHome = () => {
       />
 
       <section>
-        <div className="mb-3 flex items-end justify-between gap-3">
-          <h2 className="text-lg font-semibold">
+        <div className="mb-3 flex flex-wrap items-end justify-between gap-x-3 gap-y-1">
+          <h2 className="min-w-0 text-lg font-semibold">
             {recommended.subject ? fmt(t.dashboard.tutorsFor, { subject: subject(recommended.subject) }) : t.dashboard.tutorsToExplore}
           </h2>
           <Link
             href={recommended.subject ? `/teachers?subject=${encodeURIComponent(recommended.subject)}` : '/teachers'}
-            className="text-sm font-medium text-primary hover:underline"
+            className="shrink-0 whitespace-nowrap text-sm font-medium text-primary hover:underline"
           >
             {t.common.seeAll}
           </Link>

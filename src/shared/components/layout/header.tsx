@@ -9,6 +9,7 @@ import { useLogout } from '@/features/auth/hooks/use-logout';
 import { useShortlistStore } from '@/features/shortlist/hooks/useShortlistStore';
 import { BrandMark } from '@/shared/components/layout/brand-mark';
 import { LanguageSwitcher } from '@/shared/components/layout/language-switcher';
+import { SignOutButton } from '@/shared/components/layout/sign-out-button';
 import { ThemeToggle } from '@/shared/components/layout/theme-toggle';
 import { Button } from '@/shared/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/shared/components/ui/sheet';
@@ -73,7 +74,7 @@ export const Header = ({ onOpenMenu, menuOpen = false }: HeaderProps) => {
             href="/"
             className="rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
           >
-            <BrandMark />
+            <BrandMark compact={Boolean(sessionUser)} />
           </Link>
         </div>
 
@@ -138,7 +139,7 @@ export const Header = ({ onOpenMenu, menuOpen = false }: HeaderProps) => {
                 <UserAvatar name={userName} src={sessionUser.avatar} size="sm" />
                 <span className="hidden max-w-32 truncate text-sm font-medium 2xl:block">{userName}</span>
               </Link>
-              <Button variant="ghost" size="icon" onClick={logout} aria-label={t.common.signOut} className="text-muted-foreground">
+              <Button variant="ghost" size="icon" onClick={logout} aria-label={t.common.signOut} className="hidden text-muted-foreground sm:inline-flex">
                 <LogOut className="size-4" />
               </Button>
             </>
@@ -188,6 +189,7 @@ export const Header = ({ onOpenMenu, menuOpen = false }: HeaderProps) => {
             <div className="mt-auto flex items-center gap-2 border-t border-rule p-4">
               <LanguageSwitcher />
               <ThemeToggle />
+              {sessionUser && <SignOutButton onClick={logout} label={t.common.signOut} />}
             </div>
           </SheetContent>
         </Sheet>

@@ -47,9 +47,9 @@ export const MediaUpload = ({ kind, label, hint, accept, currentUrl, name = '', 
   };
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex min-w-0 items-center gap-4">
       {kind === 'profile_image' && <UserAvatar name={name} src={previewUrl ?? currentUrl} size="xl" className="size-20 text-2xl" />}
-      <div>
+      <div className="min-w-0">
         <Label
           htmlFor={inputId}
           className={cn(

@@ -24,8 +24,13 @@ export const NoticeBoard = () => {
             aria-label={subject(flyer.subject)}
             className={cn(flyerClassName, paperForSubject(flyer.subject), flyer.tilt)}
           >
-            <div className="px-5 pb-4">
-              <p className="break-words font-heading text-2xl font-extrabold leading-none tracking-tight sm:text-3xl">{subject(flyer.subject)}</p>
+            <div className="px-4 pb-4 sm:px-5">
+              <p
+                className={cn(
+                  'break-words font-heading text-lg font-extrabold leading-tight tracking-tight',
+                  'sm:text-2xl md:text-3xl md:leading-none'
+                )}
+              >{subject(flyer.subject)}</p>
               <p className="mt-2 text-sm text-muted-foreground">{t.home.flyerLine}</p>
             </div>
             <div className="perforation grid grid-cols-4">

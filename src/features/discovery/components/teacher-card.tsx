@@ -38,16 +38,16 @@ export const TeacherCard = ({ teacher, inkDelay = 0, className }: TeacherCardPro
         className
       )}
     >
-      <div className="flex flex-1 flex-col px-5">
-        <div className="flex items-start gap-4">
+      <div className="flex flex-1 flex-col px-4 sm:px-5">
+        <div className="flex items-start gap-3 sm:gap-4">
           <UserAvatar
             name={teacher.name}
             src={teacher.avatar}
             size="xl"
-            className="size-18 -rotate-3 rounded-sm text-xl shadow-md ring-4 ring-white transition duration-300 group-hover:rotate-0"
+            className="size-16 shrink-0 -rotate-3 sm:size-18 rounded-sm text-xl shadow-md ring-4 ring-white transition duration-300 group-hover:rotate-0"
           />
           <div className="min-w-0 flex-1">
-            <h3 className="font-heading text-2xl font-extrabold leading-tight tracking-tight">
+            <h3 className="break-words font-heading text-xl font-extrabold leading-tight tracking-tight sm:text-2xl">
               <Link href={profileHref} className="outline-none hover:underline focus-visible:underline">{teacher.name}</Link>
             </h3>
             <p className="mt-1.5 text-sm text-muted-foreground">

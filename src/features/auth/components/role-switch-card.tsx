@@ -23,7 +23,7 @@ export const RoleSwitchCard = ({ role }: RoleSwitchCardProps) => {
   return (
     <Card id="switch-role" className="mt-8 scroll-mt-24">
       <CardHeader>
-        <CardTitle className="text-xl font-bold">{target === 'teacher' ? copy.toTeacherTitle : copy.toStudentTitle}</CardTitle>
+        <CardTitle className="text-lg font-bold text-balance sm:text-xl">{target === 'teacher' ? copy.toTeacherTitle : copy.toStudentTitle}</CardTitle>
         <CardDescription className="max-w-prose">{target === 'teacher' ? copy.toTeacherBody : copy.toStudentBody}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

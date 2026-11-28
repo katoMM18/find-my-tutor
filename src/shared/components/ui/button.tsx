@@ -6,7 +6,9 @@ import { cn } from '@/shared/lib/utils'
 
 const buttonBaseClassName = cn(
   'inline-flex shrink-0 items-center justify-center gap-2 rounded-lg text-sm font-semibold',
-  'whitespace-nowrap transition-all outline-none active:scale-98 disabled:pointer-events-none disabled:opacity-50 motion-reduce:active:scale-100',
+  // Wraps on phones so long Georgian labels never push past the screen edge.
+  'max-w-full text-center whitespace-normal sm:whitespace-nowrap',
+  'transition-all outline-none active:scale-98 disabled:pointer-events-none disabled:opacity-50 motion-reduce:active:scale-100',
   'focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50',
   'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40'
 )
@@ -28,10 +30,10 @@ const buttonVariants = cva(
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
-        default: 'h-9 px-4 py-2',
-        xs: 'h-6 gap-1 px-2.5 text-xs',
-        sm: 'h-8 gap-1.5 px-3.5',
-        lg: 'h-11 px-6',
+        default: 'min-h-9 px-4 py-2',
+        xs: 'min-h-6 gap-1 px-2.5 text-xs',
+        sm: 'min-h-8 gap-1.5 px-3.5 py-1',
+        lg: 'min-h-11 px-6 py-2',
         icon: 'size-9',
         'icon-xs': 'size-6',
         'icon-sm': 'size-8',

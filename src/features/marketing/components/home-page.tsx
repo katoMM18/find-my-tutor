@@ -51,9 +51,9 @@ export const HomePage = async () => {
 
         <section aria-labelledby="wall-heading" className="px-4 pt-20 sm:px-8">
           <div className="mx-auto w-full max-w-6xl">
-            <div className="mb-6 flex items-end justify-between gap-4">
-              <h2 id="wall-heading" className="font-heading text-3xl font-extrabold sm:text-4xl">{t.home.featured}</h2>
-              <Link href="/teachers" className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink hover:underline">
+            <div className="mb-6 flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
+              <h2 id="wall-heading" className="min-w-0 font-heading text-3xl font-extrabold sm:text-4xl">{t.home.featured}</h2>
+              <Link href="/teachers" className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-ink hover:underline">
                 {t.home.seeAllTutors} <ArrowRight className="size-4" aria-hidden="true" />
               </Link>
             </div>
