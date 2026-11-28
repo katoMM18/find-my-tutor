@@ -149,7 +149,7 @@ export const AdminCollectionView = ({ collectionKey }: AdminCollectionViewProps)
                       </td>
                     ))}
                     <td className="whitespace-nowrap px-4 py-3 text-muted-foreground">
-                      {typeof document.createdAt === 'string' ? dateTime(document.createdAt) : '—'}
+                      {typeof document.createdAt === 'string' ? dateTime(document.createdAt) : '-'}
                     </td>
                     <td className="px-4 py-3">
                       <RowActions

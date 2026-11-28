@@ -15,7 +15,7 @@ type PriceGuideProps = {
 // Within this many lari of the median, a price reads as "typical".
 const TYPICAL_RANGE_GEL = 2;
 
-// "Typical Maths lesson in Vake: 35 ₾ · this tutor is 5 ₾ below" — so parents know whether a price is fair.
+// "Typical Maths lesson in Vake: 35 ₾ · this tutor is 5 ₾ below", so parents know whether a price is fair.
 export const PriceGuideNote = ({ teacher, className }: PriceGuideProps) => {
   const { t, fmt, subject, plural } = useT();
   const mainSubject = teacher.subjects[0];

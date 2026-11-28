@@ -116,7 +116,7 @@ export const VipSubscriptionManager = ({ role, checkoutSucceeded }: VipSubscript
                   {!activePlan
                     ? t.vip.noPlanNote
                     : current.cancelAtPeriodEnd
-                      ? fmt(t.vip.endsOn, { date: expiry ?? '—' })
+                      ? fmt(t.vip.endsOn, { date: expiry ?? '-' })
                       : expiry && fmt(t.vip.renewsOn, { date: expiry })}
                 </p>
               </div>

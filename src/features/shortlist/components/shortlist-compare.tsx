@@ -42,18 +42,18 @@ export const ShortlistCompare = () => {
   const rows: Row[] = [
     {
       label: t.lessons.price,
-      cell: (teacher) => (teacher.pricePerLesson !== null ? fmt(t.lessons.pricePerLesson, { price: teacher.pricePerLesson }) : '—'),
+      cell: (teacher) => (teacher.pricePerLesson !== null ? fmt(t.lessons.pricePerLesson, { price: teacher.pricePerLesson }) : '-'),
       best: (list) => bestBy(list, (teacher) => teacher.pricePerLesson, true),
     },
     {
       label: t.shortlist.nextFree,
-      cell: (teacher) => nextFreeLabel(teacher.nextFree) ?? '—',
+      cell: (teacher) => nextFreeLabel(teacher.nextFree) ?? '-',
       // Sooner wins: days ahead first, then the clock time.
       best: (list) => bestBy(list, ({ nextFree }) => (nextFree ? nextFree.inDays * 10000 + Number(nextFree.start.replace(':', '')) : null), true),
     },
     {
       label: t.lessons.freeIntro,
-      cell: (teacher) => (teacher.freeIntro ? t.shortlist.yes : '—'),
+      cell: (teacher) => (teacher.freeIntro ? t.shortlist.yes : '-'),
     },
     {
       label: t.discovery.rating,
@@ -68,7 +68,7 @@ export const ShortlistCompare = () => {
     },
     {
       label: t.shortlist.replies,
-      cell: (teacher) => responseTime(teacher.responseMinutes) ?? '—',
+      cell: (teacher) => responseTime(teacher.responseMinutes) ?? '-',
       best: (list) => bestBy(list, (teacher) => teacher.responseMinutes, true),
     },
     {
@@ -91,7 +91,7 @@ export const ShortlistCompare = () => {
           <span className="inline-flex items-center gap-1.5 font-medium">
             <BadgeCheck className="size-4 text-primary" aria-hidden="true" /> {t.shortlist.checked}
           </span>
-        ) : '—',
+        ) : '-',
     },
   ];
 

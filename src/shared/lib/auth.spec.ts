@@ -45,13 +45,13 @@ const fakeUser = {
   _id: { toString: () => '507f1f77bcf86cd799439011' },
   name: 'Alice',
   email: 'alice@example.com',
-  // sha256('123456') — matches value used in auth.service.spec.ts
+  // sha256('123456') matches value used in auth.service.spec.ts
   passwordHash: '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
   role: 'teacher' as const,
   avatar: 'https://example.com/avatar.png',
 };
 
-describe('auth callbacks — signIn', () => {
+describe('auth callbacks: signIn', () => {
   beforeEach(() => vi.clearAllMocks());
 
   it('returns true for non-Google providers without DB call', async () => {
@@ -88,7 +88,7 @@ describe('auth callbacks — signIn', () => {
   });
 });
 
-describe('auth callbacks — jwt', () => {
+describe('auth callbacks: jwt', () => {
   beforeEach(() => vi.clearAllMocks());
 
   it('enriches token with DB user data on every call', async () => {
@@ -122,7 +122,7 @@ describe('auth callbacks — jwt', () => {
   });
 });
 
-describe('auth callbacks — session', () => {
+describe('auth callbacks: session', () => {
   it('maps token fields onto session.user', async () => {
     const session = {
       user: { name: 'Alice', email: 'alice@example.com' },
@@ -156,7 +156,7 @@ describe('auth callbacks — session', () => {
   });
 });
 
-describe('auth credentials — authorize', () => {
+describe('auth credentials: authorize', () => {
   beforeEach(() => vi.clearAllMocks());
 
   const credentialsProvider = capturedConfig.providers?.find(

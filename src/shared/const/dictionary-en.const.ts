@@ -62,7 +62,7 @@ export const EN_DICTIONARY = {
     footer: 'Footer',
   },
   footer: {
-    note: "Every review is permanent — tutors can't edit or remove it.",
+    note: "Every review is permanent. Tutors can't edit or remove it.",
   },
   home: {
     titleStart: 'Learning starts with the',
@@ -204,7 +204,7 @@ export const EN_DICTIONARY = {
     rejectedHeading: 'Diploma not approved',
     rejectedBody: 'Hi {name}, we couldn\'t approve the file you sent. Reason: {reason}. You can upload a new file from your profile.',
     profileAction: 'Open my profile',
-    footer: 'Find My Tutor — every review is permanent.',
+    footer: 'Find My Tutor. Every review is permanent.',
   },
   discovery: {
     day: 'Day',
@@ -679,7 +679,7 @@ export const EN_DICTIONARY = {
     passwordHint: 'At least 8 characters. Leave empty to keep the current password.',
     passwordCreateHint: 'At least 8 characters.',
     optionsHint: 'Allowed: {options}',
-    none: '— none —',
+    none: 'None',
     yes: 'Yes',
     no: 'No',
     rawDocument: 'Full record (JSON)',

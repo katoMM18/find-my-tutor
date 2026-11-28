@@ -8,7 +8,7 @@ type AdminCellValueProps = {
   value: AdminJsonValue | undefined;
 };
 
-const Empty = () => <span className="text-muted-foreground">—</span>;
+const Empty = () => <span className="text-muted-foreground">-</span>;
 
 // The last six characters are enough to tell ids apart in a table; the full id is in the title.
 const ShortId = ({ id }: { id: string }) => (

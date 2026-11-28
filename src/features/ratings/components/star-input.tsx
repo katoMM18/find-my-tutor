@@ -31,7 +31,7 @@ export const StarInput = ({ value, onChange }: StarInputProps) => {
           <ToggleGroupItem
             key={index}
             value={String(index)}
-            aria-label={`${index} — ${t.reviews.ratingLabels[index - 1]}`}
+            aria-label={`${index}: ${t.reviews.ratingLabels[index - 1]}`}
             onMouseEnter={() => setHovered(index)}
             className="size-10 p-0 hover:bg-transparent aria-checked:bg-transparent aria-checked:text-foreground"
           >
