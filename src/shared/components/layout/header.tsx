@@ -1,5 +1,5 @@
 'use client';
-import { Heart, LogOut, Menu } from 'lucide-react';
+import { Crown, Heart, LogOut, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -19,7 +19,7 @@ import { cn } from '@/shared/lib/utils';
 type SessionUser = {
   name?: string | null;
   avatar?: string | null;
-  role?: 'teacher' | 'student';
+  role?: 'teacher' | 'student' | 'admin';
 };
 
 type HeaderProps = {
@@ -95,6 +95,23 @@ export const Header = ({ onOpenMenu, menuOpen = false }: HeaderProps) => {
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
+          {(sessionUser?.role === 'teacher' || sessionUser?.role === 'student') && (
+            <Link
+              href="/subscription"
+              aria-label={t.nav.billing}
+              aria-current={isActive('/subscription') ? 'page' : undefined}
+              className={cn(
+                'inline-flex h-9 items-center gap-1.5 rounded-lg border-2 border-mark/50 bg-mark/10 px-2.5',
+                'text-sm font-bold text-foreground transition-colors outline-none',
+                'hover:border-mark hover:bg-mark/15 focus-visible:ring-2 focus-visible:ring-ring/60',
+                isActive('/subscription') && 'border-mark bg-mark/20'
+              )}
+            >
+              <Crown className="size-4 text-mark" aria-hidden="true" />
+              <span className="hidden md:inline">{t.nav.billing}</span>
+              <span className="md:hidden">VIP</span>
+            </Link>
+          )}
           {sessionUser?.role !== 'teacher' && (
             <Button variant="ghost" size="icon" asChild className="relative text-muted-foreground">
               <Link href="/saved" aria-label={fmt(t.shortlist.headerLabel, { count: savedIds.length })}>

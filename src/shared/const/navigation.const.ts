@@ -6,6 +6,8 @@ export type SidebarNavItem = {
   href: string;
   labelKey: keyof Dictionary['nav'];
   icon: SidebarNavIcon;
+  // Featured items sit apart from the list as a highlighted card (payments must never hide in the list).
+  featured?: boolean;
 };
 
 export const STUDENT_NAV_ITEMS: SidebarNavItem[] = [
@@ -15,7 +17,7 @@ export const STUDENT_NAV_ITEMS: SidebarNavItem[] = [
   { href: '/messages', labelKey: 'messages', icon: 'messages' },
   { href: '/reviews', labelKey: 'reviews', icon: 'reviews' },
   { href: '/profile', labelKey: 'profile', icon: 'profile' },
-  { href: '/subscription', labelKey: 'billing', icon: 'billing' },
+  { href: '/subscription', labelKey: 'billing', icon: 'billing', featured: true },
 ];
 
 export const ADMIN_NAV_ITEMS: SidebarNavItem[] = [
@@ -31,5 +33,5 @@ export const TEACHER_NAV_ITEMS: SidebarNavItem[] = [
   { href: '/reviews', labelKey: 'reviews', icon: 'reviews' },
   { href: '/availability', labelKey: 'availability', icon: 'availability' },
   { href: '/profile', labelKey: 'profile', icon: 'profile' },
-  { href: '/subscription', labelKey: 'billing', icon: 'billing' },
+  { href: '/subscription', labelKey: 'billing', icon: 'billing', featured: true },
 ];
